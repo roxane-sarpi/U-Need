@@ -25,10 +25,9 @@ CREATE TABLE IF NOT EXISTS ads (
   id INT AUTO_INCREMENT PRIMARY KEY, 
   title VARCHAR(100) NOT NULL,
   description TEXT NOT NULL, -- TEXT est plus adapté qu'un VARCHAR(100) pour une description
-  image_default VARCHAR(500) DEFAULT '/public/images/default_image.png',
-  image_1 VARCHAR(500),
-  image_2 VARCHAR(500),
-  image_3 VARCHAR(500),
+  image_1 VARCHAR(500) DEFAULT '/public/images/default_image.svg',
+  image_2 VARCHAR(500) DEFAULT '/public/images/default_image.svg',
+  image_3 VARCHAR(500) DEFAULT '/public/images/default_image.svg',
   id_category INT,
   points INT NOT NULL,
   statut ENUM('signalé', 'urgent', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
@@ -72,3 +71,47 @@ CREATE TABLE IF NOT EXISTS requests(
     CONSTRAINT fk_helper FOREIGN KEY (id_helper) REFERENCES users(id),
     CONSTRAINT fk_needer FOREIGN KEY (id_user) REFERENCES users(id)
 );
+
+INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role)
+VALUES ('Paul', 'LeDu', 'PaulleDu@gmail.com', '123456', '0654322343', '13010', 'Marseille', 'user');
+
+INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role)
+VALUES ('Roxane', 'Sarpi', 'RoxaneSarpi@gmail.com', '123456', '0743453224', '13015', 'Marseille', 'admin');
+
+INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role)
+VALUES ('Vero', 'Lastar', 'Verolastar@gmail.com', '123456', '0432345432', '13005', 'Marseille', 'user');
+
+INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role)
+VALUES ('Akio', 'Kimura', 'Akio@gmail.com', '123456', '0654322343', '130011', 'Marseille', 'moderateur');
+
+INSERT INTO categories (name)
+VALUES ('Déménagement'),
+('Bricolage'),
+('Aide ménagère'),
+('Aide aux séniors'),
+('Informatique'),
+('Petit travaux'),
+('Course'),
+('Animaux'),
+('Jardinerie'),
+('Transport'),
+('Aide scolaire'),
+('Autre');
+
+INSERT INTO ads (title, description, id_category, points, statut, zip_code, city, urgent, id_user, date_execution)
+VALUES ('Besoin pour arroser mes plantes', 'Ayant eu un accident me bloquant le dos, je ne peux plus arroser mes plantes. Je cherche une personne qui pourra venir arroser mes plantes.', 9, 2, 'disponible', '13010', 'Marseille', false, 1, '2026-04-30');
+
+INSERT INTO ads (title, description, id_category, points, statut, zip_code, city, urgent, id_user, date_execution)
+VALUES (
+    'Besoin d’aide pour faire mes courses',
+    'Suite à une entorse à la cheville, je ne peux pas me déplacer facilement. Je cherche une personne pour m’aider à faire quelques courses au supermarché du quartier.',
+    9,
+    3,
+    'disponible',
+    '13010',
+    'Marseille',
+    false,
+    3,
+    '2026-05-02'
+);
+

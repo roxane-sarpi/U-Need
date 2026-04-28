@@ -1,32 +1,49 @@
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+
+// Load environment variables from .env file
 require("dotenv").config();
 
-const fs = require("fs");
-const mysql = require("mysql2/promise");
+// Import Faker library for generating fake data
+const { faker } = require("@faker-js/faker");
 
-const migrate = async () => {
-  const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+// Import database client
+const database = require("./database/client");
 
-  const connection = await mysql.createConnection({
-    host: DB_HOST,
-    port: DB_PORT,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    multipleStatements: true,
-  });
+const seed = async () => {
+  try {
+    // Declare an array to store the query promises
+    // See why here: https://eslint.org/docs/latest/rules/no-await-in-loop
+    const queries = [];
 
-  await connection.query(`drop database if exists ${DB_NAME}`);
-  await connection.query(`create database ${DB_NAME}`);
-  await connection.query(`use ${DB_NAME}`);
+    /* ************************************************************************* */
 
-  const sql = fs.readFileSync("./database.sql", "utf8");
+    // Generating Seed Data
 
-  await connection.query(sql);
+    // Optional: Truncate tables (remove existing data)
+    await database.query("truncate item");
 
-  connection.end();
+    // Insert fake data into the 'item' table
+    for (let i = 0; i < 10; i += 1) {
+      queries.push(
+        database.query("insert into item(title) values (?)", [
+          faker.lorem.word(),
+        ])
+      );
+    }
+
+    /* ************************************************************************* */
+
+    // Wait for all the insertion queries to complete
+    await Promise.all(queries);
+
+    // Close the database connection
+    database.end();
+
+    console.info(`${database.databaseName} filled from ${__filename} 🌱`);
+  } catch (err) {
+    console.error("Error filling the database:", err.message);
+  }
 };
 
-try {
-  migrate();
-} catch (err) {
-  console.error(err);
-}
+// Run the seed function
+seed();
