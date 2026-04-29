@@ -30,17 +30,14 @@ pool.getConnection().catch(() => {
 const models = {};
 
 // const ItemManager = require("./ItemManager");
-const CategoryManager = require("./CategoryManager");
-
 // models.item = new ItemManager();
 // models.item.setDatabase(pool);
+
+const CategoryManager = require("./CategoryManager");
 models.category = new CategoryManager();
 models.category.setDatabase(pool);
 
 const AdManager = require("./AdManager");
-
-// models.item = new ItemManager();
-// models.item.setDatabase(pool);
 models.ad = new AdManager();
 models.ad.setDatabase(pool);
 

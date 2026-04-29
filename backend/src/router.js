@@ -14,6 +14,7 @@ const router = express.Router();
 const adControllers =require("./controllers/adControllers");
 
 router.get("/ads", adControllers.browse);
+router.get("/ads/:id", adControllers.read);
 
 //Categories
 const CategoryControllers = require("./controllers/categoryControllers");
