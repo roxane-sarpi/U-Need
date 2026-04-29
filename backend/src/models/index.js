@@ -47,6 +47,12 @@ models.ad.setDatabase(pool);
 // bonus: use a proxy to personalize error message,
 // when asking for a non existing model
 
+const MessageManager = require("./MessageManager");
+
+models.messages = new MessageManager();
+models.messages.setDatabase(pool);
+
+
 const handler = {
   get(obj, prop) {
     if (prop in obj) {

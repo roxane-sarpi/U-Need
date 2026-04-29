@@ -23,3 +23,6 @@ router.get("/categories", CategoryControllers.browse);
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
 module.exports = router;
+
+const messagesControllers = require("./controllers/messagesControllers");
+router.post("/addmessages", messagesControllers.send)
