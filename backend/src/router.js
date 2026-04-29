@@ -17,6 +17,8 @@ router.get("/ads", adControllers.browse);
 // module.exports = router;
 
 const CategoryControllers = require("./controllers/CategoryControllers");
+const userControllers = require("./controllers/userControllers");
 
 router.get("/categories", CategoryControllers.browse);
+router.post("/users", userControllers.add);
 module.exports = router;
