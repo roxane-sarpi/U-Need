@@ -5,6 +5,10 @@ const router = express.Router();
 // const itemControllers = require("./controllers/itemControllers");
 
 // router.get("/items", itemControllers.browse);
+const adControllers =require("./controllers/adControllers");
+
+// router.get("/items", itemControllers.browse);
+router.get("/ads", adControllers.browse);
 // router.get("/items/:id", itemControllers.read);
 // router.put("/items/:id", itemControllers.edit);
 // router.post("/items", itemControllers.add);

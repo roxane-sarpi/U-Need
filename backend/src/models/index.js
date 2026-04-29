@@ -37,6 +37,13 @@ const CategoryManager = require("./CategoryManager");
 models.category = new CategoryManager();
 models.category.setDatabase(pool);
 
+const AdManager = require("./AdManager");
+
+// models.item = new ItemManager();
+// models.item.setDatabase(pool);
+models.ad = new AdManager();
+models.ad.setDatabase(pool);
+
 // bonus: use a proxy to personalize error message,
 // when asking for a non existing model
 
