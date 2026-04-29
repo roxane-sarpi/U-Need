@@ -19,4 +19,7 @@ router.get("/ads", adControllers.browse);
 const CategoryControllers = require("./controllers/CategoryControllers");
 
 router.get("/categories", CategoryControllers.browse);
+
+const notificationsControllers = require("./controllers/notificationsControllers");
+router.get("/notifications", notificationsControllers.browse);
 module.exports = router;
