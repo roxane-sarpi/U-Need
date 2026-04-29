@@ -21,4 +21,7 @@ const userControllers = require("./controllers/userControllers");
 
 router.get("/categories", CategoryControllers.browse);
 router.post("/users", userControllers.add);
+
+const notificationsControllers = require("./controllers/notificationsControllers");
+router.get("/notifications", notificationsControllers.browse);
 module.exports = router;
