@@ -22,4 +22,5 @@ router.get("/categories", CategoryControllers.browse);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
+router.post("/notifications", notificationsControllers.add);
 module.exports = router;

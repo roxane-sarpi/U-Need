@@ -11,7 +11,7 @@ const app = express();
 
 // use some application-level middlewares
 
-// app.use(express.json());
+app.use(express.json());
 
 const cors = require("cors");
 

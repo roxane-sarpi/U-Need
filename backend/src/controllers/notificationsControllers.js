@@ -13,12 +13,12 @@ const browse = (req, res) => {
 };
 
 const add = (req, res) => {
-const notification = req.body; // <-- Singulier ici
+const notification = req.body; 
 
  // TODO validations (length, format...)
 
 models.notification
-  .insert(notification) // <-- Et singulier ici
+  .insert(notification) 
   .then(([result]) => {
    res.location(`/notifications/${result.insertId}`).sendStatus(201);
   })

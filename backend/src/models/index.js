@@ -44,6 +44,11 @@ const AdManager = require("./AdManager");
 models.ad = new AdManager();
 models.ad.setDatabase(pool);
 
+const NotificationsManager = require("./NotificationsManager");
+
+models.notification = new NotificationsManager();
+models.notification.setDatabase(pool);
+
 // bonus: use a proxy to personalize error message,
 // when asking for a non existing model
 
