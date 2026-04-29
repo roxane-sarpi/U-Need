@@ -12,5 +12,21 @@ const browse = (req, res) => {
     });
 };
 
-module.exports = {browse};
+const add = (req, res) => {
+const notification = req.body; 
+
+ // TODO validations (length, format...)
+
+models.notification
+  .insert(notification) 
+  .then(([result]) => {
+   res.location(`/notifications/${result.insertId}`).sendStatus(201);
+  })
+  .catch((err) => {
+   console.error(err);
+   res.sendStatus(500);
+  });
+};
+
+module.exports = {browse, add};
 

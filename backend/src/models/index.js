@@ -42,6 +42,11 @@ const AdManager = require("./AdManager");
 models.ad = new AdManager();
 models.ad.setDatabase(pool);
 
+const NotificationsManager = require("./NotificationsManager");
+
+models.notification = new NotificationsManager();
+models.notification.setDatabase(pool);
+
 const UserManager = require("./UserManager");
 
 models.user = new UserManager();

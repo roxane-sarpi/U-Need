@@ -7,8 +7,7 @@ class NotificationsManager extends AbstractManager {
 
     insert(notifications) {  
   return this.database.query(`insert into ${this.table} (content, id_user) values (? , ?)`, 
-    [ notifications.content,  
-  notifications.id_user ]
+    [ notifications.content,  notifications.id_user ]
     );
   }
     update(notifications) {
