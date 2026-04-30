@@ -1,8 +1,9 @@
 const models = require("../models");
 
 const browse = (req, res) => {
+  const userId = 1;
   models.notification
-    .findAll()
+    .readByUserId(userId)
     .then(([rows]) => {
       res.send(rows);
     })
@@ -26,8 +27,7 @@ const edit = (req, res) => {
     res.sendStatus(204);
    }
  })
-}
-
+ 
 const add = (req, res) => {
 const notification = req.body; 
 
