@@ -25,4 +25,9 @@ router.post("/users", userControllers.add);
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
 router.post("/notifications", notificationsControllers.add);
+
+
+const messagesControllers = require("./controllers/messagesControllers");
+router.post("/addmessages", messagesControllers.send);
+
 module.exports = router;
