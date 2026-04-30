@@ -13,5 +13,12 @@ class MessageManager extends AbstractManager {
             messages.id_request,]);
     }
 
+    update(messages) {
+    return this.database.query(
+        `UPDATE ${this.table} SET content = ? WHERE id = ?`, 
+        [messages.content, messages.id]
+    );
+}
+
 }
 module.exports = MessageManager;
