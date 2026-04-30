@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS ads (
   image_3 VARCHAR(500) DEFAULT '/public/images/default_image.svg',
   id_category INT,
   points INT NOT NULL,
-  statut ENUM('signalé', 'urgent', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
+  statut ENUM('signalé','en cours', 'terminé', 'disponible') DEFAULT 'disponible',
   zip_code INT NOT NULL,
   city VARCHAR(500) NOT NULL,
   urgent BOOLEAN NOT NULL DEFAULT FALSE,

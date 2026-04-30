@@ -28,5 +28,19 @@ const read = (req, res) => {
     });
 };
 
-module.exports = {browse, read};
+const add = (req, res) => {
+  const ad = req.body;
+
+  models.ad
+  .insert(ad)
+  .then(([result]) => {
+    res.location(`/ads/${result.insertId}`).sendStatus(201);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(500);
+  })
+}
+
+module.exports = {browse, read, add};
 
