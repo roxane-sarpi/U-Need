@@ -17,6 +17,13 @@ class CategoryManager extends AbstractManager {
       [category.title, category.id]
     );
   }
+
+  add(category) {
+    return this.database.query(
+      `insert into ${this.table} (title) values (?)`,
+      [category.title]
+    );
+  }
 }
 
 module.exports = CategoryManager;

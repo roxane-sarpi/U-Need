@@ -13,6 +13,7 @@ router.post("/ads", adControllers.add);
 const CategoryControllers = require("./controllers/CategoryControllers");
 router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
+router.post("/categories", CategoryControllers.insert);
 
 //Users
 const userControllers = require("./controllers/userControllers");
