@@ -1,9 +1,10 @@
 const models = require("../models");
 
 const browse = (req, res) => {
-  const userId = 1;
+  const userId = req.auth.userId; // Assuming you have authentication middleware that sets req.auth.userId
   models.notification
     .readByUserId(userId)
+    .find (req.params.id)
     .then(([rows]) => {
       res.send(rows);
     })
