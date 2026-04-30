@@ -12,10 +12,22 @@ const browse = (req, res) => {
     });
 };
 
+const edit = (req, res) => {
+ const notification = req.body; 
+
+ notification.id = parseInt(req.params.id, 10); 
+
+ models.notification
+  .update(notification) 
+  .then(([result]) => {
+   if (result.affectedRows === 0) {
+    res.sendStatus(404);
+   } else {
+    res.sendStatus(204);
+   }
+ })
 const add = (req, res) => {
 const notification = req.body; 
-
- // TODO validations (length, format...)
 
 models.notification
   .insert(notification) 
@@ -28,5 +40,5 @@ models.notification
   });
 };
 
-module.exports = {browse, add};
+module.exports = {browse,add,edit};
 
