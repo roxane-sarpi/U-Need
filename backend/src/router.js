@@ -31,5 +31,6 @@ router.post("/notifications", notificationsControllers.add);
 const messagesControllers = require("./controllers/messagesControllers");
 router.post("/addmessages", messagesControllers.send);
 router.put("/modifymessage/:id", messagesControllers.update);
+router.get("/conversation/:id_request", messagesControllers.readConversation);
 
 module.exports = router;

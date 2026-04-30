@@ -111,7 +111,12 @@ VALUES (
     '13010',
     'Marseille',
     false,
-    3,
+    1,
     '2026-05-02'
 );
 
+INSERT INTO requests (id_ad, id_helper, id_user) VALUES ('1', '2', '1');
+
+INSERT INTO messages(content, id_sender, id_receiver, id_request) VALUES ('Bonjour, je serais ravis de vous aider.', 2,1,1);
+
+INSERT INTO messages(content, id_sender, id_receiver, id_request) VALUES ('Super, vous êtes disponible quand ?', 1,2,1);
