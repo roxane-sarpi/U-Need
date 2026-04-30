@@ -15,6 +15,7 @@ router.get("/categories/:id", CategoryControllers.read);
 const userControllers = require("./controllers/userControllers");
 router.post("/users", userControllers.add);
 router.get("/users/:id", userControllers.read);
+router.put("/users/:id", userControllers.edit);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
