@@ -30,17 +30,21 @@ pool.getConnection().catch(() => {
 const models = {};
 
 // const ItemManager = require("./ItemManager");
-const CategoryManager = require("./CategoryManager");
-
 // models.item = new ItemManager();
 // models.item.setDatabase(pool);
+
+const CategoryManager = require("./CategoryManager");
 models.category = new CategoryManager();
 models.category.setDatabase(pool);
 
 const AdManager = require("./AdManager");
-
 models.ad = new AdManager();
 models.ad.setDatabase(pool);
+
+const NotificationsManager = require("./NotificationsManager");
+
+models.notification = new NotificationsManager();
+models.notification.setDatabase(pool);
 
 const UserManager = require("./UserManager");
 
@@ -54,6 +58,12 @@ models.notification.setDatabase(pool);
 
 // bonus: use a proxy to personalize error message,
 // when asking for a non existing model
+
+const MessageManager = require("./MessageManager");
+
+models.messages = new MessageManager();
+models.messages.setDatabase(pool);
+
 
 const handler = {
   get(obj, prop) {
