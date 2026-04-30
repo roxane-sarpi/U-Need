@@ -17,17 +17,16 @@ router.get("/ads", adControllers.browse);
 // module.exports = router;
 
 const CategoryControllers = require("./controllers/CategoryControllers");
-
 router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
 
 const userControllers = require("./controllers/userControllers");
 router.post("/users", userControllers.add);
+router.get("/users/:id", userControllers.read);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
 router.post("/notifications", notificationsControllers.add);
-
 
 const messagesControllers = require("./controllers/messagesControllers");
 router.post("/addmessages", messagesControllers.send);
