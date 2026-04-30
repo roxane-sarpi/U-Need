@@ -39,7 +39,29 @@ const update = (req, res) => {
     });
 };
 
+const readConversation = (req, res) => {
+  const { id_request } = req.params;
+  console.log("ID de conversation recherché :", id_request);
+
+  models.messages
+    .read(id_request) 
+    .then(([rows]) => {
+      console.log(rows);
+      if (rows.length === 0) {
+        res.status(404).send("Aucun message trouvé pour cette annonce");
+      } else {
+        console.log("Messages récupérés :", rows);
+        res.json(rows);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Erreur serveur lors de la récupération des messages");
+    });
+};
+
 module.exports = {
   send,
-  update
+  update,
+  readConversation
 };
