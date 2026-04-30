@@ -42,6 +42,27 @@ const add = (req, res) => {
   })
 }
 
+const edit = (req, res) => {
+  const ad = req.body;
+
+  ad.id = parseInt(req.params.id, 10);
+
+  models.ad
+    .update(ad)
+    .then(([result]) => {
+      if(result.affectedRows === 0){
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    })
+  ;
+};
+
 const destroy = (req, res) => {
   models.ad
     .delete(req.params.id)
@@ -58,5 +79,5 @@ const destroy = (req, res) => {
     });
 };
 
-module.exports = {browse, read, add, destroy};
+module.exports = {browse, read, add, edit, destroy};
 

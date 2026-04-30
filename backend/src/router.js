@@ -9,6 +9,8 @@ router.get("/ads", adControllers.browse);
 router.get("/ads/:id", adControllers.read);
 router.post("/ads", adControllers.add);
 router.delete("/ads/:id", adControllers.destroy);
+router.put("/ads/:id", adControllers.edit);
+
 //Categories
 const CategoryControllers = require("./controllers/CategoryControllers");
 router.get("/categories", CategoryControllers.browse);
