@@ -20,6 +20,7 @@ const CategoryControllers = require("./controllers/CategoryControllers");
 const userControllers = require("./controllers/userControllers");
 
 router.get("/categories", CategoryControllers.browse);
+router.get("/users/:id", userControllers.read);
 router.post("/users", userControllers.add);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
