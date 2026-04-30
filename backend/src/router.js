@@ -17,9 +17,11 @@ router.get("/ads", adControllers.browse);
 // module.exports = router;
 
 const CategoryControllers = require("./controllers/CategoryControllers");
-const userControllers = require("./controllers/userControllers");
 
 router.get("/categories", CategoryControllers.browse);
+router.get("/categories/:id", CategoryControllers.read);
+
+const userControllers = require("./controllers/userControllers");
 router.post("/users", userControllers.add);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
