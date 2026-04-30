@@ -1,0 +1,47 @@
+const models = require("../models");
+
+const browse = (req, res) => {
+  models.user
+    .findAll()
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+const add = (req, res) => {
+  const user = req.body;
+
+  // TODO validations (length, format...)
+
+  models.user
+    .insert(user)
+    .then(([result]) => {
+      res.status(201).send({ ...user, id: result.insertId });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+const read = (req, res) => {
+  models.user
+    .findById(req.params.id)
+    .then(([rows]) => {
+      if (rows[0]) {
+        res.send(rows[0]);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+module.exports = { browse, add, read };
