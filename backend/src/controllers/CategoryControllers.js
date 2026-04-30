@@ -30,4 +30,5 @@ const read = (req, res) => {
 
 module.exports = {
   browse,
+  read
 };
