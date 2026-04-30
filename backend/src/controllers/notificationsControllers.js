@@ -26,6 +26,8 @@ const edit = (req, res) => {
     res.sendStatus(204);
    }
  })
+}
+
 const add = (req, res) => {
 const notification = req.body; 
 
