@@ -24,4 +24,5 @@ router.post("/users", userControllers.add);
 
 const notificationsControllers = require("./controllers/notificationsControllers");
 router.get("/notifications", notificationsControllers.browse);
+router.put("/notifications/:id", notificationsControllers.edit);
 module.exports = router;
