@@ -5,16 +5,15 @@ const router = express.Router();
 // const itemControllers = require("./controllers/itemControllers");
 
 // router.get("/items", itemControllers.browse);
-const adControllers =require("./controllers/adControllers");
-
-// router.get("/items", itemControllers.browse);
-router.get("/ads", adControllers.browse);
 // router.get("/items/:id", itemControllers.read);
 // router.put("/items/:id", itemControllers.edit);
 // router.post("/items", itemControllers.add);
 // router.delete("/items/:id", itemControllers.destroy);
 
-// module.exports = router;
+//Ads
+const adControllers =require("./controllers/adControllers");
+router.get("/ads", adControllers.browse);
+router.get("/ads/:id", adControllers.read);
 
 const CategoryControllers = require("./controllers/CategoryControllers");
 router.get("/categories", CategoryControllers.browse);
