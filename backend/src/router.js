@@ -19,6 +19,7 @@ const userControllers = require("./controllers/userControllers");
 router.post("/users", userControllers.add);
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
+router.delete("/users/:id", userControllers.destroy);
 
 //Notifications
 const notificationsControllers = require("./controllers/notificationsControllers");
