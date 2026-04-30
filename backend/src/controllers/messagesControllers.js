@@ -41,10 +41,9 @@ const update = (req, res) => {
 
 const readConversation = (req, res) => {
   const { id_request } = req.params;
-  console.log("ID de conversation recherché :", id_request);
 
   models.messages
-    .read(id_request) 
+    .read(id_request)
     .then(([rows]) => {
       console.log(rows);
       if (rows.length === 0) {
@@ -60,8 +59,27 @@ const readConversation = (req, res) => {
     });
 };
 
+const deleteConversation = (req, res) => {
+  const { id_request } = req.params;
+
+  models.messages
+    .delete(id_request)
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("Aucun message à supprimer");
+      } else {
+        res.status(200).send(`Conversation ${id_request} supprimée avec succès`);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+}
+
 module.exports = {
   send,
   update,
-  readConversation
+  readConversation,
+  deleteConversation
 };

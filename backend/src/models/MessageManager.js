@@ -35,5 +35,11 @@ class MessageManager extends AbstractManager {
         );
     }
 
+    delete(id_request) {
+        return this.database.query(
+            `DELETE FROM ${this.table} WHERE messages.id_request = ?`, [id_request]
+        );
+    }
+
 }
 module.exports = MessageManager;
