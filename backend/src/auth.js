@@ -8,8 +8,8 @@ const hashingOptions = {
   parallelism: 1,
 };
 
+// Logic to hash the password before saving it to the database
 const hashPassword = (req, res, next) => {
-    console.log(req.body.password);
   argon2  
   .hash(req.body.password, hashingOptions)
   .then((hashedPassword) => {
