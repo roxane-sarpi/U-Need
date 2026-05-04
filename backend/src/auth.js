@@ -1,4 +1,5 @@
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 
 
 const hashingOptions = {
@@ -8,7 +9,7 @@ const hashingOptions = {
   parallelism: 1,
 };
 
-// Logic to hash the password before saving it to the database
+// Logic to hash the password before saving it to the database.
 const hashPassword = (req, res, next) => {
   argon2  
   .hash(req.body.password, hashingOptions)
@@ -23,4 +24,32 @@ const hashPassword = (req, res, next) => {
   });
 };
 
-module.exports = { hashPassword };
+const verifyPassword = (req, res) => {
+    console.log("USER2 : ", req.user);
+    console.log("PASSWORD2 : ", req.body.password);
+    argon2
+    .verify(req.user.password, req.body.password)
+    .then((isVerified) => {
+        if (isVerified) {
+            const payload = {sub: req.user.id};
+            console.log("PAYLOAD : ", payload);
+
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '4h'});
+            console.log("TOKEN : ", token);
+
+            delete req.user.hashedPassword;
+            res.send({token, user: req.user});
+        }
+        else {
+            res.sendStatus(401);
+    }
+    })
+    .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+};
+
+
+
+module.exports = { hashPassword, verifyPassword };
