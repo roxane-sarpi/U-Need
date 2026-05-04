@@ -5,6 +5,13 @@ class NotificationsManager extends AbstractManager {
     super({ table: "notifications" });
   }
 
+  readByUserId(userId) {
+    return this.database.query(
+      `SELECT * FROM ${this.table} WHERE id_user = ?`,
+      [userId]
+    );
+  }
+  
     insert(notifications) {  
   return this.database.query(`insert into ${this.table} (content, id_user) values (? , ?)`, 
     [ notifications.content,  notifications.id_user ]
