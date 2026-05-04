@@ -16,6 +16,7 @@ const CategoryControllers = require("./controllers/CategoryControllers");
 router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
 router.post("/categories", CategoryControllers.insert);
+router.delete("/categories/:id", CategoryControllers.destroy);
 
 //Users
 const userControllers = require("./controllers/userControllers");
