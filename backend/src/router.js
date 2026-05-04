@@ -30,6 +30,7 @@ const notificationsControllers = require("./controllers/notificationsControllers
 router.get("/notifications", notificationsControllers.browse);
 router.put("/notifications/:id", notificationsControllers.edit);
 router.post("/notifications", notificationsControllers.add);
+router.delete("/notifications/:id", notificationsControllers.destroy);
 
 //Messages
 const messagesControllers = require("./controllers/messagesControllers");
