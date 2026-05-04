@@ -28,7 +28,22 @@ const read = (req, res) => {
     } );
 }
 
+const insert = (req, res) => {
+  console.log(req.body);
+  const category = req.body;
+  models.category
+    .insert(category)
+    .then(([result]) => {
+      res.location(`/categories/${result.insertId}`).sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   browse,
-  read
+  read,
+  insert
 };
