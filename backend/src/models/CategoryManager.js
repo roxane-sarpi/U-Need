@@ -19,6 +19,7 @@ class CategoryManager extends AbstractManager {
   }
 
   insert(category) {
+    console.log(category);
     return this.database.query(
       `insert into ${this.table} (name) values (?)`,
       [category.name]

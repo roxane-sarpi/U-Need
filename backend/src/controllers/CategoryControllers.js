@@ -29,7 +29,8 @@ const read = (req, res) => {
 }
 
 const insert = (req, res) => {
-  const category = req.body.name;
+  console.log(req.body);
+  const category = req.body;
   models.category
     .insert(category)
     .then(([result]) => {
