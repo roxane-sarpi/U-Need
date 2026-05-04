@@ -28,6 +28,28 @@ const add = (req, res) => {
     });
 };
 
+const getUserbyEmailWithPasswordAndPassToNext = (req, res, next) => {
+  const { email, password } = req.body;
+  console.log("EMAIL : ", email);
+  console.log("PASSWORD : ", password);
+  models.user
+    .findByEmail(email)
+    .then(([users]) => {
+      if (users[0] != null) {
+        const [firstuser] = users;
+        req.user = firstuser;
+        console.log(req.user);
+        next(); 
+      } else {
+        res.sendStatus(401); 
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500).send("Error retrieving data from database");
+    });
+};
+
 const read = (req, res) => {
   models.user
     .findById(req.params.id)
@@ -78,4 +100,4 @@ const destroy = (req, res) => {
     });
 };
 
-module.exports = { browse, add, read, edit, destroy };
+module.exports = { browse, add, read, edit, destroy, getUserbyEmailWithPasswordAndPassToNext };
