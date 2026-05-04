@@ -13,7 +13,7 @@ class UserManager extends AbstractManager {
         user.firstname,
         user.lastname,
         user.email,
-        user.password,
+        user.hashedPassword,
         user.phone,
         user.zip_code,
         user.city,
