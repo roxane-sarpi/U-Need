@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const { hashPassword } = require("./auth");
+
 //Ads
 const adControllers =require("./controllers/adControllers");
 router.get("/ads", adControllers.browse);
@@ -20,7 +22,7 @@ router.delete("/categories/:id", CategoryControllers.destroy);
 
 //Users
 const userControllers = require("./controllers/userControllers");
-router.post("/users", userControllers.add);
+router.post("/users", hashPassword, userControllers.add);
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);
