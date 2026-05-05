@@ -59,6 +59,10 @@ const MessageManager = require("./MessageManager");
 models.messages = new MessageManager();
 models.messages.setDatabase(pool);
 
+const RequestManager = require("./RequestManager");
+models.request = new RequestManager();
+models.request.setDatabase(pool);
+
 
 const handler = {
   get(obj, prop) {

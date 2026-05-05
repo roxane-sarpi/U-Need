@@ -18,7 +18,6 @@ router.post(
 //Ads
 const adControllers =require("./controllers/adControllers");
 router.get("/ads", adControllers.browse);
-router.get("/ads", adControllers.browse);
 router.get("/ads/:id", adControllers.read);
 
 //Categories
@@ -26,6 +25,9 @@ const CategoryControllers = require("./controllers/CategoryControllers");
 router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
 
+
+const requestControllers = require("./controllers/requestControllers");
+router.post("/requests", requestControllers.addrequest);
 //Private routes
 
 // Authentication wall : verifyToken is activated for each route after this line
