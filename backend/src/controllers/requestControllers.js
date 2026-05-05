@@ -1,6 +1,6 @@
 const models = require("../models");
 
-const addrequest = (req, res) => {
+const addRequest = (req, res) => {
     const request = req.body;
     console.log(request);
 
@@ -15,7 +15,7 @@ const addrequest = (req, res) => {
         });
 }
 
-const readrequest = (req, res) => {
+const readRequest = (req, res) => {
       models.request
         .find(req.params.id)
         .then(([rows]) => {
@@ -31,7 +31,20 @@ const readrequest = (req, res) => {
         });
     };
 
-const updaterequest = (req, res) => {
+const browseRequest = (req, res) => {
+  models.request
+    .findAll()
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    }
+    )
+}
+
+const updateRequest = (req, res) => {
     const request = req.body;
     request.id = req.params.id;
     console.log(request);
@@ -51,9 +64,27 @@ const updaterequest = (req, res) => {
         });
 }
 
+const destroyRequest = (req, res) => {
+  models.request
+    .delete(req.params.id)
+    .then(([result]) => {
+      if(result.affectedRows === 0){
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+};
+
 
 exports = module.exports = {
-    addrequest,
-    readrequest,
-    updaterequest
+    addRequest,
+    readRequest,
+    browseRequest,
+    updateRequest,
+    destroyRequest
 };
