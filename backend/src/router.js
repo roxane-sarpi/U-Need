@@ -4,7 +4,6 @@ const router = express.Router();
 
 const { hashPassword, verifyPassword, verifyToken } = require("./auth");
 
-router.put("/categories/:id", CategoryControllers.edit);
 //Public routes
 
 //Users
@@ -48,7 +47,7 @@ router.put("/ads/:id", adControllers.edit);
 //Categories
 router.post("/categories", CategoryControllers.insert);
 router.delete("/categories/:id", CategoryControllers.destroy);
-
+router.put("/categories/:id", CategoryControllers.edit);
 
 //Notifications
 const notificationsControllers = require("./controllers/notificationsControllers");

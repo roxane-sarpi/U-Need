@@ -26,7 +26,7 @@ class CategoryManager extends AbstractManager {
     );
   }
 
-  edit(category) {
+  update(category) {
     return this.database.query(
       `update ${this.table} set name = ? where id = ?`,
       [category.name, category.id]
