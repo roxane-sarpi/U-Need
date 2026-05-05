@@ -50,7 +50,7 @@ router.put("/ads/:id", adControllers.edit);
 //Categories
 router.post("/categories", CategoryControllers.insert);
 router.delete("/categories/:id", CategoryControllers.destroy);
-
+router.put("/categories/:id", CategoryControllers.edit);
 
 //Notifications
 const notificationsControllers = require("./controllers/notificationsControllers");
