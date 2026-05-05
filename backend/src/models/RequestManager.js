@@ -11,6 +11,13 @@ class RequestManager extends AbstractManager {
       [request.id_ad, request.id_helper, request.id_user]
     );
   }
+
+  update(request) {
+    return this.database.query(
+      `UPDATE ${this.table} SET status = ? WHERE id = ?`,
+      [request.status, request.id]
+    );
+  }
 }
 
 module.exports = RequestManager;
