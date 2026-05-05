@@ -26,13 +26,14 @@ router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
 
 
-const requestControllers = require("./controllers/requestControllers");
-router.post("/requests", requestControllers.addrequest);
+
 //Private routes
 
 // Authentication wall : verifyToken is activated for each route after this line
 router.use(verifyToken);
 
+const requestControllers = require("./controllers/requestControllers");
+router.post("/requests", requestControllers.addrequest);
 //Users
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
