@@ -2,24 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 
-const { hashPassword, verifyPassword } = require("./auth");
+const { hashPassword, verifyPassword, verifyToken } = require("./auth");
 
-//Ads
-const adControllers =require("./controllers/adControllers");
-router.get("/ads", adControllers.browse);
-router.get("/ads", adControllers.browse);
-router.get("/ads/:id", adControllers.read);
-router.post("/ads", adControllers.add);
-router.delete("/ads/:id", adControllers.destroy);
-router.put("/ads/:id", adControllers.edit);
-
-//Categories
-const CategoryControllers = require("./controllers/CategoryControllers");
-router.get("/categories", CategoryControllers.browse);
-router.get("/categories/:id", CategoryControllers.read);
-router.post("/categories", CategoryControllers.insert);
 router.put("/categories/:id", CategoryControllers.edit);
-router.delete("/categories/:id", CategoryControllers.destroy);
+//Public routes
 
 //Users
 const userControllers = require("./controllers/userControllers");
@@ -28,10 +14,41 @@ router.post(
   "/users/login",
   userControllers.getUserbyEmailWithPasswordAndPassToNext,
   verifyPassword
-); 
+);
+
+//Ads
+const adControllers =require("./controllers/adControllers");
+router.get("/ads", adControllers.browse);
+router.get("/ads/:id", adControllers.read);
+
+//Categories
+const CategoryControllers = require("./controllers/CategoryControllers");
+router.get("/categories", CategoryControllers.browse);
+router.get("/categories/:id", CategoryControllers.read);
+
+
+
+//Private routes
+
+// Authentication wall : verifyToken is activated for each route after this line
+router.use(verifyToken);
+
+const requestControllers = require("./controllers/requestControllers");
+router.post("/requests", requestControllers.addrequest);
+//Users
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);
+
+//Ads
+router.post("/ads", adControllers.add);
+router.delete("/ads/:id", adControllers.destroy);
+router.put("/ads/:id", adControllers.edit);
+
+//Categories
+router.post("/categories", CategoryControllers.insert);
+router.delete("/categories/:id", CategoryControllers.destroy);
+
 
 //Notifications
 const notificationsControllers = require("./controllers/notificationsControllers");
