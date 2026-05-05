@@ -1,4 +1,5 @@
 const models = require("../models");
+const { edit } = require("./itemControllers");
 
 const browse = (req, res) => {
   models.category
@@ -58,9 +59,28 @@ const destroy = (req, res) => {
     });
 };
 
+const edit = (req, res) => {
+  const category = req.body;
+  category.id = parseInt(req.params.id, 10);
+  models.category
+    .update(category)
+    .then(([result]) => {
+      if (result.affectedRows === 0) { 
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+}
+
 module.exports = {
   browse,
   read,
   insert,
   destroy,
+  edit
 };

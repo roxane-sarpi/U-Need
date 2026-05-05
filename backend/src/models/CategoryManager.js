@@ -25,6 +25,13 @@ class CategoryManager extends AbstractManager {
       [category.name]
     );
   }
+
+  edit(category) {
+    return this.database.query(
+      `update ${this.table} set name = ? where id = ?`,
+      [category.name, category.id]
+    );
+}
 }
 
 module.exports = CategoryManager;
