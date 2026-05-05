@@ -31,8 +31,29 @@ const readrequest = (req, res) => {
         });
     };
 
+const updaterequest = (req, res) => {
+    const request = req.body;
+    request.id = req.params.id;
+    console.log(request);
+
+    models.request
+        .update(request)
+        .then(([result]) => {
+            if (result.affectedRows === 0) {
+                res.sendStatus(404);
+            } else {
+                res.sendStatus(204);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+        });
+}
+
 
 exports = module.exports = {
     addrequest,
-    readrequest
+    readrequest,
+    updaterequest
 };

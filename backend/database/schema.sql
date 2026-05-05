@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS requests(
     id_ad INT NOT NULL,
     id_helper INT,
     id_user INT,
-    state ENUM ('signalé','en cours','terminé') DEFAULT 'en cours',
+    status ENUM ('signalé','en cours','terminé') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_adRequest FOREIGN KEY (id_ad) REFERENCES ads(id),
     CONSTRAINT fk_helper FOREIGN KEY (id_helper) REFERENCES users(id),

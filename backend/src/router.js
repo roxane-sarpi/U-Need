@@ -26,6 +26,7 @@ router.get("/categories", CategoryControllers.browse);
 router.get("/categories/:id", CategoryControllers.read);
 
 const requestControllers = require("./controllers/requestControllers");
+router.put("/requests/:id", requestControllers.updaterequest);
 
 
 //Private routes
