@@ -1,9 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* Supprime la ligne @plugin "daisyui" si elle fait planter Vite */
-/* Et utilise l'import standard à la place si besoin, mais normalement @plugin est la voie V4 */
-
 @theme {
   --color-primary: #5B4FCF;
   --color-primary-dark: #3D2FA8;
@@ -14,9 +11,6 @@
   --color-accent-light: #FEE7BF;
   --color-ink: #1A1633;
   --color-canvas: #FAF8F5;
-
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: 'Geist Mono', monospace;
 }
-
-/* On déplace l'appel du plugin APRES le thème pour forcer une priorité de lecture différente */
