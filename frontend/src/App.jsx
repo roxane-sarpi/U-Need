@@ -1,10 +1,12 @@
-import './App.css'
+// import './App.css'
 import './index.css'
 import FAQ from './pages/FAQ'
 
 function App() {
   return (
+    <>
     <FAQ />
+    </>
   )
  }
 
