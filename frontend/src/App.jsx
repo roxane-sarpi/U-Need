@@ -1,4 +1,5 @@
 import './App.css'
+import './index.css'
 import FAQ from './pages/FAQ'
 
 function App() {
