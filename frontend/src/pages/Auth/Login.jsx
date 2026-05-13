@@ -15,59 +15,58 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 p-5">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-10">
-        <div className="text-3xl font-bold text-primary text-center mb-7">U-Need</div>
-        <h2 className="text-2xl font-semibold text-ink text-center mb-2">Connexion</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 p-5 font-sans">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-12">
+        <h2 className="text-3xl font-semibold text-black text-center mb-8 font-sans">Connexion</h2>
         
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 font-sans">
           <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="text-sm font-medium text-blue-600 mb-1">Email</label>
+            <label htmlFor="email" className="text-sm font-medium text-blue-500 mb-2 font-sans">Email</label>
             <input 
               type="email" 
               id="email"
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
               placeholder="votre@email.com" 
-              className="px-3 py-3 border border-gray-300 rounded-md text-sm bg-gray-100 text-black placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all autofill:bg-gray-100 autofill:text-black [&:-webkit-autofill]:bg-gray-100 [&:-webkit-autofill]:text-black [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f3f4f6] [&:-webkit-autofill]:[-webkit-text-fill-color:#000]"
+              className="px-4 py-3 border-2 border-cyan-400 rounded-lg text-base bg-blue-50 text-black placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:bg-blue-50 transition-all autofill:bg-blue-50 autofill:text-black [&:-webkit-autofill]:bg-blue-50 [&:-webkit-autofill]:text-black [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#eff6ff] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] font-sans"
               required 
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="password" className="text-sm font-medium text-blue-600 mb-1">Mot de passe</label>
+            <label htmlFor="password" className="text-sm font-medium text-blue-500 mb-2 font-sans">Mot de passe</label>
             <input 
               type="password" 
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)} 
               placeholder="Votre mot de passe" 
-              className="px-3 py-3 border border-gray-300 rounded-md text-sm bg-gray-100 text-black placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all autofill:bg-gray-100 autofill:text-black [&:-webkit-autofill]:bg-gray-100 [&:-webkit-autofill]:text-black [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f3f4f6] [&:-webkit-autofill]:[-webkit-text-fill-color:#000]"
+              className="px-4 py-3 border-2 border-gray-300 rounded-lg text-base bg-gray-50 text-black placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:bg-gray-50 transition-all autofill:bg-gray-50 autofill:text-black [&:-webkit-autofill]:bg-gray-50 [&:-webkit-autofill]:text-black [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f9fafb] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] font-sans"
               required
             />
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-ink">
+          <div className="flex items-center gap-3 text-sm text-black font-sans mt-2">
             <input 
               type="checkbox" 
               id="rememberMe"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 cursor-pointer accent-primary"
+              className="w-5 h-5 cursor-pointer accent-primary border border-gray-300 rounded"
             />
-            <label htmlFor="rememberMe">Se souvenir de moi pendant 30 jours</label>
+            <label htmlFor="rememberMe" className="font-sans">Se souvenir de moi pendant 30 jours</label>
           </div>
 
           <button 
             type="submit"
-            className="px-4 py-3 bg-blue-600 text-white rounded-md text-base font-semibold cursor-pointer transition-all hover:bg-blue-700 active:bg-blue-800 mt-2"
+            className="px-6 py-3 bg-indigo-600 text-white rounded-lg text-base font-semibold cursor-pointer transition-all hover:bg-indigo-700 active:bg-indigo-800 mt-4 font-sans"
           >
             Se connecter
           </button>
         </form>
 
-        <div className="text-center mt-5 text-xs text-gray-600">
-          Pas encore de compte ? <a href="/register" className="text-blue-600 font-semibold no-underline hover:underline">Créer un compte gratuit</a>
+        <div className="text-center mt-6 text-xs text-gray-700 font-sans">
+          Pas encore de compte ? <a href="/register" className="text-blue-600 font-semibold no-underline hover:underline font-sans">Créer un compte gratuit</a>
         </div>
       </div>
     </div>
