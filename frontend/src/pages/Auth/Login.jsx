@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../../index.css';
 
 const Login = () => {
@@ -15,9 +16,23 @@ const Login = () => {
   };
 
   return (
-    // J'ai remplacé les couleurs bg-slate par bg-canvas et primary-soft de ton thème
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-canvas to-primary-soft p-5 font-sans">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-12">
+        <div className="mb-8 rounded-full bg-canvas p-1 flex gap-1">
+          <Link
+            to="/login"
+            className="flex-1 text-center px-4 py-2 rounded-full text-sm font-semibold transition-all bg-primary text-white"
+          >
+            Connexion
+          </Link>
+          <Link
+            to="/register"
+            className="flex-1 text-center px-4 py-2 rounded-full text-sm font-semibold transition-all text-ink hover:bg-primary-soft"
+          >
+            Inscription
+          </Link>
+        </div>
+
         <h2 className="text-3xl font-semibold text-ink text-center mb-8 font-sans">Connexion</h2>
         
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 font-sans">
@@ -101,7 +116,7 @@ const Login = () => {
 
         {/* Lien d'inscription */}
         <div className="text-center mt-6 text-xs text-ink font-sans">
-          Pas encore de compte ? <a href="/register" className="text-primary font-semibold no-underline hover:underline font-sans">Créer un compte gratuit</a>
+          Pas encore de compte ? <Link to="/register" className="text-primary font-semibold no-underline hover:underline font-sans">Créer un compte gratuit</Link>
         </div>
       </div>
     </div>
