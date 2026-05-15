@@ -1,3 +1,5 @@
+import Header from './components/layout/Header'
+import './index.css'
 import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './pages/Profile/Profile';
@@ -9,6 +11,7 @@ import Notifications from './pages/Notifications';
 function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit" element={<EditProfile />} />
