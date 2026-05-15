@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function CreerAnnonce() {
+function Adform() {
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -38,10 +38,10 @@ export default function CreerAnnonce() {
   };
 
   return (
-    <main className="w-full max-w-6xl mx-auto px-4 py-10 font-sans antialiased text-base-content bg-[#fcfcfc]">
+    <main className="w-full max-w-6xl mx-auto px-4 py-12 font-sans antialiased bg-[#fcfcfc] min-h-screen">
       
-      {/* HEADER DE LA PAGE */}
-      <header className="mb-10">
+      {/* HEADER DE LA PAGE (Ajouté pour correspondre à la maquette) */}
+      <header className="mb-10 text-left">
         <h1 className="text-4xl font-extrabold tracking-tight text-black mb-1">
           CREER VOTRE ANNONCE
         </h1>
@@ -50,7 +50,7 @@ export default function CreerAnnonce() {
         </p>
       </header>
 
-      {/* DISPOSITION EN GRILLE */}
+      {/* DISPOSITION EN GRILLE STANDARD (Tout défile normalement) */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
         
         {/* COLONNE GAUCHE : FORMULAIRE */}
@@ -202,8 +202,8 @@ export default function CreerAnnonce() {
 
         </form>
 
-        {/* COLONNE DROITE : INFOS & CONSEILS */}
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-6">
+        {/* COLONNE DROITE : DEFILEMENT NORMAL */}
+        <aside className="flex flex-col gap-6">
           
           {/* Solde U-Coins */}
           <div className="card bg-white border border-gray-300 rounded-2xl p-6 text-center shadow-sm">
@@ -230,12 +230,13 @@ export default function CreerAnnonce() {
           </div>
 
           {/* Conseils */}
-          <div className="card bg-white border border-gray-300 rounded-2xl p-6 text-black mt-8">
+          <div className="card bg-white border border-gray-300 rounded-2xl p-6 text-black mt-4">
             <h3 className="text-xs font-extrabold tracking-wider mb-3">
               💡 CONSEILS
             </h3>
             <p className="text-xs font-semibold leading-relaxed text-gray-800">
-              Plus vous offrez de U-Coins pour votre services, plus cela indiquera que votre services demande des efforts et du temps.</p>
+              Plus vous offrez de U-Coins pour votre services, plus cela indiquera que votre services demande des efforts et du temps.
+            </p>
           </div>
 
         </aside>
@@ -244,3 +245,4 @@ export default function CreerAnnonce() {
   );
 }
 
+export default Adform;
