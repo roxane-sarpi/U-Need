@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import "tailwindcss";
 @plugin "daisyui";
 
 @theme {
@@ -19,4 +19,6 @@
 body {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   color : var(--color-ink);
+  background-color: var(--color-canvas);
 }
+
