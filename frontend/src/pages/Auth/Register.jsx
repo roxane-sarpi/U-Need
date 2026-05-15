@@ -5,7 +5,10 @@ import '../../index.css';
 const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -16,7 +19,10 @@ const Register = () => {
     console.log('Tentative d\'inscription avec :', {
       firstName,
       lastName,
+      pseudo,
       email,
+      city,
+      postalCode,
       password,
       confirmPassword,
       acceptTerms,
@@ -74,6 +80,21 @@ const Register = () => {
             </div>
           </div>
 
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="pseudo" className="text-sm font-medium text-primary mb-2 font-sans">Pseudo</label>
+            <input
+              type="text"
+              id="pseudo"
+              value={pseudo}
+              onChange={(e) => setPseudo(e.target.value)}
+              placeholder="Votre pseudo"
+              className="px-4 py-3 border-2 border-primary-light rounded-lg text-base text-ink bg-canvas placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all autofill:bg-white [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#fff] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-ink)] font-sans"
+              required
+            />
+          </div>
+
+
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-sm font-medium text-primary mb-2 font-sans">Email</label>
             <input
@@ -85,6 +106,34 @@ const Register = () => {
               className="px-4 py-3 border-2 border-primary-light rounded-lg text-base text-ink bg-canvas placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all autofill:bg-white [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#fff] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-ink)] font-sans"
               required
             />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="city" className="text-sm font-medium text-primary mb-2 font-sans">Ville</label> 
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Votre ville"
+              className="px-4 py-3 border-2 border-primary-light rounded-lg text-base text-ink bg-canvas placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all autofill:bg-white [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#fff] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-ink)] font-sans"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="postalCode" className="text-sm font-medium text-primary mb-2 font-sans">Code postal</label>
+            <input
+              type="text"
+              id="postalCode"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              placeholder="Votre code postal"
+              className="px-4 py-3 border-2 border-primary-light rounded-lg text-base text-ink bg-canvas placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all autofill:bg-white [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#fff] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-ink)] font-sans"
+              required
+            />
+          </div>
           </div>
 
           <div className="flex flex-col gap-2">
