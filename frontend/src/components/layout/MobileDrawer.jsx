@@ -1,4 +1,4 @@
-import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle } from "lucide-react"; // Si tu as lucide-react (vu dans ton package.json)
+import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle } from "lucide-react";
 
 function MobileDrawer() {
   return (
@@ -8,8 +8,10 @@ function MobileDrawer() {
       <div className="menu p-0 w-80 min-h-full bg-canvas text-ink">
         {/* Header du Drawer avec bouton fermeture */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
-          <span className="text-xl font-bold text-primary">U-Need</span>
-          <label htmlFor="main-drawer" className="btn btn-sm btn-circle btn-ghost">✕</label>
+          <a href="#" className="text-2xl font-bold text-primary">
+            <img src="../../public/logo.webp" alt="logo" className="h-10 w-auto"/>
+            </a>
+          <label htmlFor="main-drawer" className="btn btn-lg btn-circle btn-ghost">✕</label>
         </div>
 
         <div className="p-4 space-y-6">
@@ -45,7 +47,8 @@ function MobileDrawer() {
             <p className="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Mon Compte</p>
             <a href="#" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors">
               <User size={20} className="text-gray-500" />
-              <span className="font-medium">Mon profil</span>
+              <span className="font-medium">Se connecter</span>
+              {/* <span className="font-medium">Mon profil</span> A REMPLACER SI USER CONNECTE */}
             </a>
             <a href="#" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors">
               <HelpCircle size={20} className="text-gray-500" />

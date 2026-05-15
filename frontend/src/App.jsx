@@ -1,17 +1,25 @@
 import Header from './components/layout/Header'
 import './index.css'
+import './index.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Profile from './pages/Profile/Profile';
+import EditProfile from './pages/Profile/EditProfile';
+import Login from './pages/Auth/Login';
 
-/*Pour importer un style de notre fichier index.css : 
-<button className="btn" style={{ backgroundColor: "var(--color-accent)" }}>Buy Now</button>
-*/
 
 function App() {
-  //A modifer
   return (
-    <>
+    <BrowserRouter>
       <Header />
-    </>
-  )
+      <Routes>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+
+
+export default App;
