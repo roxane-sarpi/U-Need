@@ -45,12 +45,12 @@ const INITIAL_NOTIFICATIONS = [
 ]
 
 function NotifRow({ notif }) {
-  const { icon: Icon, orangeRow, orangeBtn, text, date, btnLabel } = notif
+  const { icon: Icon, text, date, btnLabel, read } = notif
 
   return (
-    <div className={`flex items-center gap-3 rounded-xl p-4 ${orangeRow ? 'bg-accent-light' : 'bg-primary-soft'}`}>
+    <div className={`flex items-center gap-3 rounded-xl p-4 ${read ? 'bg-white border border-gray-100' : 'bg-primary-soft'}`}>
 
-      <div className={`w-11 h-11 rounded-full shrink-0 flex items-center justify-center ${orangeRow ? 'bg-accent' : 'bg-primary'}`}>
+      <div className="w-11 h-11 rounded-full shrink-0 flex items-center justify-center bg-primary">
         <Icon size={20} color="white" strokeWidth={2} />
       </div>
 
@@ -61,7 +61,7 @@ function NotifRow({ notif }) {
 
       <button
         className="font-sans shrink-0 rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap hover:opacity-90 transition-opacity cursor-pointer"
-        style={{ color: 'white', backgroundColor: orangeBtn ? '#F59E2C' : '#5B4FCF' }}
+        style={{ color: 'white', backgroundColor: '#5B4FCF' }}
       >
         {btnLabel}
       </button>
