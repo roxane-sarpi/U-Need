@@ -1,4 +1,5 @@
 import Header from './components/layout/Header'
+import Footer from './components/layout/Footer'
 import './index.css'
 import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/notifications" element={<Notifications />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
