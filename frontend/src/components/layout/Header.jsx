@@ -59,7 +59,7 @@ function Header() {
                   <MessageCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
                 </Link>
-                <Link to="/profil" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <UserCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Mon profil</span>
                 </Link>

@@ -1,5 +1,4 @@
 import './index.css'
-import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
@@ -10,6 +9,7 @@ import Notifications from './pages/Notifications';
 import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
+import About from './pages/About';
 
 
 function App() {
@@ -37,6 +37,7 @@ function App() {
         <Route path="/create-ads" element={<CreateAds />} />
         <Route path="/register" element={<Register />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/a-propos" element={<About />} />
       </Routes>
 
     </BrowserRouter>
