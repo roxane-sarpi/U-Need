@@ -34,7 +34,7 @@ function FormPhoto() {
               {images.map((url, index) => (
                 <div
                   key={index}
-                  className="group relative flex flex-col md:flex-row m-auto w-85 h-50 md:w-35 md:h-80 rounded-xl overflow-hidden border border-gray-200 cursor-pointer"
+                  className="group relative flex flex-col md:flex-row m-auto w-85 h-50 md:w-45 md:h-80 rounded-xl overflow-hidden border border-gray-200 cursor-pointer"
                   onClick={() => setImages(images.filter((_, i) => i !== index))}
                   title="Cliquez pour supprimer"
                 >
@@ -50,7 +50,7 @@ function FormPhoto() {
                 <div
                   key={`empty-${index}`}
                   onClick={() => fileInputRef.current.click()}
-                  className="flex flex-col md:flex-row m-auto w-85 h-50 md:w-35 md:h-80 rounded-xl border-2 border-dashed border-gray-400 bg-white  items-center justify-center cursor-pointer text-gray-400 font-semibold text-sm hover:bg-gray-50 hover:text-gray-600 transition-colors"
+                  className="flex flex-col md:flex-row m-auto w-85 h-50 md:w-55 md:h-80 rounded-xl border-2 border-dashed border-gray-400 bg-white  items-center justify-center cursor-pointer text-gray-400 font-semibold text-sm hover:bg-gray-50 hover:text-gray-600 transition-colors"
                 >
                   <span>+ Ajouter</span>
                 </div>
