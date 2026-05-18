@@ -1,23 +1,23 @@
 const faqs = [
   {
-    question: "How do I create an account?",
+    question: "Comment créer un compte ?",
     answer:
-      "Click the \"Sign Up\" button in the top right corner and follow the registration process.",
+      "Cliquez sur le bouton \"Inscription\" dans le coin supérieur droit et suivez le processus de création de compte.",
   },
   {
-    question: "How can I post an ad?",
+    question: "Comment publier une annonce ?",
     answer:
-      "Go to the ads section, choose 'Create new ad', fill in the details and submit your listing.",
+      "Allez à la section annonces, choisissez 'Créer une nouvelle annonce', remplissez les détails et soumettez votre liste.",
   },
   {
-    question: "Can I edit my profile later?",
+    question: "Puis-je modifier mon profil plus tard ?",
     answer:
-      "Yes, open your profile page and select 'Edit Profile' to update your information at any time.",
+      "Oui, ouvrez votre page de profil et sélectionnez 'Modifier le profil' pour mettre à jour vos informations à tout moment.",
   },
   {
-    question: "How do I contact another user?",
+    question: "Comment contacter un autre utilisateur ?",
     answer:
-      "Use the messaging feature on the ad detail page to send a private message to the seller.",
+      "Utilisez la fonction de messagerie sur la page de détail de l'annonce pour envoyer un message privé au vendeur.",
   },
   {
     question: "C'est une bonne situation, ça, scribe ?",
@@ -26,11 +26,40 @@ const faqs = [
   },
 ];
 
+import { useState } from 'react';
+
 function FAQItem({ question, answer }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div tabIndex={0} className="collapse bg-base-100 border-base-300 border">
-      <div className="collapse-title font-semibold">{question}</div>
-      <div className="collapse-content text-sm">{answer}</div>
+    <div
+      tabIndex={0}
+      className={`collapse collapse-arrow border transition-all duration-300 ${
+        isOpen ? 'bg-primary-soft border-primary-dark' : 'bg-base-100 border-base-300'
+      }`}
+      onClick={() => setIsOpen(!isOpen)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          setIsOpen(!isOpen);
+        }
+      }}
+    >
+      {/* Question */}
+      <div className="collapse-title font-semibold text-ink">
+        {question}
+      </div>
+
+      {/* Réponse (le fond mauve n'apparaît QUE si ouvert) */}
+      <div className="collapse-content">
+        <div
+          className="p-4 rounded-b-lg text-sm text-ink"
+          style={{
+            backgroundColor: isOpen ? 'var(--color-primary-soft)' : 'transparent',
+          }}
+        >
+          {answer}
+        </div>
+      </div>
     </div>
   );
 }
@@ -40,10 +69,23 @@ export default function FAQ() {
     <div className="min-h-screen bg-base-200 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-base-100 rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-center mb-2">Questions Fréquemment Posées</h1>
-          <p className="text-center text-base-content/70 mb-8">Trouvez les réponses aux questions les plus courantes</p>
-          
-          <div className="space-y-4">
+          {/* Titre avec fond bleu foncé terne */}
+          <div
+            className="mb-8 p-4 rounded-lg"
+            style={{
+              backgroundColor: "var(--color-primary-soft)", // Fond bleu très clair
+              border: "1px solid var(--color-primary-dark)", // Bordure bleu foncé
+              borderRadius: "0.5rem",
+            }}
+          >
+            <h1 className="text-3xl font-bold text-center mb-2" style={{ color: "var(--color-primary-dark)" }}>
+              Questions Fréquemment Posées
+            </h1>
+            <p className="text-center" style={{ color: "var(--color-ink)", opacity: 0.7 }}>
+              Trouvez les réponses aux questions les plus courantes
+            </p>
+          </div>
+                    <div className="space-y-4">
             {faqs.map((item, index) => (
               <FAQItem key={index} question={item.question} answer={item.answer} />
             ))}
