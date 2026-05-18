@@ -6,7 +6,7 @@ import Adform from "../components/ads/AdForm";
 function CreateAds() {
 
     return (
-        <div className="flex flex-col font-mono items-center justify-center h-screen md:text-3xl font-bold">
+        <div className="flex flex-col bg-canvas items-center justify-center h-100vh md:text-3xl font-bold">
             <Adform />
         </div>
     );  

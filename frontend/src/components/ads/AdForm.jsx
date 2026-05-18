@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 function Adform() {
   const [formData, setFormData] = useState({
@@ -10,6 +10,9 @@ function Adform() {
     uCoins: 3, // Valeur par défaut
     isUrgent: false,
   });
+
+  const fileInputRef = useRef(null);
+  const [images, setImages] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,19 +33,32 @@ function Adform() {
 
   // Configuration des styles pour les boutons de pièces
   const coinStyles = {
-    1: { bg: 'bg-[#f3f0ff]', text: 'text-[#7048e8]', border: 'border-[#d0bfff]' },
-    2: { bg: 'bg-[#edf2ff]', text: 'text-[#4263eb]', border: 'border-[#bac8ff]' },
-    3: { bg: 'bg-[#e0e7ff]', text: 'text-[#4f46e5]', border: 'border-[#c7d2fe]' },
-    4: { bg: 'bg-[#fff9db]', text: 'text-[#f59f00]', border: 'border-[#ffe066]' },
-    5: { bg: 'bg-[#ffec99]', text: 'text-[#f59f00]', border: 'border-[#ffd43b]' },
+    1: { bg: 'bg-[#f3f0ff]', text: 'text-[#7048e8]', border: 'border-[#d0bfff]', },
+    2: { bg: 'bg-[#d5d1f5cf]', text: 'text-[#7048e8]', border: 'border-[#bac8ff]' },
+    3: { bg: 'bg-[#5c4fcf9c]', text: 'text-[#7048e8]', border: 'border-[#c7d2fe]', },
+    4: { bg: 'bg-[#fff9db]', text: 'text-[#f59f00]', border: 'border-[#ffe066]', },
+    5: { bg: 'bg-[#f59e2c6f]', text: 'text-[#C97A0A]', border: 'border-[#ffd43b]', },
+
+
+  };
+
+  // Fonction pour gérer la sélection des fichiers
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    // On convertit les fichiers en URLs lisibles par la balise <img />
+    const newImageUrls = files.map((file) => URL.createObjectURL(file));
+
+    // On ajoute les nouvelles images dans la limite de 3 au total
+    setImages((prevImages) => [...prevImages, ...newImageUrls].slice(0, 3));
   };
 
   return (
-    <main className="w-full max-w-6xl mx-auto px-4 py-12 font-sans antialiased bg-[#fcfcfc] min-h-screen">
-      
+    <main className="w-full max-w-6xl mx-auto px-4 py-12 font-sans antialiased bg-canvas min-h-screen">
+
       {/* HEADER DE LA PAGE (Ajouté pour correspondre à la maquette) */}
       <header className="mb-10 text-left">
-        <h1 className="text-4xl font-extrabold tracking-tight text-black mb-1">
+        <h1 className="text-4xl font-extrabold tracking-tight text-ink mb-1">
           CREER VOTRE ANNONCE
         </h1>
         <p className="text-sm font-semibold text-gray-600">
@@ -52,50 +68,59 @@ function Adform() {
 
       {/* DISPOSITION EN GRILLE STANDARD (Tout défile normalement) */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
-        
+
         {/* COLONNE GAUCHE : FORMULAIRE */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          
+
           {/* Section 1 : Information */}
           <div className="card bg-white border border-gray-200 rounded-[24px] p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-black text-center mb-3">1.Information de l’annonce</h2>
+            <h2 className="text-xl font-bold text-ink text-center mb-3">1.Information de l’annonce</h2>
             <div className="w-3/5 h-[1px] bg-gray-200 mx-auto mb-6"></div>
-            
+
             <div className="form-control w-full mb-4">
-              <label className="label font-bold text-black text-sm" htmlFor="title">Titre de l’annonce</label>
-              <input 
-                type="text" 
-                id="title" 
-                name="title" 
+              <label className="label font-bold text-ink text-sm" htmlFor="title">Titre de l’annonce</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
                 className="input input-bordered bg-gray-50 rounded-xl w-full focus:outline-none"
-                value={formData.title} 
-                onChange={handleChange} 
+                value={formData.title}
+                onChange={handleChange}
               />
             </div>
-            
+
             <div className="form-control w-full mb-4">
-              <label className="label font-bold text-black text-sm" htmlFor="category">Catégorie de l’annonce</label>
-              <select 
-                id="category" 
-                name="category" 
+              <label className="label font-bold text-ink text-sm" htmlFor="category">Catégorie de l’annonce</label>
+              <select
+                id="category"
+                name="category"
                 className="select select-bordered bg-gray-50 rounded-xl w-full focus:outline-none"
-                value={formData.category} 
+                value={formData.category}
                 onChange={handleChange}
               >
                 <option value="" disabled>Sélectionnez une catégorie</option>
-                <option value="service">Service</option>
+                <option value="demenagement">Déménagement</option>
                 <option value="bricolage">Bricolage</option>
-                <option value="aide">Aide à la personne</option>
+                <option value="aide-menagere">Aide ménagère</option>
+                <option value="aide-seniors">Aide aux séniors</option>
+                <option value="informatique">Informatique</option>
+                <option value="petits-travaux">Petit travaux</option>
+                <option value="course">Course</option>
+                <option value="animaux">Animaux</option>
+                <option value="jardinerie">Jardinerie</option>
+                <option value="transport">Transport</option>
+                <option value="aide-scolaire">Aide scolaire</option>
+                <option value="autre">Autre</option>
               </select>
             </div>
-            
+
             <div className="form-control w-full">
               <label className="label font-bold text-black text-sm" htmlFor="description">Description de l’annonce</label>
-              <textarea 
-                id="description" 
-                name="description" 
+              <textarea
+                id="description"
+                name="description"
                 className="textarea textarea-bordered bg-gray-50 rounded-xl w-full h-32 focus:outline-none"
-                value={formData.description} 
+                value={formData.description}
                 onChange={handleChange}
               />
             </div>
@@ -103,30 +128,30 @@ function Adform() {
 
           {/* Section 2 : Localisation */}
           <div className="card bg-white border border-gray-200 rounded-[24px] p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-black text-center mb-3">2.Localisation</h2>
+            <h2 className="text-xl font-bold text-ink text-center mb-3">2.Localisation</h2>
             <div className="w-3/5 h-[1px] bg-gray-200 mx-auto mb-6"></div>
-            
+
             <div className="flex gap-4">
               <div className="form-control flex-1">
-                <label className="label font-bold text-black text-sm" htmlFor="zipCode">Code postal</label>
-                <input 
-                  type="text" 
-                  id="zipCode" 
-                  name="zipCode" 
+                <label className="label font-bold text-ink text-sm" htmlFor="zipCode">Code postal</label>
+                <input
+                  type="text"
+                  id="zipCode"
+                  name="zipCode"
                   className="input input-bordered bg-gray-50 rounded-xl w-full focus:outline-none"
-                  value={formData.zipCode} 
-                  onChange={handleChange} 
+                  value={formData.zipCode}
+                  onChange={handleChange}
                 />
               </div>
               <div className="form-control flex-1">
                 <label className="label font-bold text-black text-sm" htmlFor="city">Ville</label>
-                <input 
-                  type="text" 
-                  id="city" 
-                  name="city" 
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
                   className="input input-bordered bg-gray-50 rounded-xl w-full focus:outline-none"
-                  value={formData.city} 
-                  onChange={handleChange} 
+                  value={formData.city}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -138,7 +163,7 @@ function Adform() {
             <p className="text-center font-semibold text-xs text-black mb-6">
               Combien de U-coins le helper gagnera-t-il en rendant ce service ?
             </p>
-            
+
             <div className="flex justify-center gap-4 mb-6">
               {[1, 2, 3, 4, 5].map((num) => {
                 const style = coinStyles[num];
@@ -148,7 +173,7 @@ function Adform() {
                     key={num}
                     type="button"
                     onClick={() => handleCoinSelect(num)}
-                    className={`w-16 h-20 text-3xl font-bold rounded-xl border dashed flex items-center justify-center transition-all duration-200 shadow-sm
+                    className={`w-26 h-30 text-3xl font-bold rounded-xl border dashed flex items-center justify-center shadow-sm hover:scale-105 transition-transform bg-${style.bghover}
                       ${style.bg} ${style.text} ${style.border} 
                       ${isActive ? 'ring-4 ring-offset-2 ring-indigo-500 scale-105 font-extrabold border-solid' : 'border-dashed opacity-80'}`}
                   >
@@ -157,15 +182,15 @@ function Adform() {
                 );
               })}
             </div>
-            
+
             <div className="form-control flex flex-row items-center justify-center gap-3 mt-4">
-              <input 
-                type="checkbox" 
-                id="isUrgent" 
-                name="isUrgent" 
+              <input
+                type="checkbox"
+                id="isUrgent"
+                name="isUrgent"
                 className="checkbox checkbox-primary rounded-md"
-                checked={formData.isUrgent} 
-                onChange={handleChange} 
+                checked={formData.isUrgent}
+                onChange={handleChange}
               />
               <label htmlFor="isUrgent" className="label font-bold text-xs cursor-pointer text-black">
                 si annonce urgente cochez la case
@@ -174,21 +199,50 @@ function Adform() {
           </div>
 
           {/* Section 4 : Photo */}
+
+          {/* Section 4 : Photo */}
           <div className="card bg-white border border-gray-200 rounded-[24px] p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-black text-center mb-6">4.Photo (Facultatif)</h2>
-            
+            <h2 className="text-xl font-bold text-black text-center mb-6">4. Photo (Facultatif)</h2>
+
+            {/* Un seul input caché pour toute la section */}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
             <div className="grid grid-cols-3 gap-4">
-              <div className="aspect-[3/4] rounded-xl overflow-hidden border border-gray-200">
-                <img src="https://via.placeholder.com/150x200?text=Image+Annonce" alt="Aperçu" className="w-full h-full object-cover" />
-              </div>
-              <div className="aspect-[3/4] rounded-xl border-2 border-dashed border-gray-400 bg-white flex items-center justify-center cursor-pointer text-gray-400 font-semibold text-sm hover:bg-gray-50 hover:text-gray-600 transition-colors">
-                <span>+ Ajouter</span>
-              </div>
-              <div className="aspect-[3/4] rounded-xl border-2 border-dashed border-gray-400 bg-white flex items-center justify-center cursor-pointer text-gray-400 font-semibold text-sm hover:bg-gray-50 hover:text-gray-600 transition-colors">
-                <span>+ Ajouter</span>
-              </div>
+              {/* 1. Affichage des images sélectionnées */}
+              {images.map((url, index) => (
+                <div
+                  key={index}
+                  className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-gray-200 cursor-pointer"
+                  onClick={() => setImages(images.filter((_, i) => i !== index))}
+                  title="Cliquez pour supprimer"
+                >
+                  <img src={url} alt={`Aperçu ${index + 1}`} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <span className="text-canvas text-xs font-bold">Supprimer</span>
+                  </div>
+                </div>
+              ))}
+
+              {/* 2. Affichage des boutons "Ajouter" pour les cases restantes (maximum 3) */}
+              {Array.from({ length: Math.max(0, 3 - images.length) }).map((_, index) => (
+                <div
+                  key={`empty-${index}`}
+                  onClick={() => fileInputRef.current.click()}
+                  className="aspect-[3/4] rounded-xl border-2 border-dashed border-gray-400 bg-white flex items-center justify-center cursor-pointer text-gray-400 font-semibold text-sm hover:bg-gray-50 hover:text-gray-600 transition-colors"
+                >
+                  <span>+ Ajouter</span>
+                </div>
+              ))}
             </div>
           </div>
+
 
           {/* Boutons d'actions */}
           <div className="flex gap-4 mt-2">
@@ -204,18 +258,16 @@ function Adform() {
 
         {/* COLONNE DROITE : DEFILEMENT NORMAL */}
         <aside className="flex flex-col gap-6">
-          
+
           {/* Solde U-Coins */}
           <div className="card bg-white border border-gray-300 rounded-2xl p-6 text-center shadow-sm">
             <h3 className="text-xs font-bold uppercase tracking-wider text-black mb-4">Votre solde de U-coins :</h3>
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="text-6xl font-extrabold text-[#e2a04e] leading-none">17</span>
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 border-2 border-white shadow-md flex items-center justify-center text-white font-bold text-xl">
-                U
-              </div>
+              <img src="/UneedCoin.png" alt="U-Coin" className='w-15' />
             </div>
             <p className="text-xs text-gray-600 font-medium">
-              après création : <strong className="text-black">{17 - formData.uCoins}</strong> 🪙
+              après création : <strong className="text-black">{17 - formData.uCoins}</strong> <img src="/UneedCoin.png" alt="U-Coin" className="inline w-4 h-4 mb-1" />
             </p>
           </div>
 
