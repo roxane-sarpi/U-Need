@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
 import Login from './pages/Auth/Login';
+import CreateAds from './pages/CreateAds';
 import Register from './pages/Auth/Register';
 import Notifications from './pages/Notifications';
 import MainLayout from './components/layout/MainLayout';
@@ -30,6 +31,12 @@ function App() {
           <Route path="/admin" element={<Dashboard />} />
         </Route>
 
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/create-ads" element={<CreateAds />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
 
     </BrowserRouter>
