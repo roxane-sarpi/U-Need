@@ -33,17 +33,17 @@ const Register = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-canvas to-primary-soft p-5 font-sans">
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="flex">
-          <div className="hidden lg:block lg:w-1/2">
+      <div className="w-full max-w-5xl">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+          <div className="hidden overflow-hidden rounded-2xl bg-white lg:flex lg:w-1/2 lg:flex-none lg:items-center lg:justify-center lg:p-4 lg:self-center">
             <img
               src="/images/photos-login.webp"
               alt="Personnes en discussion"
-              className="h-full w-full object-contain bg-canvas"
+              className="h-auto w-full object-contain"
             />
           </div>
 
-          <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-12">
+          <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-12 bg-white rounded-2xl shadow-lg">
             <div className="mb-8 rounded-full bg-canvas p-1 flex gap-1">
               <Link
                 to="/login"
