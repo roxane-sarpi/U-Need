@@ -1,7 +1,6 @@
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import './index.css'
-import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
@@ -9,6 +8,7 @@ import Login from './pages/Auth/Login';
 import CreateAds from './pages/CreateAds';
 import Register from './pages/Auth/Register';
 import Notifications from './pages/Notifications';
+import About from './pages/About';
 
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
         <Route path="/create-ads" element={<CreateAds />} />
         <Route path="/register" element={<Register />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/a-propos" element={<About />} />
       </Routes>
       <Footer />
     </BrowserRouter>
