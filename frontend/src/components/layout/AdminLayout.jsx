@@ -5,10 +5,7 @@ import {
   Users, 
   FileText, 
   AlertTriangle, 
-  FolderTree, 
-  BarChart3, 
-  History, 
-  Settings,
+  FolderTree,
   Menu,
   X
 } from "lucide-react";
@@ -24,9 +21,7 @@ function AdminLayout() {
     { name: "Annonces", path: "/admin/annonces", icon: FileText },
     { name: "Signalements", path: "/admin/signalements", icon: AlertTriangle, badge: 7 },
     { name: "Catégories", path: "/admin/categories", icon: FolderTree },
-    { name: "Statistiques", path: "/admin/statistiques", icon: BarChart3 },
-    { name: "Journaux", path: "/admin/journaux", icon: History },
-    { name: "Paramètres", path: "/admin/parametres", icon: Settings },
+    // { name: "Paramètres", path: "/admin/parametres", icon: Settings },
   ];
 
   return (
@@ -47,11 +42,9 @@ function AdminLayout() {
         
         {/* Barre supérieure visible UNIQUEMENT sur mobile (md:hidden) */}
         <header className="flex items-center justify-between p-4 bg-ink text-white md:hidden shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 h-8 w-8 rounded flex items-center justify-center font-bold text-sm text-white">U</div>
-            <span className="font-bold text-sm">
-              U-Need <span className="text-[9px] bg-red-600 px-1 py-0.5 rounded font-extrabold ml-1">ADMIN</span>
-            </span>
+          <div className="flex flex-col items-center gap-1">
+            <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
+            <span className="text-[9px] bg-accent-orange px-1 py-0.5 rounded font-extrabold ml-1">ADMIN</span>
           </div>
           <label htmlFor="admin-drawer" className="btn btn-ghost btn-square btn-sm">
             <Menu size={22} />
@@ -76,12 +69,10 @@ function AdminLayout() {
           {/* Header de la Sidebar */}
           <div className="p-6 flex items-center justify-between border-b border-gray-800">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-600 h-9 w-9 rounded-lg flex items-center justify-center font-bold text-white shadow-md">
-                U
-              </div>
+              <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
               <div className="flex flex-col">
                 <span className="font-bold text-lg tracking-wide">U-Need</span>
-                <span className="text-[10px] bg-red-600 text-white font-extrabold px-1.5 py-0.5 rounded uppercase self-start mt-0.5 tracking-wider">
+                <span className="text-[10px] bg-accent-orange text-white font-extrabold px-1.5 py-0.5 rounded uppercase self-start mt-0.5 tracking-wider">
                   Admin
                 </span>
               </div>
