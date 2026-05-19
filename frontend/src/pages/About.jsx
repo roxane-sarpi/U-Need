@@ -2,45 +2,45 @@ import { Link } from "react-router-dom";
 import { Heart, Scale, ShieldCheck, Frown, Smile } from "lucide-react";
 
 const stats = [
-  { value: "10", unit: "U-Coins",  desc: "offert à l'inscription" },
-  { value: "20", unit: "annonces", desc: "postées en moyenne par jour" },
-  { value: "3",  unit: "jours",    desc: "en moyenne pour valider un service" },
-  { value: "0€", unit: "",         desc: "aucune monnaie réelle" },
+{ value: "10", unit: "U-Coins", desc: "offert à l'inscription" },
+{ value: "20", unit: "annonces", desc: "postées en moyenne par jour" },
+{ value: "3", unit: "jours", desc: "en moyenne pour valider un service" },
+{ value: "0€", unit: "", desc: "aucune monnaie réelle" },
 ];
 
 const team = [
-  { name: "Théo",     subtitle: "Accro au ping-pong",    photo: "/images/leT.jpg" },
-  { name: "Roxane",   subtitle: "Business Woman",         photo: "/images/Roxane.jpeg" },
-  { name: "Karen",    subtitle: "La guide touristique",   photo: "/images/karen.jpeg" },
-  { name: "Wendy",    subtitle: "Le Jukebox",             photo: "/images/wendy.jpeg" },
-  { name: "Geoffrey", subtitle: "Le maître SQL",          photo: "/images/Geoffrey.jpg" },
+{ name: "Théo", subtitle: "Accro au ping-pong", photo: "/images/leT.jpg" },
+{ name: "Roxane", subtitle: "Business Woman", photo: "/images/Roxane.jpeg" },
+{ name: "Karen", subtitle: "La guide touristique", photo: "/images/karen.jpeg" },
+{ name: "Wendy", subtitle: "Le Jukebox", photo: "/images/wendy.jpeg" },
+{ name: "Geoffrey", subtitle: "Le maître SQL", photo: "/images/Geoffrey.jpg" },
 ];
 
 const values = [
-  {
-    icon: <Heart size={30} className="text-white" />,
-    title: "Bienveillance",
-    desc: "Chaque échange repose sur le respect et l'entraide sincère entre voisins.",
-  },
-  {
-    icon: <Scale size={30} className="text-white" />,
-    title: "Équité",
-    desc: "Les U-Coins garantissent que chaque service a la même valeur, sans hiérarchie.",
-  },
-  {
-    icon: <ShieldCheck size={30} className="text-white" />,
-    title: "Confiance",
-    desc: "Des profils vérifiés et une communauté locale pour un espace sûr.",
-  },
+{
+icon: <Heart size={30} className="text-white" />,
+title: "Bienveillance",
+desc: "Chaque échange repose sur le respect et l'entraide sincère entre voisins.",
+},
+{
+icon: <Scale size={30} className="text-white" />,
+title: "Équité",
+desc: "Les U-Coins garantissent que chaque service a la même valeur, sans hiérarchie.",
+},
+{
+icon: <ShieldCheck size={30} className="text-white" />,
+title: "Confiance",
+desc: "Des profils vérifiés et une communauté locale pour un espace sûr.",
+},
 ];
 
 function InitialsAvatar({ initials, index }) {
-  const colors = ["bg-primary", "bg-accent-orange", "bg-primary-dark", "bg-accent-orange", "bg-primary"];
-  return (
-    <div className={`w-16 h-16 rounded-full ${colors[index]} flex items-center justify-center text-white text-2xl font-bold shadow-md shrink-0`}>
-      {initials}
-    </div>
-  );
+const colors = ["bg-primary", "bg-accent-orange", "bg-primary-dark", "bg-accent-orange", "bg-primary"];
+return (
+<div className={`w-16 h-16 rounded-full ${colors[index]} flex items-center justify-center text-white text-2xl font-bold shadow-md shrink-0`}>
+{initials}
+</div>
+);
 }
 
 function About() {
@@ -210,3 +210,4 @@ function About() {
 }
 
 export default About;
+
