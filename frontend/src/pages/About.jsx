@@ -129,18 +129,18 @@ function About() {
 
       {/* ── 4. U-NEED EN BREF + L'ÉQUIPE ── */}
       <section className="bg-white py-14 md:py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="border border-primary-light rounded-2xl p-10 flex flex-col md:flex-row gap-12 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="border border-primary-light rounded-2xl p-6 sm:p-8 md:p-10 flex flex-col md:flex-row gap-8 md:gap-12 shadow-sm">
 
             {/* Stats */}
             <div className="flex-1">
-              <h2 className="text-3xl font-extrabold mb-10">U-need en bref.</h2>
-              <div className="grid grid-cols-2 gap-x-12 gap-y-10">
+              <h2 className="text-3xl font-extrabold mb-8 md:mb-10">U-need en bref.</h2>
+              <div className="grid grid-cols-2 gap-x-6 sm:gap-x-10 md:gap-x-12 gap-y-8 md:gap-y-10">
                 {stats.map((s) => (
                   <div key={s.value}>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-extrabold text-accent-orange">{s.value}</span>
-                      {s.unit && <span className="text-2xl font-extrabold text-accent-orange">{s.unit}</span>}
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-2xl sm:text-3xl font-extrabold text-accent-orange">{s.value}</span>
+                      {s.unit && <span className="text-xl sm:text-2xl font-extrabold text-accent-orange">{s.unit}</span>}
                     </div>
                     <p className="text-sm text-ink mt-1.5 leading-snug">{s.desc}</p>
                   </div>
@@ -149,21 +149,22 @@ function About() {
             </div>
 
             <div className="hidden md:block w-px bg-primary-light self-stretch" />
+            <div className="block md:hidden h-px bg-primary-light w-full" />
 
             {/* Équipe */}
-            <div className="flex-1 border border-primary-light rounded-xl p-8">
-              <h2 className="text-3xl font-extrabold mb-8">L'équipe</h2>
-              <div className="grid grid-cols-2 gap-6">
+            <div className="flex-1 border border-primary-light rounded-xl p-5 sm:p-6 md:p-8">
+              <h2 className="text-3xl font-extrabold mb-6 md:mb-8">L'équipe</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {team.map((member, i) => (
                   <div key={member.name} className="flex items-center gap-3">
                     <img
                       src={member.photo}
                       alt={member.name}
-                      className="w-16 h-16 rounded-full object-cover shrink-0 shadow-md"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shrink-0 shadow-md"
                     />
-                    <div>
-                      <p className="font-extrabold text-xl">{member.name}</p>
-                      <p className="text-sm text-ink">{member.subtitle}</p>
+                    <div className="min-w-0">
+                      <p className="font-extrabold text-lg sm:text-xl">{member.name}</p>
+                      <p className="text-sm text-ink leading-snug">{member.subtitle}</p>
                     </div>
                   </div>
                 ))}
@@ -177,7 +178,7 @@ function About() {
       {/* ── 5. CTA ── */}
       <section className="bg-white pb-16 md:pb-20">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="border-2 border-ink rounded-2xl p-10 md:p-16 flex flex-col items-center text-center gap-4">
+          <div className="border-2 border-ink rounded-2xl p-6 sm:p-10 md:p-16 flex flex-col items-center text-center gap-4">
             <h2 className="text-3xl md:text-4xl font-extrabold">
               Alors,<br />prêt à faire circuler votre premier U-Coins ?
             </h2>
@@ -187,16 +188,16 @@ function About() {
             <p className="text-base font-bold">
               C'est gratuit, c'est local, c'est humain.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
               <Link
-                to="/catalogue"
-                className="btn bg-primary text-white border-none rounded-xl px-10 text-base font-bold hover:bg-primary-dark transition-colors"
+                to="/"
+                className="btn bg-primary text-white border-none rounded-xl px-8 text-base font-bold hover:bg-primary-dark transition-colors w-full sm:w-auto text-center whitespace-normal h-auto py-3"
               >
                 Parcourir les annonces
               </Link>
               <Link
-                to="/deposer"
-                className="btn bg-white text-ink border border-gray-300 rounded-xl px-10 text-base font-bold hover:border-ink transition-colors"
+                to="/create-ads"
+                className="btn bg-white text-ink border border-gray-300 rounded-xl px-8 text-base font-bold hover:border-ink transition-colors w-full sm:w-auto text-center whitespace-normal h-auto py-3"
               >
                 Créer une annonce
               </Link>
