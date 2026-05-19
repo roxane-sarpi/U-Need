@@ -37,9 +37,8 @@ function Footer() {
         <nav className="flex flex-col items-center gap-4 md:flex-row md:gap-8 order-3 md:order-2 font-medium">
           {/* Correction de la couleur au survol avec ton nouveau nom de variable */}
           <Link to="/catalogue" className="hover:text-accent-orange transition-colors">Catalogue</Link>
-          <Link to="/a-propos" className="hover:text-accent-orange transition-colors">A propos</Link>
           <Link to="/faq" className="hover:text-accent-orange transition-colors">FAQ</Link>
-          <Link to="/aide" className="hover:text-accent-orange transition-colors">Comment ça marche ?</Link>
+          <Link to="/a-propos" className="hover:text-accent-orange transition-colors">Qui sommes-nous ?</Link>
         </nav>
 
       </div>

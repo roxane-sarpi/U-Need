@@ -195,7 +195,7 @@ function About() {
                 Parcourir les annonces
               </Link>
               <Link
-                to="/deposer"
+                to="/create-ads"
                 className="btn bg-white text-ink border border-gray-300 rounded-xl px-10 text-base font-bold hover:border-ink transition-colors"
               >
                 Créer une annonce

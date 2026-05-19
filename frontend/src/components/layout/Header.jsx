@@ -34,7 +34,7 @@ function Header() {
                   Catalogue
                 </NavLink>
                 <NavLink to="/a-propos" className="hover:text-primary transition-colors">
-                  Comment ça marche ?
+                  Qui sommes-nous ?
                 </NavLink>
               </div>
             <div className="hidden md:flex flex-1">
