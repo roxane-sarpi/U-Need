@@ -10,7 +10,7 @@ function MobileDrawer({closeMenu}) {
       <div className="menu p-0 w-80 min-h-full bg-canvas text-ink">
         {/* Drawer Header with a close btn */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
-          <Link to="#" className="text-2xl font-bold text-primary" onClick={closeMenu}>
+          <Link to="/" className="text-2xl font-bold text-primary" onClick={closeMenu}>
             <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
             </Link>
           <label htmlFor="main-drawer" className="btn btn-lg btn-circle btn-ghost">✕</label>
@@ -19,7 +19,7 @@ function MobileDrawer({closeMenu}) {
         <div className="p-4 space-y-6">
           {/* Main Action section : Add an ad */}
           <Link 
-            to="#" 
+            to="/create-ads" 
             className="flex items-center gap-3 p-3 rounded-xl bg-primary text-white font-semibold shadow-md active:scale-95 transition-all" onClick={closeMenu}
           >
             <PlusCircle size={22} />
@@ -28,17 +28,17 @@ function MobileDrawer({closeMenu}) {
 
           {/* Main Navigation Section */}
           <nav className="space-y-1">
-            <Link to="#" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+            <Link to="/catalogue" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <BookOpen size={20} className="text-gray-500" />
               <span className="font-medium">Catalogue</span>
             </Link>
 
             {/* if not connected link to login, if connected link to notifications, add a condition on the Link component */}
-            <Link to="/login" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+            <Link to="/notifications" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <Bell size={20} className="text-gray-500" />
               <span className="font-medium">Notifications</span>
             </Link>
-            <Link to="#" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+            <Link to="/messagerie" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <MessageCircle size={20} className="text-gray-500" />
               <span className="font-medium">Messagerie</span>
             </Link>
@@ -54,9 +54,9 @@ function MobileDrawer({closeMenu}) {
               <span className="font-medium">Se connecter</span>
               {/* <span className="font-medium">Mon profil</span> A REMPLACER SI USER CONNECTE */}
             </Link>
-            <Link to="#" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+            <Link to="/a-propos" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <HelpCircle size={20} className="text-gray-500" />
-              <span className="font-medium">Comment ça marche ?</span>
+              <span className="font-medium">Qui sommes-nous ?</span>
             </Link>
           </div>
         </div>
