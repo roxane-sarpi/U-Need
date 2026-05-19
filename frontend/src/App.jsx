@@ -10,34 +10,35 @@ import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
-
+import Home from './pages/Home';
 
 function App() {
   return (
     <BrowserRouter>
-    
+
       <Routes>
         {/* Layout public */}
         <Route element={<MainLayout />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/a-propos" element={<About />} />
+
+          {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
+          <Route path="/create-ads" element={<CreateAds />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
+
         </Route>
-        
+
+
         {/* Layout admin */}
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />
         </Route>
 
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/create-ads" element={<CreateAds />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/a-propos" element={<About />} />
+
       </Routes>
 
     </BrowserRouter>
