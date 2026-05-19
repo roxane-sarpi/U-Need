@@ -10,7 +10,7 @@ import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
-
+import AdDetail from './pages/AdDetail';
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/details" element={<AdDetail />} />
         </Route>
         
         {/* Layout admin */}
