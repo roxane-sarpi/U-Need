@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Gift, MessageSquare, PencilLine, Smile, Sparkles } from 'lucide-react';
+import Card from '../components/ui/Card';
 
 const steps = [
 	{
@@ -19,6 +20,69 @@ const steps = [
 		title: 'Le sourire partagé',
 		description: 'Le service est rendu, les points sont gagnés et la boucle de solidarité continue naturellement.',
 		ring: 'border-green-400 text-green-500',
+	},
+];
+
+const featuredCards = [
+	{
+		title: 'Besoin de bras pour un déménagement',
+		description:
+			"J’ai besoin de bras pour déménager mon appartement situé dans le 9ème. Petits meubles, cartons et gros meubles à monter.",
+		location: '13009, Marseille',
+		authorName: 'Le T.',
+		rating: '4,5',
+		reviews: 1,
+		image: '/images/photos-login.webp',
+		categories: [
+			{ label: 'Déménagement', className: 'bg-[#6D6D6D] text-white' },
+			{ label: 'Jardinage', className: 'bg-[#F88B8B] text-white' },
+		],
+		points: '4 PTS',
+	},
+	{
+		title: 'Besoin d’aide pour une après-midi jardin',
+		description:
+			'Je cherche quelqu’un pour m’aider à tailler les haies, rempoter quelques plantes et déplacer des pots lourds.',
+		location: '13008, Marseille',
+		authorName: 'Camille M.',
+		rating: '5,0',
+		reviews: 3,
+		image: '/images/photos-login.webp',
+		categories: [
+			{ label: 'Jardinage', className: 'bg-[#6D6D6D] text-white' },
+			{ label: 'Maison', className: 'bg-[#F88B8B] text-white' },
+		],
+		points: '6 PTS',
+	},
+	{
+		title: 'Cours de guitare pour débutant',
+		description:
+			'Je cherche une personne patiente pour m’aider à progresser sur les accords de base et les rythmiques simples.',
+		location: '13005, Marseille',
+		authorName: 'Nina B.',
+		rating: '4,8',
+		reviews: 5,
+		image: '/images/photos-login.webp',
+		categories: [
+			{ label: 'Musique', className: 'bg-[#6D6D6D] text-white' },
+			{ label: 'Cours', className: 'bg-[#F88B8B] text-white' },
+		],
+		points: '5 PTS',
+	},
+	{
+		title: 'Besoin d’un coup de main pour un bureau',
+		description:
+			'Je monte un bureau et une étagère, mais il me faut une paire de mains pour tenir et aligner les éléments.',
+		location: '13001, Marseille',
+		authorName: 'Karim D.',
+		rating: '4,5',
+		reviews: 1,
+		image: '/images/photos-login.webp',
+		categories: [
+			{ label: 'Bricolage', className: 'bg-[#6D6D6D] text-white' },
+			{ label: 'Travaux', className: 'bg-[#F88B8B] text-white' },
+		],
+		points: '4 PTS',
 	},
 ];
 
@@ -93,7 +157,7 @@ function Home() {
 				</div>
 			</section>
 
-			<section className="px-4 pb-10 md:px-8 lg:pb-16">
+            <section className="px-4 pb-10 md:px-8 lg:pb-16">
 				<div className="mx-auto max-w-7xl rounded-[2rem] bg-primary-light/70 px-6 py-8 shadow-[0_18px_60px_rgba(91,79,207,0.08)] md:px-10 md:py-10 lg:flex lg:items-center lg:justify-between">
 					<div className="max-w-2xl">
 						<h2 className="text-2xl font-black text-ink sm:text-3xl">Rejoignez la boucle de l’entraide</h2>
@@ -110,6 +174,28 @@ function Home() {
 					</Link>
 				</div>
 			</section>
+
+			<section className="px-4 pb-10 md:px-8 lg:pb-16">
+				<div className="mx-auto max-w-7xl">
+					<div className="mb-6 flex items-end justify-between gap-4">
+						<div>
+							<p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">À la une</p>
+							<h2 className="mt-2 text-2xl font-black text-ink sm:text-3xl">Les besoins du moment</h2>
+						</div>
+						<Link to="/catalogue" className="hidden text-sm font-semibold text-primary-dark underline-offset-4 hover:underline md:inline-flex">
+							Voir toutes les annonces
+						</Link>
+					</div>
+
+					<div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+						{featuredCards.map((card) => (
+							<Card key={card.title} {...card} />
+						))}
+					</div>
+				</div>
+			</section>
+
+			
 		</main>
 	);
 }
