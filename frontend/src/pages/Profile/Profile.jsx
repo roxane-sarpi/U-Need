@@ -56,7 +56,7 @@ const USER_INFO = {
 }
 
 const STATUS_STYLE = {
-  'EN COURS':  { bg: 'var(--color-accent-light)', color: 'var(--color-accent-dark)' },
+  'EN COURS':  { bg: 'var(--color-accent-orange-light)', color: 'var(--color-accent-orange-dark)' },
   'ACTIVE':    { bg: '#DCFCE7', color: '#16A34A' },
   'TERMINÉ':   { bg: '#F3F4F6', color: '#6B7280' },
   'BROUILLON': { bg: '#F3F4F6', color: '#6B7280' },
@@ -96,7 +96,7 @@ function Stars({ count }) {
   return (
     <span className="flex items-center gap-0.5">
       {[...Array(5)].map((_, i) => (
-        <Star key={i} size={11} fill={i < count ? 'var(--color-accent)' : '#e5e7eb'} color={i < count ? 'var(--color-accent)' : '#e5e7eb'} />
+        <Star key={i} size={11} fill={i < count ? 'var(--color-accent-orange)' : '#e5e7eb'} color={i < count ? 'var(--color-accent)' : '#e5e7eb'} />
       ))}
     </span>
   )
@@ -192,10 +192,10 @@ function HistoryRow({ date, label, delta }) {
       <div className="flex items-center gap-3 min-w-0">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: positive ? 'var(--color-accent-light)' : '#FEE2E2' }}
+          style={{ backgroundColor: positive ? 'var(--color-accent-orange-light)' : '#FEE2E2' }}
         >
           {positive
-            ? <TrendingUp size={14} style={{ color: 'var(--color-accent-dark)' }} />
+            ? <TrendingUp size={14} style={{ color: 'var(--color-accent-orange-dark)' }} />
             : <TrendingDown size={14} color="#DC2626" />
           }
         </div>
@@ -273,7 +273,7 @@ function Profile() {
                 {USER_INFO.ville}
               </span>
               <span className="flex items-center gap-1">
-                <Star size={12} fill="var(--color-accent)" color="var(--color-accent)" />
+                <Star size={12} fill="var(--color-accent-orange)" color="var(--color-accent-orange)" />
                 <span className="ml-1">4.8 (24 avis)</span>
               </span>
               <span>Membre depuis {USER_INFO.membre}</span>
@@ -298,13 +298,13 @@ function Profile() {
           {/* Solde */}
           <div
             className="rounded-xl px-6 py-5 text-center w-full sm:w-auto sm:shrink-0 sm:min-w-36"
-            style={{ backgroundColor: 'var(--color-accent-light)' }}
+            style={{ backgroundColor: 'var(--color-accent-orange-light)' }}
           >
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent-dark)' }}>
+            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent-orange-dark)' }}>
               Solde
             </p>
             <div className="flex items-center justify-center gap-2">
-              <p className="text-5xl font-black leading-none" style={{ color: 'var(--color-accent-dark)' }}>17</p>
+              <p className="text-5xl font-black leading-none" style={{ color: 'var(--color-accent-orange-dark)' }}>17</p>
               <img src="/UneedCoin.png" alt="coin" className="w-10 h-10 object-contain" />
             </div>
           </div>

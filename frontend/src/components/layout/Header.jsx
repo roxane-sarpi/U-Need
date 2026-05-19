@@ -33,12 +33,12 @@ function Header() {
                 <NavLink to="/catalogue" className={({isActive}) => isActive ? "underline decoration-primary underline-offset-8 decoration-2" : "hover:text-primary transition-colors"}>
                   Catalogue
                 </NavLink>
-                <NavLink to="/aide" className="hover:text-primary transition-colors">
+                <NavLink to="/a-propos" className="hover:text-primary transition-colors">
                   Comment ça marche ?
                 </NavLink>
               </div>
             <div className="hidden md:flex flex-1">
-              <Link to="/deposer" className="btn btn-primary px-8 rounded-xl flex gap-2 text-white">
+              <Link to="/create-ads" className="btn btn-primary px-8 rounded-xl flex gap-2 text-white">
                 <PlusCircle size={20} />
                 <span>Déposer une annonce</span>
               </Link>
@@ -59,7 +59,7 @@ function Header() {
                   <MessageCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
                 </Link>
-                <Link to="/profil" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <UserCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Mon profil</span>
                 </Link>
