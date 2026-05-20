@@ -11,6 +11,7 @@ import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
+import MessagerieScreen from './pages/Messaging/Messaging';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/messagerie" element={<MessagerieScreen />} />
 
         </Route>
 
