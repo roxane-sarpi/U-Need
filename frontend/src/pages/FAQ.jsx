@@ -33,31 +33,43 @@ function FAQItem({ question, answer }) {
 
   return (
     <div
-      tabIndex={0}
-      className={`collapse collapse-arrow border transition-all duration-300 ${
-        isOpen ? 'bg-primary-soft border-primary-dark' : 'bg-base-100 border-base-300'
+      className={`border rounded-lg overflow-hidden transition-all duration-200 ${
+        isOpen
+          ? 'border-primary-dark bg-primary-soft'
+          : 'border-base-300 bg-base-100'
       }`}
-      onClick={() => setIsOpen(!isOpen)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          setIsOpen(!isOpen);
-        }
-      }}
     >
-      {/* Question */}
-      <div className="collapse-title font-semibold text-ink">
-        {question}
-      </div>
-
-      {/* Réponse (le fond mauve n'apparaît QUE si ouvert) */}
-      <div className="collapse-content">
-        <div
-          className="p-4 rounded-b-lg text-sm text-ink"
-          style={{
-            backgroundColor: isOpen ? 'var(--color-primary-soft)' : 'transparent',
-          }}
+      {/* Bouton gérant le toggle */}
+      <button
+        className="w-full flex items-center justify-between px-5 py-4 text-left font-semibold text-ink bg-transparent"
+        onClick={() => setIsOpen(v => !v)}
+        aria-expanded={isOpen}
+      >
+        <span>{question}</span>
+        <svg
+          className={`w-5 h-5 flex-shrink-0 text-primary transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          {answer}
+          <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+
+      {/* L'animation est gérée via grid-template-rows */}
+      <div
+        className="grid transition-all duration-300"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <p className="px-5 pb-4 text-sm text-ink opacity-85 leading-relaxed">
+            {answer}
+          </p>
         </div>
       </div>
     </div>

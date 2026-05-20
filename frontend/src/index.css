@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -6,11 +7,17 @@
   --color-primary-dark: #3D2FA8;
   --color-primary-light: #D5D1F5;
   --color-primary-soft: #EEECFA;
-  --color-accent: #F59E2C;
-  --color-accent-dark: #C97A0A;
-  --color-accent-light: #FEE7BF;
+  --color-accent-orange: #F59E2C;
+  --color-accent-orange-dark: #C97A0A;
+  --color-accent-orange-light: #FEE7BF;
   --color-ink: #1A1633;
   --color-canvas: #FAF8F5;
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: 'Geist Mono', monospace;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color : var(--color-ink);
+  background-color: var(--color-canvas);
 }
