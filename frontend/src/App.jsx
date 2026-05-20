@@ -1,3 +1,4 @@
+// import './App.css'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -12,6 +13,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
 import AdDetail from './pages/AdDetail';
+import FAQ from './pages/FAQ';
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/details" element={<AdDetail />} />
+          <Route path="/faq" element={<FAQ />} />
 
         </Route>
 
