@@ -12,6 +12,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
 import AdDetail from './pages/AdDetail';
+import Catalog from './pages/Catalog';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
+          <Route path="/catalogue" element={<Catalog />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
           <Route path="/create-ads" element={<CreateAds />} />
