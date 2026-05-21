@@ -1,46 +1,76 @@
 import React, { useState } from 'react';
 import Onecontact from '../../components/messaging/Onecontact';
-import ChatArea from '../../components/messaging/ChatArea'; // On importe la zone de chat complète
+import ChatArea from '../../components/messaging/ChatArea'; 
 
-const CURRENT_USER_ID = "user_moi";
+// Correction : Utilisation de l'ID numérique cohérent avec la BDD (99 au lieu de "user_moi")
+const CURRENT_USER_ID = 99;
 
-const mockConversations = [
-  { id: 'conv_1', title: 'Théo', annonceTitle: 'Aide maquette', status: 'En cours', lastMessageText: 'Aide maquette' },
-  { id: 'conv_2', title: 'Karen', annonceTitle: 'Aide Jardinage', status: 'En cours', lastMessageText: 'Aide Jardinage' },
-  { id: 'conv_3', title: 'Roxane', annonceTitle: 'Aide déménagement', status: 'En cours', lastMessageText: "Du coup c'est parfait je suis prête..." },
-  { id: 'conv_4', title: 'Wendy', annonceTitle: 'Aide Bricolage', status: 'En cours', lastMessageText: 'Aide Bricolage' },
-  { id: 'conv_5', title: 'Geoffrey', annonceTitle: 'Aide Informatique', status: 'En cours', lastMessageText: 'Aide Informatique' },
+const mockUsers = [
+    { id: 11, name: 'Theo' },
+    { id: 12, name: 'Sophie' },
+  { id: 13, name: 'Roxane' },
+    { id: 14, name: 'Karen' },
+    { id: 15, name: 'Wendy' },
+  { id: 99, name: 'Moi' } 
+];
+
+const mockRequests = [
+  { id: 1, id_ad: 101, id_user: 99, id_helper: 11, state: 'en cours', date_creation: '2026-05-20T10:00:00Z' }, 
+  { id: 2, id_ad: 102, id_user: 99, id_helper: 12, state: 'en cours', date_creation: '2026-05-20T11:00:00Z' }, 
+  { id: 3, id_ad: 103, id_user: 99, id_helper: 13, state: 'en cours', date_creation: '2026-05-20T12:00:00Z' }, // Roxane
+  { id: 4, id_ad: 104, id_user: 99, id_helper: 14, state: 'en cours', date_creation: '2026-05-20T13:00:00Z' }, 
+  { id: 5, id_ad: 105, id_user: 99, id_helper: 15, state: 'en cours', date_creation: '2026-05-20T14:00:00Z' }, 
 ];
 
 const mockMessages = [
-  { id: 'm1', conversationId: 'conv_3', senderId: 'user_roxane', text: "Bonjour, J'ai vu ton annonce pour le déménagement et je me propose pour t'aider" },
-  { id: 'm2', conversationId: 'conv_3', senderId: 'user_moi', text: "Bonjour, Merci pour ta proposition d'aide, ça serait pour déménager un appartement" },
-  { id: 'm3', conversationId: 'conv_3', senderId: 'user_roxane', text: "Le déménagement se passerait quand ? Car je suis disponible samedi" },
-  { id: 'm4', conversationId: 'conv_3', senderId: 'user_moi', text: "C'est parfait car le déménagement est prévu samedi" },
-  { id: 'm5', conversationId: 'conv_3', senderId: 'user_roxane', text: "Du coup c'est parfait je suis prête à venir t'aider" },
+  { id: 1, id_request: 3, id_sender: 13, id_receiver: 99, content: "Bonjour, J'ai vu ton annonce pour le déménagement...", created_at: '2026-05-20T12:05:00Z' },
+  { id: 2, id_request: 3, id_sender: 99, id_receiver: 13, content: "Bonjour, Merci pour ta proposition d'aide...", created_at: '2026-05-20T12:10:00Z' },
+  { id: 3, id_request: 3, id_sender: 13, id_receiver: 99, content: "Le déménagement se passerait quand ?...", created_at: '2026-05-20T12:15:00Z' },
+  { id: 4, id_request: 3, id_sender: 99, id_receiver: 13, content: "C'est parfait car le déménagement est prévu samedi", created_at: '2026-05-20T12:20:00Z' },
+  { id: 5, id_request: 3, id_sender: 13, id_receiver: 99, content: "Du coup c'est parfait je suis prête à venir t'aider", created_at: '2026-05-20T12:25:00Z' },
+];
+
+const mockAds = [
+  { id: 101, title: 'Aide maquette', id_user: 99, statut: 'en cours' },
+  { id: 102, title: 'Aide Jardinage', id_user: 99, statut: 'en cours' },
+  { id: 103, title: 'Aide déménagement', id_user: 99, statut: 'en cours', city: 'Paris', zip_code: 75000 },
+  { id: 104, title: 'Aide Bricolage', id_user: 99, statut: 'en cours' },
+  { id: 105, title: 'Aide Informatique', id_user: 99, statut: 'en cours' },
 ];
 
 function MessagerieScreen() {
-  const [activeConvId, setActiveConvId] = useState('conv_3');
+  // Correction : On initialise avec l'ID numérique 3 pour correspondre aux requêtes
+  const [activeConvId, setActiveConvId] = useState(3);
   const [messages, setMessages] = useState(mockMessages);
 
-  // Données calculées pour la conversation sélectionnée
-  const currentConv = mockConversations.find(c => c.id === activeConvId);
-  const currentMessages = messages.filter(m => m.conversationId === activeConvId);
+  // Récupération de la requête active
+  const currentConv = mockRequests.find(r => r.id === activeConvId);
+  
+  // Filtrer les messages appartenant uniquement à la requête active
+  const currentMessages = messages.filter(m => m.id_request === activeConvId);
 
-  // Cette fonction reçoit le texte brut envoyé depuis l'input de ChatArea
+  const currentUser = mockUsers.find(u => u.id === CURRENT_USER_ID);
+
+  // Trouver l'annonce liée (Utile si tu veux passer des infos de l'annonce à ChatArea)
+  const currentAd = mockAds.find(ad => ad.id === currentConv?.id_ad);
+
   const handleSendMessage = (textFromInput) => {
+    // Déterminer dynamiquement le destinataire (receiver)
+    // Si je suis l'auteur (id_user), le destinataire est l'assistant (id_helper) et inversement.
+    const receiverId = currentConv.id_user === CURRENT_USER_ID ? currentConv.id_helper : currentConv.id_user;
+
     const newDbMessage = {
-      id: `msg_${Date.now()}`,
-      conversationId: activeConvId,
-      senderId: CURRENT_USER_ID,
-      text: textFromInput, // Reçu du composant enfant
-      createdAt: new Date().toISOString()
+      id: Date.now(), // Utilise un nombre pour rester cohérent avec la structure INT de ta BDD
+      id_request: activeConvId,
+      id_sender: CURRENT_USER_ID,
+      id_receiver: receiverId,
+      content: textFromInput, 
+      created_at: new Date().toISOString()
     };
 
     setMessages([...messages, newDbMessage]);
     
-    // 💡 FUTUR CODE DB ICI (axios.post...)
+    // 💡 FUTUR CODE DB ICI (axios.post('/api/messages', newDbMessage)...)
   };
 
   return (
@@ -53,33 +83,38 @@ function MessagerieScreen() {
         </div>
         
         <div className="flex-1 overflow-y-auto">
-          {mockConversations.map((conv) => (
+          {mockRequests.map((req) => (
             <Onecontact 
-              key={conv.id}
-              conversation={conv}
-              isActive={conv.id === activeConvId}
-              onClick={() => setActiveConvId(conv.id)}
+              key={req.id}
+              mockAds={mockAds}
+              user={currentUser}
+              request={req}
+              isActive={req.id === activeConvId}
+              onClick={() => setActiveConvId(req.id)}
             />
           ))}
         </div>
       </aside>
 
-      {/* COLONNE DROITE : APPEL DE CHATAREA */}
-<div className="flex h-[calc(100vh-64px)] w-full bg-white overflow-hidden font-sans select-none">
+      {/* COLONNE DROITE : CHATAREA DIRECTE */}
+      <main className="flex-1 h-[calc(100vh-64px)] bg-white relative">
         {currentConv ? (
-        <ChatArea 
-          conversation={currentConv}
-          messages={currentMessages}
-          currentUserId={CURRENT_USER_ID}
-          onSendMessage={handleSendMessage}
-        />
-      ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-400 font-medium">
-          Sélectionnez une discussion pour commencer à discuter.
-        </div>
-      )}
+          <ChatArea 
+            request={currentConv}
+            ad={currentAd} 
+            user={currentUser}
+            mockAds={mockAds}
+            messages={currentMessages}
+            currentUserId={CURRENT_USER_ID}
+            onSendMessage={handleSendMessage}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-gray-400 font-medium">
+            Sélectionnez une discussion pour commencer à discuter.
+          </div>
+        )}
+      </main>
 
-        </div>
     </div>
   );
 }

@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
 
-function ChatArea({ conversation, messages, currentUserId, onSendMessage }) {
+function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, user }) {
     const [text, setText] = useState('');
+
+    // 1. On trouve l'annonce correspondante à CETTE conversation spécifique
+    const currentAd = mockAds.find(ad => ad.id === request.id_ad);
+
+    const userName = user ? user.name : "Utilisateur";
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -12,19 +17,24 @@ function ChatArea({ conversation, messages, currentUserId, onSendMessage }) {
         setText(''); // On vide l'input
     };
 
+    // Récupération sécurisée du titre et de la première lettre pour l'avatar
+    const adTitle = currentAd ? currentAd.title : 'Annonce';
+    const firstLetter = adTitle.charAt(0).toUpperCase();
+
     return (
-<div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
-                <header className="p-4 border-b border-gray-200 flex justify-between items-center px-8">
+        <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
+            {/* Header de la discussion */}
+            <header className="p-4 border-b border-gray-200 flex justify-between items-center px-8">
                 <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-zinc-700 text-white rounded-full flex items-center justify-center font-bold">
-                        {conversation.title.charAt(0)}
+                        {firstLetter}
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold">{conversation.title}</h2>
+                        <h2 className="text-xl font-bold">{adTitle}</h2>
                         <p className="text-xs text-gray-500">
-                            Annonce liée : <span className="underline">{conversation.annonceTitle}</span>{' '}
-                            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded ml-1 font-medium text-[10px]">
-                                {conversation.status}
+                            Annonce liée : <span className="underline">{adTitle}</span>{' '}
+                            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase">
+                                {request.state}
                             </span>
                         </p>
                     </div>
@@ -39,9 +49,9 @@ function ChatArea({ conversation, messages, currentUserId, onSendMessage }) {
                 {messages.map((msg) => (
                     <MessageBubble
                         key={msg.id}
-                        text={msg.text}
-                        isMe={msg.senderId === currentUserId}
-                        avatarUrl={msg.senderId === currentUserId ? "moi.png" : "autre.png"}
+                        text={msg.content} // Correction : msg.text -> msg.content
+                        isMe={msg.id_sender === currentUserId} // Correction : msg.senderId -> msg.id_sender
+                        avatarUrl={msg.id_sender === currentUserId ? "moi.png" : "autre.png"}
                     />
                 ))}
             </div>
