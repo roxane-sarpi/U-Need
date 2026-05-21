@@ -60,6 +60,12 @@ router.put("/notifications/:id", notificationsControllers.edit);
 router.post("/notifications", notificationsControllers.add);
 router.delete("/notifications/:id", notificationsControllers.destroy);
 
+//Evaluations
+const evaluationControllers = require("./controllers/evaluationControllers");
+router.post("/evaluations", evaluationControllers.addEvaluation);
+router.get("/evaluations/user/:id", evaluationControllers.readEvaluationsByUser);
+router.put("/evaluations/:id", evaluationControllers.updateEvaluation);
+
 //Messages
 const messagesControllers = require("./controllers/messagesControllers");
 router.post("/addmessages", messagesControllers.send);
