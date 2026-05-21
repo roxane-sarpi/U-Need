@@ -1,3 +1,4 @@
+// import './App.css'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -13,6 +14,9 @@ import Dashboard from './pages/Admin/Dashboard';
 import About from './pages/About';
 import ManageUsers from './pages/Admin/ManageUsers';
 
+import AdDetail from './pages/AdDetail';
+import Catalog from './pages/Catalog';
+import FAQ from './pages/FAQ';
 
 function App() {
   return (
@@ -25,12 +29,15 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
+          <Route path="/catalogue" element={<Catalog />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
           <Route path="/create-ads" element={<CreateAds />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/details" element={<AdDetail />} />
+          <Route path="/faq" element={<FAQ />} />
 
         </Route>
 
