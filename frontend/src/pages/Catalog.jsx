@@ -88,10 +88,10 @@ function Catalog() {
 	return (
 		<main className="min-h-screen bg-canvas text-ink">
 			<section className="relative overflow-hidden">
-				<div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(91,79,207,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(245,158,44,0.10),_transparent_28%)]" />
+				<div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(91,79,207,0.12),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(245,158,44,0.10),transparent_28%)]" />
 
-				<div className="mx-auto max-w-[1440px] px-4 py-6 md:px-6 lg:px-8">
-					<div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+				<div className="mx-auto max-w-360 pl-2 pr-4 py-12 md:pl-4 md:pr-8 lg:pl-6 lg:pr-12">
+					<div className="grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
 						<CatalogFilters
 							categoryOptions={categoryOptions}
 							selectedCategory={selectedCategory}
@@ -107,7 +107,7 @@ function Catalog() {
 							countsByCategory={countsByCategory}
 						/>
 
-						<section className="pb-8">
+						<section className="pb-16">
 							<CatalogToolbar
 								totalResults={totalResults}
 								search={search}

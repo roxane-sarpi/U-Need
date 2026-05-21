@@ -24,7 +24,7 @@ function Card({
         )}
       </div>
 
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex flex-wrap items-center gap-2">
           {categories.map((category) => (
             <span
@@ -53,7 +53,7 @@ function Card({
         </div>
       </div>
 
-      <div className="border-t border-ink/10 px-4 py-3">
+      <div className="border-t border-ink/10 px-5 py-4">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 overflow-hidden rounded-full bg-primary-soft">
             {authorAvatar ? (

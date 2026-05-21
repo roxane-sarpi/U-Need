@@ -2,14 +2,12 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 
 function CatalogToolbar({ totalResults, search, onSearchChange, sortBy, onSortByChange }) {
 	return (
-		<div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-			<div>
-				<p className="text-xs font-semibold uppercase tracking-[0.22em] text-ink/50">Catalogue</p>
-				<h1 className="mt-2 text-3xl font-black text-ink sm:text-4xl">Parcourez les annonces autour de vous</h1>
-				<p className="mt-2 text-sm text-ink/55">{totalResults} annonces trouvées</p>
-			</div>
+		<div className="mb-10">
+			<p className="text-xs font-semibold uppercase tracking-[0.22em] text-ink/50">Catalogue</p>
+			<h1 className="mt-3 text-3xl font-black text-ink sm:text-4xl">Parcourez les annonces autour de vous</h1>
+			<p className="mt-2 text-sm text-ink/55">{totalResults} annonces trouvées</p>
 
-			<div className="flex w-full max-w-xl flex-col gap-3 sm:flex-row">
+			<div className="mt-6 flex flex-col gap-3 sm:flex-row">
 				<label className="flex min-h-12 flex-1 items-center gap-3 rounded-xl border border-ink/15 bg-white px-4 shadow-sm">
 					<Search size={18} className="text-ink/35" />
 					<input type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Rechercher une annonce..." className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink/35" />
