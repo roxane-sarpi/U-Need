@@ -1,34 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../index.css';
+import { register } from '../../components/services/authService';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [pseudo, setPseudo] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError('');
 
-    console.log('Tentative d\'inscription avec :', {
-      firstName,
-      lastName,
-      pseudo,
+    if (password !== confirmPassword) {
+      setError('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    register({
+      firstname: firstName,
+      lastname: lastName,
+      phone,
       email,
       city,
-      postalCode,
+      zip_code: postalCode,
       password,
-      confirmPassword,
-      acceptTerms,
-    });
-
-    // Prochaine étape : envoyer ces données à ton API ou Backend
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur lors de l'inscription");
+        navigate('/login');
+      })
+      .catch(() => setError("Une erreur est survenue, veuillez réessayer."));
   };
 
   return (
@@ -90,13 +100,13 @@ const Register = () => {
 
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="pseudo" className="text-sm font-medium text-primary mb-2 font-sans">Pseudo</label>
+                <label htmlFor="phone" className="text-sm font-medium text-primary mb-2 font-sans">Téléphone</label>
                 <input
-                  type="text"
-                  id="pseudo"
-                  value={pseudo}
-                  onChange={(e) => setPseudo(e.target.value)}
-                  placeholder="Votre pseudo"
+                  type="tel"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Votre numéro de téléphone"
                   className="px-4 py-3 border-2 border-primary-light rounded-lg text-base text-ink bg-canvas placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all autofill:bg-white [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#fff] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-ink)] font-sans"
                   required
                 />
@@ -201,6 +211,8 @@ const Register = () => {
                   <span className="font-sans">J'accepte les conditions d'utilisation</span>
                 </label>
               </div>
+
+              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
               <button
                 type="submit"
