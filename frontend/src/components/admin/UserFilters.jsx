@@ -1,4 +1,4 @@
-import { Search, ChevronDown } from "lucide-react";
+import { Search} from "lucide-react";
 
 function UserFilters() {
   return (
@@ -8,7 +8,7 @@ function UserFilters() {
         
         {/* Recherche avec loupe */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={16} />
           <input 
             type="text" 
             placeholder="Rechercher par pseudo, email, ville..." 
