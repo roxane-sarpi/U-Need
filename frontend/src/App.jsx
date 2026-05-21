@@ -12,6 +12,7 @@ import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
+import MessagerieScreen from './pages/Messaging/Messaging';
 import AdDetail from './pages/AdDetail';
 import Catalog from './pages/Catalog';
 import FAQ from './pages/FAQ';
@@ -28,14 +29,16 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/catalogue" element={<Catalog />} />
+          <Route path="/details" element={<AdDetail />} />
+          <Route path="/faq" element={<FAQ />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
           <Route path="/create-ads" element={<CreateAds />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/details" element={<AdDetail />} />
-          <Route path="/faq" element={<FAQ />} />
+          <Route path="/messagerie" element={<MessagerieScreen />} />
+       
 
         </Route>
 
