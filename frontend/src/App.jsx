@@ -1,3 +1,4 @@
+// import './App.css'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -12,7 +13,9 @@ import AdminLayout from './components/layout/AdminLayout';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import About from './pages/About';
 import MessagerieScreen from './pages/Messaging/Messaging';
-
+import AdDetail from './pages/AdDetail';
+import Catalog from './pages/Catalog';
+import FAQ from './pages/FAQ';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
+          <Route path="/catalogue" element={<Catalog />} />
+          <Route path="/details" element={<AdDetail />} />
+          <Route path="/faq" element={<FAQ />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
           <Route path="/create-ads" element={<CreateAds />} />
@@ -32,6 +38,7 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/messagerie" element={<MessagerieScreen />} />
+       
 
         </Route>
 
