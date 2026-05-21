@@ -1,6 +1,6 @@
 import { Eye, Pencil, MoreHorizontal } from "lucide-react";
 
-function UserDesktopRow({ user }) {
+function UserDesktopRow({ user, onViewDetails }) {
   const roleStyles = {
     ADMIN: "bg-rose-50 text-rose-600 font-medium border-rose-100",
     MODÉRATEUR: "bg-blue-50 text-blue-600 font-medium border-blue-100",
@@ -37,7 +37,7 @@ function UserDesktopRow({ user }) {
       </td>
       <td className="text-right">
         <div className="inline-flex items-center gap-1">
-          <button className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
+          <button onClick={onViewDetails} className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
             <Eye size={15} />
           </button>
           {user.status !== "BANNI" && (

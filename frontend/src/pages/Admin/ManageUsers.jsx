@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import NewUserModal from "../../components/admin/NewUserModal";
 import PageHeader from "../../components/admin/PageHeader";
 import TablePagination from "../../components/admin/TablePagination";
 import UserDesktopRow from "../../components/admin/UserDesktopRow";
 import UserFilters from "../../components/admin/UserFilters";
 import UserMobileRow from "../../components/admin/UserMobileCard";
+import UserDetailsModal from "../../components/admin/UserDetailsModal";
 
 
 function ManageUsers() {
@@ -19,6 +20,16 @@ function ManageUsers() {
 
   // 1. On crée une boîte vide pour stocker notre modale
   const modalRef = useRef(null);
+  const detailsModalRef = useRef(null);
+
+  // État pour savoir quel utilisateur afficher dans la modale de détails
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // Fonction magique déclenchée au clic sur l'œil
+  const handleOpenDetails = (user) => {
+    setSelectedUser(user); // On mémorise le user cliqué
+    detailsModalRef.current?.showModal(); // On ouvre la modale d'historique
+  };
 
   return (
     <>
@@ -55,7 +66,7 @@ function ManageUsers() {
             </thead>
             <tbody>
               {mockUsers.map(user => (
-                <UserDesktopRow key={user.id} user={user} />
+                <UserDesktopRow key={user.id} user={user} onViewDetails={() => handleOpenDetails(user)}/>
               ))}
             </tbody>
           </table>
@@ -64,7 +75,7 @@ function ManageUsers() {
         {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
           {mockUsers.map(user => (
-            <UserMobileRow key={user.id} user={user} />
+            <UserMobileRow key={user.id} user={user} onViewDetails={() => handleOpenDetails(user)}/>
           ))}
         </div>
 
@@ -73,6 +84,7 @@ function ManageUsers() {
 
       </div>
       <NewUserModal modalRef={modalRef}/>
+      <UserDetailsModal modalRef={detailsModalRef} user={selectedUser} />
     </>
   );
 }
