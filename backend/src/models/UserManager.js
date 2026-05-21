@@ -18,7 +18,7 @@ class UserManager extends AbstractManager {
         user.zip_code,
         user.city,
         user.role ?? "user",
-        user.points ?? 0,
+        user.points ?? 10,
       ]
     );
   }
