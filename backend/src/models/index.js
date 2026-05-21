@@ -63,6 +63,10 @@ const RequestManager = require("./RequestManager");
 models.request = new RequestManager();
 models.request.setDatabase(pool);
 
+const EvaluationManager = require("./EvaluationManager");
+models.evaluation = new EvaluationManager();
+models.evaluation.setDatabase(pool);
+
 
 const handler = {
   get(obj, prop) {

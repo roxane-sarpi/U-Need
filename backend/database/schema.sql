@@ -115,6 +115,14 @@ VALUES (
     '2026-05-02'
 );
 
+CREATE TABLE IF NOT EXISTS evaluations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL,
+    note INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id)
+);
+
 INSERT INTO requests (id_ad, id_helper, id_user) VALUES ('1', '2', '1');
 
 INSERT INTO messages(content, id_sender, id_receiver, id_request) VALUES ('Bonjour, je serais ravis de vous aider.', 2,1,1);
