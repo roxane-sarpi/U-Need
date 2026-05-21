@@ -9,8 +9,9 @@ import Register from './pages/Auth/Register';
 import Notifications from './pages/Notifications';
 import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
-import Dashboard from './pages/Admin/Dashboard/Dashboard';
+import Dashboard from './pages/Admin/Dashboard';
 import About from './pages/About';
+import ManageUsers from './pages/Admin/ManageUsers';
 
 
 function App() {
@@ -35,8 +36,10 @@ function App() {
 
 
         {/* Layout admin */}
+        {/* handle est utile pour attacher des métadonnées à une route sans les mettre dans le composant lui-même. */}
         <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/dashboard" element={<Dashboard />}/>
+          <Route path="/admin/users" element={<ManageUsers />} />
         </Route>
 
 

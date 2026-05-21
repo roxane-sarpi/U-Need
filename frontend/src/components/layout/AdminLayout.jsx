@@ -17,9 +17,9 @@ function AdminLayout() {
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Utilisateurs", path: "/admin/utilisateurs", icon: Users },
-    { name: "Annonces", path: "/admin/annonces", icon: FileText },
-    { name: "Signalements", path: "/admin/signalements", icon: AlertTriangle, badge: 7 },
+    { name: "Utilisateurs", path: "/admin/users", icon: Users },
+    { name: "Annonces", path: "/admin/ads", icon: FileText },
+    { name: "Signalements", path: "/admin/reports", icon: AlertTriangle, badge: 7 },
     { name: "Catégories", path: "/admin/categories", icon: FolderTree },
     // { name: "Paramètres", path: "/admin/parametres", icon: Settings },
   ];
@@ -53,7 +53,9 @@ function AdminLayout() {
 
         {/* Contenu dynamique de la page active */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-          <Outlet />
+          <div className="space-y-6">
+            <Outlet />
+          </div>
         </main>
       </div>
 
