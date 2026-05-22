@@ -1,11 +1,32 @@
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { PlusCircle, Bell, MessageCircle, UserCircle, Menu } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { PlusCircle, Bell, MessageCircle, UserCircle, Menu, LogOut } from "lucide-react";
 import MobileDrawer from "./MobileDrawer";
+import { useAuth } from "../context/AuthContext";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef(null);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileOpen(false);
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-canvas border-b border-gray-200 shadow-sm">
@@ -59,10 +80,17 @@ function Header() {
                   <MessageCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
                 </Link>
-                <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
-                  <UserCircle size={24} />
-                  <span className="text-[10px] font-medium uppercase">Mon profil</span>
-                </Link>
+                {user ? (
+                  <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                    <UserCircle size={24} />
+                    <span className="text-[10px] font-medium uppercase">Mon profil</span>
+                  </Link>
+                ) : (
+                  <Link to="/login" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                    <UserCircle size={24} />
+                    <span className="text-[10px] font-medium uppercase">Se connecter</span>
+                  </Link>
+                )}
               </div>
 
               {/* Sur Mobile, on peut éventuellement laisser juste l'icône Profil ou rien si le burger suffit */}

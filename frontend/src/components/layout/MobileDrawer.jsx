@@ -1,7 +1,16 @@
-import { Link } from "react-router-dom";;
-import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle, LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function MobileDrawer({closeMenu}) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+    navigate("/");
+  };
 
   return (
     <div className="drawer-side z-[100]">
@@ -49,11 +58,29 @@ function MobileDrawer({closeMenu}) {
           {/* Account section */}
           <div className="space-y-1">
             <p className="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Mon Compte</p>
-            <Link to="/login" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
-              <User size={20} className="text-gray-500" />
-              <span className="font-medium">Se connecter</span>
-              {/* <span className="font-medium">Mon profil</span> A REMPLACER SI USER CONNECTE */}
-            </Link>
+            {user ? (
+              <>
+                <Link to="/profile" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+                  <User size={20} className="text-gray-500" />
+                  <span className="font-medium">Mon profil</span>
+                </Link>
+                <button onClick={handleLogout} className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors w-full text-left text-red-500">
+                  <LogOut size={20} />
+                  <span className="font-medium">Se déconnecter</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+                  <User size={20} className="text-gray-500" />
+                  <span className="font-medium">Se connecter</span>
+                </Link>
+                <Link to="/register" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+                  <User size={20} className="text-gray-500" />
+                  <span className="font-medium">S'inscrire</span>
+                </Link>
+              </>
+            )}
             <Link to="/a-propos" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <HelpCircle size={20} className="text-gray-500" />
               <span className="font-medium">Qui sommes-nous ?</span>
