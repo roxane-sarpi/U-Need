@@ -23,6 +23,15 @@ class AdManager extends AbstractManager {
     ]);
   }
 
+  findByUser(id_user) {
+    return this.database.query(
+      `SELECT a.*, c.name as category_name FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       WHERE a.id_user = ?`,
+      [id_user]
+    );
+  }
+
   update(ad) {
     return this.database.query(
       `update ${this.table} set title = ?, description = ?, image_1 = ?, image_2 = ?, image_3 = ?, id_category = ?, points = ?, statut = ?, zip_code = ?, city = ?, urgent = ?, date_execution = ? where id = ?`,

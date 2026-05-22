@@ -18,6 +18,7 @@ router.post(
 //Ads
 const adControllers =require("./controllers/adControllers");
 router.get("/ads", adControllers.browse);
+router.get("/ads/user/:id", adControllers.browseByUser);
 router.get("/ads/:id", adControllers.read);
 
 //Categories
@@ -33,6 +34,8 @@ router.use(verifyToken);
 
 const requestControllers = require("./controllers/requestControllers");
 router.post("/requests", requestControllers.addRequest);
+router.get("/requests/helper/:id", requestControllers.browseByHelper);
+router.get("/requests/history/:id", requestControllers.browseHistoryByUser);
 router.get("/requests/:id", requestControllers.readRequest);
 router.get("/requests", requestControllers.browseRequest);
 router.delete("/requests/:id", requestControllers.destroyRequest);
