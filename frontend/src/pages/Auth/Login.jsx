@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../index.css';
+import { login } from '../../components/services/authService';
+import { useAuth } from '../../components/context/AuthContext';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault(); 
-    
-    console.log('Tentative de connexion avec :', { email, password, rememberMe });
-    
-    // Prochaine étape : envoyer ces données à ton API ou Backend
+    e.preventDefault();
+    setError('');
+
+    login({ email, password })
+      .then(({ token, user }) => {
+        loginUser(user, token);
+        navigate('/');
+      })
+      .catch(() => setError('Email ou mot de passe incorrect.'));
   };
 
   return (
@@ -113,8 +122,10 @@ const Login = () => {
                 </label>
               </div>
 
+              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
               {/* Bouton de soumission */}
-              <button 
+              <button
                 type="submit"
                 className="px-6 py-3 bg-primary text-white rounded-lg text-base font-semibold cursor-pointer transition-all hover:bg-primary-dark active:scale-95 mt-4 font-sans"
               >
