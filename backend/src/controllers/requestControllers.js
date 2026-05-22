@@ -81,10 +81,36 @@ const destroyRequest = (req, res) => {
 };
 
 
+const browseHistoryByUser = (req, res) => {
+  models.request
+    .findHistoryByUser(req.params.id)
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+const browseByHelper = (req, res) => {
+  models.request
+    .findByHelper(req.params.id)
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 exports = module.exports = {
     addRequest,
     readRequest,
     browseRequest,
+    browseByHelper,
+    browseHistoryByUser,
     updateRequest,
     destroyRequest
 };
