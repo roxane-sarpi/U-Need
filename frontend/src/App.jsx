@@ -1,6 +1,7 @@
 // import './App.css'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './components/context/AuthContext';
 import Home from './pages/Home';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
@@ -20,6 +21,7 @@ import FAQ from './pages/FAQ';
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
 
       <Routes>
@@ -55,6 +57,7 @@ function App() {
       </Routes>
 
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 
