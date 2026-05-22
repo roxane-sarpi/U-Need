@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
+import { Link } from 'react-router-dom';
 
 function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, user }) {
     const [text, setText] = useState('');
+
+    const statusStyles = {
+        'en cours': 'text-accent-orange-dark font-medium bg-accent-orange-light',
+        'terminé': 'text-emerald-600 font-medium bg-emerald-100',   // Vert pour ce qui est fini
+        'signalé': 'text-red-600 font-bold bg-red-100' // Rouge clignotant si problème
+    };
+
+    const statusTexts = {
+        'en cours': 'En cours',
+        'terminé': 'Terminée',
+        'signalé': 'Signalée'
+    };
 
     // 1. On trouve l'annonce correspondante à CETTE conversation spécifique
     const currentAd = mockAds.find(ad => ad.id === request.id_ad);
 
     const userName = user ? user.name : "Utilisateur";
+
+    const [showChatOnMobile, setShowChatOnMobile] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -26,20 +41,20 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, us
             {/* Header de la discussion */}
             <header className="p-4 border-b border-gray-200 flex justify-between items-center px-8">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-zinc-700 text-white rounded-full flex items-center justify-center font-bold">
+                    <div className={`w-12 h-12 bg-zinc-700 text-white rounded-full items-center justify-center font-bold hidden md:flex`}>
                         {firstLetter}
                     </div>
                     <div>
                         <h2 className="text-xl font-bold">{adTitle}</h2>
                         <p className="text-xs text-gray-500">
-                            Annonce liée : <span className="underline">{adTitle}</span>{' '}
-                            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase">
-                                {request.state}
-                            </span>
+                            <Link to={`/ads/${currentAd.id}`}>Annonce liée : <span className="underline">{adTitle}</span></Link>
                         </p>
+                        <span className={`px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase ${statusStyles[request.state] || 'bg-gray-100 text-gray-700'}`}>
+                            {statusTexts[request.state] || 'État inconnu'}
+                        </span>
                     </div>
                 </div>
-                <button className="bg-[#3B30B7] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-90">
+                <button className="bg-primary text-white px-3 py-2.5 md:px-6 rounded-xl font-semibold text-xs md:text-sm hover:bg-accent-orange">
                     Valider son aide
                 </button>
             </header>
@@ -66,7 +81,7 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, us
                         placeholder="Taper un message ici"
                         className="flex-1 border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-purple-600"
                     />
-                    <button type="submit" className="bg-[#5C4FE5] text-white px-8 py-3 rounded-xl font-medium hover:bg-opacity-90">
+                    <button type="submit" className="bg-primary text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-orange">
                         Envoyer
                     </button>
                 </form>
