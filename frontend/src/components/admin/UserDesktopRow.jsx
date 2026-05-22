@@ -1,17 +1,7 @@
-import { Eye, Pencil, MoreHorizontal } from "lucide-react";
+import { Pencil} from "lucide-react";
+import { roleStyles } from "./AdminData";
 
-function UserDesktopRow({ user, onViewDetails }) {
-  const roleStyles = {
-    ADMIN: "bg-rose-50 text-rose-600 font-medium border-rose-100",
-    MODÉRATEUR: "bg-blue-50 text-blue-600 font-medium border-blue-100",
-    USER: "bg-gray-100 text-gray-600 font-medium border-transparent"
-  };
-
-  const statusStyles = {
-    ACTIF: "bg-emerald-50 text-emerald-600 font-medium border-emerald-100",
-    SUSPENDU: "bg-accent-orange-light text-accent-orange-dark font-medium border-amber-100",
-    BANNI: "bg-rose-50 text-rose-500 font-medium border-rose-100",
-  };
+function UserDesktopRow({ user, onEdit }) {
 
   return (
     <tr className="hover:bg-gray-50/40 transition-colors border-b border-gray-100 last:border-none">
@@ -30,24 +20,13 @@ function UserDesktopRow({ user, onViewDetails }) {
       </td>
       <td className="text-xs font-bold text-gray-700">{user.balance} UC</td>
       <td className="text-xs text-gray-400 font-medium">{user.joined}</td>
-      <td>
-        <span className={`text-[11px] uppercase px-2 py-0.5 rounded border ${statusStyles[user.status]}`}>
-          {user.status}
-        </span>
-      </td>
       <td className="text-right">
         <div className="inline-flex items-center gap-1">
-          <button onClick={onViewDetails} className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
-            <Eye size={15} />
-          </button>
           {user.status !== "BANNI" && (
-            <button className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
+            <button onClick={onEdit} className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
               <Pencil size={15} />
             </button>
           )}
-          <button className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
-            <MoreHorizontal size={15} />
-          </button>
         </div>
       </td>
     </tr>

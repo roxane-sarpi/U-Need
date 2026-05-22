@@ -11,7 +11,12 @@ function NewUserModal({ modalRef }) {
   };
 
   return (
-    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
+    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle" onClick={(e) => {
+    // Si l'élément cliqué est le <dialog> lui-même (et non la modal-box à l'intérieur)
+    if (e.target === modalRef.current) {
+      modalRef.current.close();
+    }
+  }}>
       {/* modal-box : le conteneur blanc */}
       <div className="modal-box bg-white text-ink p-6 rounded-t-2xl sm:rounded-2xl border border-gray-100 shadow-2xl relative max-w-md w-full">
         

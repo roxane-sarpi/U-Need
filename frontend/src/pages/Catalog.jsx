@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import CatalogFilters from '../components/catalog/CatalogFilters';
 import CatalogGrid from '../components/catalog/CatalogGrid';
-import CatalogPagination from '../components/catalog/CatalogPagination';
 import CatalogToolbar from '../components/catalog/CatalogToolbar';
 import { catalogCards, categoryOptions } from '../components/catalog/catalogData';
+import Pagination from '../components/ui/Pagination';
 
 function matchesCatalogFilters(card, options) {
 	const term = options.search.trim().toLowerCase();
@@ -85,6 +85,7 @@ function Catalog() {
 	const pageCount = Math.max(1, Math.ceil(totalResults / pageSize));
 	const safeCurrentPage = Math.min(currentPage, pageCount);
 	const displayCards = filteredCards.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
+
 	return (
 		<main className="min-h-screen bg-canvas text-ink">
 			<section className="relative overflow-hidden">
@@ -124,7 +125,7 @@ function Catalog() {
 								</div>
 							) : null}
 
-							<CatalogPagination currentPage={safeCurrentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+							<Pagination currentPage={safeCurrentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
 						</section>
 					</div>
 				</div>

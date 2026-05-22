@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import NewUserModal from "../../components/admin/NewUserModal";
 import PageHeader from "../../components/admin/PageHeader";
-import TablePagination from "../../components/admin/TablePagination";
 import UserDesktopRow from "../../components/admin/UserDesktopRow";
 import UserFilters from "../../components/admin/UserFilters";
-import UserMobileRow from "../../components/admin/UserMobileCard";
-import UserDetailsModal from "../../components/admin/UserDetailsModal";
+import EditUserModal from "../../components/admin/EditUserModal";
+import UserMobileCard from "../../components/admin/UserMobileCard";
+import Pagination from "../../components/ui/Pagination";
 
 
 function ManageUsers() {
@@ -30,6 +30,9 @@ function ManageUsers() {
     setSelectedUser(user); // On mémorise le user cliqué
     detailsModalRef.current?.showModal(); // On ouvre la modale d'historique
   };
+
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <>
@@ -60,13 +63,12 @@ function ManageUsers() {
                 <th>Rôle</th>
                 <th>Solde</th>
                 <th>Inscription</th>
-                <th>Statut</th>
                 <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {mockUsers.map(user => (
-                <UserDesktopRow key={user.id} user={user} onViewDetails={() => handleOpenDetails(user)}/>
+                <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
               ))}
             </tbody>
           </table>
@@ -75,16 +77,24 @@ function ManageUsers() {
         {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
           {mockUsers.map(user => (
-            <UserMobileRow key={user.id} user={user} onViewDetails={() => handleOpenDetails(user)}/>
+            <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
           ))}
         </div>
 
         {/* Bloc Pagination unique et partagé */}
-        <TablePagination />
+        {/* <TablePagination /> */}
+        <Pagination 
+          currentPage={currentPage}
+          pageCount={3} // Par exemple, pour afficher 3 pages de mock data
+          onPageChange={(page) => setCurrentPage(page)}
+          isAdmin={true} // Activation magique du mode Admin !
+          totalCount={1247}
+          itemsPerPage={5}
+        />
 
       </div>
       <NewUserModal modalRef={modalRef}/>
-      <UserDetailsModal modalRef={detailsModalRef} user={selectedUser} />
+      <EditUserModal modalRef={detailsModalRef} user={selectedUser}/>
     </>
   );
 }

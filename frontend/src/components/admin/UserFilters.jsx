@@ -19,7 +19,7 @@ function UserFilters() {
         {/* Filtre Rôle */}
         <select 
   defaultValue="" 
-  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium"
+  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-400 font-medium"
 >
   <option value="" disabled>Rôle</option>
           <option>Utilisateur</option>

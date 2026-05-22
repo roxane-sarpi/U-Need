@@ -1,6 +1,14 @@
-function UserMobileCard({ user }) {
+import { roleStyles } from "./AdminData";
+
+function UserMobileCard({ user, onEdit }) {
   return (
-    <div className="p-4 space-y-3">
+    <div 
+      onClick={onEdit} 
+      onKeyDown={(e) => e.key === "Enter" && onEdit()} // Permet de cliquer avec la touche Entrée
+      role="button"
+      tabIndex={0}
+      className="p-4 space-y-3 cursor-pointer transition-colors hover:bg-gray-50/50 active:bg-gray-100 focus:outline-none focus:bg-gray-50 select-none"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gray-200" />
@@ -21,8 +29,7 @@ function UserMobileCard({ user }) {
           <span className="text-gray-400">Inscrit le {user.joined}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">{user.role}</span>
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600">{user.status}</span>
+          <span className={`text-[9px] px-1.5 py-0.5 rounded ${roleStyles[user.role]}`}>{user.role}</span>
         </div>
       </div>
     </div>
