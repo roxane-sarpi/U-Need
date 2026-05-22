@@ -1,1 +1,2 @@
-export const API_URL = "http://localhost:5000";
+
+export const API_URL = `http://localhost:${import.meta.env.VITE_BACKEND_PORT || 5000}`;
