@@ -1,5 +1,6 @@
-import StatCard from "./components/StatCard";
-import CategoriesChart from "./components/CategoriesChart";
+import StatCard from "../../components/admin/StatCard";
+import CategoriesChart from "../../components/admin/CategoriesChart";
+import PageHeader from "../../components/admin/PageHeader";
 
 function Dashboard() {
   const currentMonth = new Date().toLocaleDateString(
@@ -10,30 +11,10 @@ function Dashboard() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="space-y-6">
-      
+    <>
       {/* 1. EN-TÊTE DU DASHBOARD */}
       {/* Colonne sur mobile, ligne alignée sur bureau */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-ink tracking-tight">Dashboard</h1>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Vue d'ensemble de la plateforme • {currentMonth} {currentYear}
-          </p>
-        </div>
-        
-        {/* BONUS : Actions : Sélecteur de date et bouton exporter */}
-        {/* <div className="flex items-center gap-2 self-start sm:self-auto">
-          <select className="select select-bordered select-sm rounded-xl bg-white border-gray-200 font-medium text-sm">
-            <option>30 derniers jours</option>
-            <option>7 derniers jours</option>
-            <option>Cette année</option>
-          </select>
-          <button className="btn btn-sm btn-outline border-gray-200 hover:bg-gray-50 hover:text-ink rounded-xl font-bold bg-white shadow-none">
-            Exporter
-          </button>
-        </div> */}
-      </div>
+      <PageHeader title={"Dashboard"} subtitle={`Vue d'ensemble de la plateforme • ${currentMonth} ${currentYear}`} />
 
       {/* 2. GRILLE DES CARTES DE STATISTIQUES */}
       {/* Mobile : 1 colonne | Tablette (sm) : 2 colonnes | Grand écran (lg) : 4 colonnes */}
@@ -55,7 +36,7 @@ function Dashboard() {
         
       </div>
 
-    </div>
+    </>
   );
 }
 
