@@ -4,7 +4,7 @@ import {
   LayoutDashboard, 
   Users, 
   FileText, 
-  AlertTriangle, 
+  // AlertTriangle, 
   FolderTree,
   Menu,
   X
@@ -19,9 +19,9 @@ function AdminLayout() {
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Utilisateurs", path: "/admin/users", icon: Users },
     { name: "Annonces", path: "/admin/ads", icon: FileText },
-    { name: "Signalements", path: "/admin/reports", icon: AlertTriangle, badge: 7 },
+    // { name: "Signalements", path: "/admin/reports", icon: AlertTriangle, badge: 7 } BONUS,
     { name: "Catégories", path: "/admin/categories", icon: FolderTree },
-    // { name: "Paramètres", path: "/admin/parametres", icon: Settings },
+    // { name: "Paramètres", path: "/admin/parametres", icon: Settings } BONUS,
   ];
 
   return (
