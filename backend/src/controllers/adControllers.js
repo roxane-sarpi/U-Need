@@ -28,6 +28,18 @@ const read = (req, res) => {
     });
 };
 
+const browseByUser = (req, res) => {
+  models.ad
+    .findByUser(req.params.id)
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 const add = (req, res) => {
   const ad = req.body;
 
@@ -79,5 +91,5 @@ const destroy = (req, res) => {
     });
 };
 
-module.exports = {browse, read, add, edit, destroy};
+module.exports = {browse, browseByUser, read, add, edit, destroy};
 
