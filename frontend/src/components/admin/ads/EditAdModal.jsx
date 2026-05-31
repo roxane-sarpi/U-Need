@@ -1,20 +1,12 @@
-import { useState, useEffect } from "react";
-import { X, ShieldAlert, Trash2, CheckCircle, AlertTriangle } from "lucide-react";
+import { useState } from "react"; // On retire useEffect ici
+import { X, ShieldAlert, Trash2 } from "lucide-react";
 
 function EditAdModal({ modalRef, ad }) {
-  // État local pour manipuler le statut de l'annonce
-  const [status, setStatus] = useState("EN ATTENTE");
-
-  // On synchronise le statut local dès que l'admin clique sur une autre annonce
-  useEffect(() => {
-    if (ad) {
-      setStatus(ad.status);
-    }
-  }, [ad]);
+  // CORRECTION : On initialise directement avec le statut de l'annonce en cours
+  const [status, setStatus] = useState(ad?.status || "EN ATTENTE");
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
-    // Logique MVP / Simulation de modification
     console.log(`Statut mis à jour pour l'annonce "${ad.title}" : ${status}`);
     modalRef.current?.close();
   };
@@ -27,10 +19,15 @@ function EditAdModal({ modalRef, ad }) {
   };
 
   return (
-    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
+    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle" onClick={(e) => {
+    // Si l'élément cliqué est le <dialog> lui-même (et non la modal-box à l'intérieur)
+    if (e.target === modalRef.current) {
+      modalRef.current.close();
+    }
+  }}>
       <div className="modal-box bg-white text-ink p-6 rounded-t-2xl sm:rounded-2xl border border-gray-100 shadow-2xl relative max-w-md w-full">
         
-        {/* BOUTON FERMER MATÉRIEL */}
+        {/* BOUTON FERMER */}
         <button 
           type="button"
           onClick={() => modalRef.current?.close()} 
@@ -41,15 +38,13 @@ function EditAdModal({ modalRef, ad }) {
 
         {/* EN-TÊTE MODALE */}
         <div className="mb-6">
-          <h3 className="font-black text-lg text-ink tracking-tight">
-            Modérer l'annonce
-          </h3>
+          <h3 className="font-black text-lg text-ink tracking-tight">Modérer l'annonce</h3>
           <p className="text-xs text-gray-400 mt-0.5">
             Auteur : <span className="font-bold text-gray-700">{ad?.author}</span> • Catégorie : <span className="font-medium text-gray-600">{ad?.category}</span>
           </p>
         </div>
 
-        {/* APERÇU RAPIDE DE L'ANNONCE INTERNE */}
+        {/* APERÇU RAPIDE DE L'ANNONCE */}
         <div className="p-3 bg-gray-50 rounded-xl border border-gray-100/70 mb-5">
           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Titre de l'offre</h4>
           <p className="text-sm font-bold text-ink leading-snug">{ad?.title}</p>
@@ -58,10 +53,9 @@ function EditAdModal({ modalRef, ad }) {
           </span>
         </div>
 
-        {/* FORMULAIRE DES ACTIONS */}
+        {/* FORMULAIRE */}
         <form onSubmit={handleSaveChanges} className="space-y-5">
-          
-          {/* 1. SÉLECTION DU STATUT */}
+          {/* SÉLECTION DU STATUT */}
           <div className="form-control">
             <label className="label py-1">
               <span className="label-text font-bold text-gray-600 text-xs">Statut de publication</span>
@@ -74,13 +68,13 @@ function EditAdModal({ modalRef, ad }) {
               <option value="EN ATTENTE">⏳ En attente de validation</option>
               <option value="VALIDÉE">✅ Validée (En ligne)</option>
               <option value="REFUSÉE">❌ Refusée / Rejetée</option>
-              <option value="SIGNALÉE">⚠️ Signalée par la communauté</option>
+              {/* <option value="SIGNALÉE">⚠️ Signalée par la communauté</option> */}
             </select>
           </div>
 
           <div className="divider before:bg-gray-50 after:bg-gray-50 my-2"></div>
 
-          {/* 2. ZONE DANGER : SUPPRESSION DÉFINITIVE */}
+          {/* ZONE DANGER */}
           <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-start justify-between gap-3">
             <div className="space-y-1">
               <h4 className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
@@ -114,7 +108,7 @@ function EditAdModal({ modalRef, ad }) {
           </div>
         </form>
 
-        {/* ASTUCE FERMETURE CLIC EXTÉRIEUR */}
+        {/* FERMETURE CLIC EXTÉRIEUR */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>

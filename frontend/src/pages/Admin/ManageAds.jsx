@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import PageHeader from "../../components/admin/PageHeader";
-// import AdFilters from "./components/AdFilters";
-// import EditAdModal from "./components/EditAdModal";
 import Pagination from "../../components/ui/Pagination"; // Ton composant réutilisé !
-import AdDesktopRow from "../../components/admin/AdDesktopRow";
-import AdMobileCard from "../../components/admin/AdMobileCard";
+import AdDesktopRow from "../../components/admin/ads/AdDesktopRow";
+import AdMobileCard from "../../components/admin/ads/AdMobileCard";
+import AdFilters from "../../components/admin/ads/AdFilters";
+import EditAdModal from "../../components/admin/ads/EditAdModal";
 
 function ManageAds() {
   const mockAds = [
@@ -14,14 +14,14 @@ function ManageAds() {
     { id: 4, title: "Canapé d'angle convertible", author: "Emma Dubois", category: "Maison", price: 50, date: "15/05/2026", status: "VALIDÉE" },
   ];
 
-//   const editModalRef = useRef(null);
-//   const [selectedAd, setSelectedAd] = useState(null);
+  const editModalRef = useRef(null);
+  const [selectedAd, setSelectedAd] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-//   const handleOpenEdit = (ad) => {
-//     setSelectedAd(ad);
-//     editModalRef.current?.showModal();
-//   };
+  const handleOpenEdit = (ad) => {
+    setSelectedAd(ad);
+    editModalRef.current?.showModal();
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ function ManageAds() {
       </div>
 
       {/* Barre de filtrage spécifique aux annonces */}
-      {/* <AdFilters /> */}
+      <AdFilters />
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-6">
         {/* BLOC DESKTOP */}
@@ -52,7 +52,7 @@ function ManageAds() {
                 <AdDesktopRow
                   key={ad.id} 
                   ad={ad} 
-                //   onEdit={() => handleOpenEdit(ad)} 
+                  onEdit={() => handleOpenEdit(ad)} 
                 />
               ))}
             </tbody>
@@ -65,7 +65,7 @@ function ManageAds() {
             <AdMobileCard 
               key={ad.id} 
               ad={ad} 
-            //   onEdit={() => handleOpenEdit(ad)} 
+              onEdit={() => handleOpenEdit(ad)} 
             />
           ))}
         </div>
@@ -82,7 +82,7 @@ function ManageAds() {
       </div>
 
       {/* Modale d'action (Changement statut / Suppression) */}
-      {/* <EditAdModal modalRef={editModalRef} ad={selectedAd} key={selectedAd?.id} /> */}
+      <EditAdModal modalRef={editModalRef} ad={selectedAd} key={selectedAd?.id} />
     </>
   );
 }

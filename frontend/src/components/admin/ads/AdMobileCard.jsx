@@ -2,7 +2,7 @@ function AdMobileCard({ ad, onEdit }) {
   const statusStyles = {
     "EN ATTENTE": "bg-amber-50 text-amber-600",
     "VALIDÉE": "bg-emerald-50 text-emerald-600",
-    "SIGNALÉE": "bg-rose-50 text-rose-600 font-bold",
+    // "SIGNALÉE": "bg-rose-50 text-rose-600 font-bold",
     "REFUSÉE": "bg-gray-100 text-gray-400",
   };
 
