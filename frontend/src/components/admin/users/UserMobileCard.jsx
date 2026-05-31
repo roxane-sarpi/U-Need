@@ -1,4 +1,4 @@
-import { roleStyles } from "./adminData";
+import { roleStyles } from "../adminData";
 
 function UserMobileCard({ user, onEdit }) {
   return (
