@@ -18,6 +18,7 @@ import MessagerieScreen from './pages/Messaging/Messaging';
 import AdDetail from './pages/AdDetail';
 import Catalog from './pages/Catalog';
 import FAQ from './pages/FAQ';
+import ManageAds from './pages/Admin/ManageAds';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<Dashboard />}/>
           <Route path="/admin/users" element={<ManageUsers />} />
+          <Route path="/admin/ads" element={<ManageAds />} />
         </Route>
 
 

@@ -1,0 +1,55 @@
+import { Pencil } from "lucide-react";
+
+function AdDesktopRow({ ad, onEdit }) {
+  // Styles spécifiques pour les statuts d'annonces
+  const statusStyles = {
+    "EN ATTENTE": "bg-amber-50 text-amber-600 font-bold border-amber-100",
+    "VALIDÉE": "bg-emerald-50 text-emerald-600 font-bold border-emerald-100",
+    "SIGNALÉE": "bg-rose-50 text-rose-600 font-bold border-rose-100 animate-pulse",
+    "REFUSÉE": "bg-gray-100 text-gray-500 font-medium border-transparent",
+  };
+
+  return (
+    <tr className="hover:bg-gray-50/40 transition-colors border-b border-gray-100 last:border-none">
+      
+      {/* Titre de l'annonce */}
+      <td>
+        <span className="font-bold text-gray-700 text-[14px] block max-w-xs truncate">
+          {ad.title}
+        </span>
+      </td>
+
+      {/* Auteur */}
+      <td className="text-sm text-gray-600 font-semibold">{ad.author}</td>
+
+      {/* Catégorie */}
+      <td className="text-xs text-gray-400 font-medium">{ad.category}</td>
+
+      {/* Prix (UC) */}
+      <td className="text-xs font-bold text-gray-700">{ad.price} UC</td>
+
+      {/* Date de dépôt */}
+      <td className="text-xs text-gray-400 font-medium">{ad.date}</td>
+
+      {/* Statut de l'annonce */}
+      <td>
+        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${statusStyles[ad.status]}`}>
+          {ad.status}
+        </span>
+      </td>
+
+      {/* Actions de modération */}
+      <td className="text-right">
+        <button 
+          onClick={onEdit}
+          className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm"
+          title="Modérer l'annonce"
+        >
+          <Pencil size={14} />
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+export default AdDesktopRow;

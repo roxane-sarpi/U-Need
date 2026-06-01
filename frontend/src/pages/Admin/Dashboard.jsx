@@ -1,5 +1,5 @@
-import StatCard from "../../components/admin/StatCard";
-import CategoriesChart from "../../components/admin/CategoriesChart";
+import StatCard from "../../components/admin/dashboard/StatCard";
+import CategoriesChart from "../../components/admin/dashboard/CategoriesChart";
 import PageHeader from "../../components/admin/PageHeader";
 
 function Dashboard() {
