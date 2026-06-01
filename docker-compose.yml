@@ -1,0 +1,34 @@
+services:
+  backend:
+    # 1. On dit à Docker d'aller chercher le Dockerfile dans le sous-dossier backend
+    build: ./backend
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    # 2. On pointe vers le fichier .env qui est dans le dossier backend
+    env_file:
+      - ./backend/.env
+    develop:
+      watch:
+        # 3. On synchronise le code du dossier backend local avec le dossier /app du conteneur
+        - action: sync+restart
+          path: ./backend
+          target: /app
+        - action: rebuild
+          path: ./backend/package.json
+
+  frontend:
+    # 1. On dit à Docker d'aller chercher le Dockerfile dans le sous-dossier frontend
+    build: ./frontend
+    ports:
+      - "${VITE_PORT:-5173}:5173"
+    # 2. On pointe vers le fichier .env qui est dans le dossier frontend
+    env_file:
+      - ./frontend/.env
+    develop:
+      watch:
+        # 3. On synchronise le code du dossier frontend local avec le dossier /app du conteneur
+        - action: sync+restart
+          path: ./frontend
+          target: /app
+        - action: rebuild
+          path: ./frontend/package.json
