@@ -10,4 +10,4 @@ COPY . .
 
 # 3. On expose le port et on lance l'application
 EXPOSE 5000
-CMD ["node", "index.js"]
+CMD ["sh", "-c", "node migrate.js && node index.js"]
