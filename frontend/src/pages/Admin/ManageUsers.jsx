@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import NewUserModal from "../../components/admin/NewUserModal";
+import NewUserModal from "../../components/admin/users/NewUserModal";
 import PageHeader from "../../components/admin/PageHeader";
-import UserDesktopRow from "../../components/admin/UserDesktopRow";
-import UserFilters from "../../components/admin/UserFilters";
-import EditUserModal from "../../components/admin/EditUserModal";
-import UserMobileCard from "../../components/admin/UserMobileCard";
+import UserDesktopRow from "../../components/admin/users/UserDesktopRow";
+import UserFilters from "../../components/admin/users/UserFilters";
+import EditUserModal from "../../components/admin/users/EditUserModal";
+import UserMobileCard from "../../components/admin/users/UserMobileCard";
 import Pagination from "../../components/ui/Pagination";
 
 

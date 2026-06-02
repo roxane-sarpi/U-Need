@@ -1,5 +1,5 @@
 import { Pencil} from "lucide-react";
-import { roleStyles } from "./adminData";
+import { roleStyles } from "../adminData";
 
 function UserDesktopRow({ user, onEdit }) {
 

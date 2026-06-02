@@ -19,7 +19,7 @@ function UserFilters() {
         {/* Filtre Rôle */}
         <select 
   defaultValue="" 
-  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-400 font-medium"
+  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium"
 >
   <option value="" disabled>Rôle</option>
           <option>Utilisateur</option>
@@ -28,7 +28,7 @@ function UserFilters() {
         </select>
 
         {/* Filtre Statut */}
-        <select defaultValue=""  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-400 font-medium">
+        <select defaultValue=""  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium">
           <option disabled value="">Statut</option>
           <option>Actif</option>
           <option>Suspendu</option>
@@ -36,7 +36,7 @@ function UserFilters() {
         </select>
 
         {/* Filtre Date */}
-        <select defaultValue=""  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-400 font-medium">
+        <select defaultValue=""  className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium">
           <option disabled value="">Date d'inscription</option>
           <option>Du plus récent au plus ancien</option>
           <option>Du plus ancien au plus récent</option>

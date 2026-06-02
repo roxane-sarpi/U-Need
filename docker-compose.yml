@@ -1,0 +1,76 @@
+services:
+  # --- Base de données MySQL ---
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_dev
+    # Redémarre automatiquement le conteneur s'il s'arrête inopinément
+    restart: always
+    environment:
+      # Ces variables sont lues depuis le fichier .env à la racine du projet
+      # Chaque développeur crée son propre .env (copie de .env.example)
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    # On mappe le port 3307 de la machine hôte sur le port 3306 du conteneur
+    # (évite les conflits si MySQL est déjà installé localement sur le port 3306)
+    ports:
+      - "3307:3306"
+    # Les données de la base sont persistées dans un volume nommé (ne sont pas perdues au redémarrage)
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # Vérifie que MySQL est bien prêt à accepter des connexions avant de démarrer le backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Serveur Node.js ---
+  backend:
+    # 1. On dit à Docker d'aller chercher le Dockerfile dans le sous-dossier backend
+    build: ./backend
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    # 2. On pointe vers le fichier .env qui est dans le dossier backend
+    env_file:
+      - ./backend/.env
+    # 3. Surcharge DB_HOST du .env local : dans Docker le host est le nom du service, pas localhost
+    environment:
+      DB_HOST: mysql
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    # 4. Le backend ne démarre qu'une fois MySQL opérationnel (healthcheck OK)
+    depends_on:
+      mysql:
+        condition: service_healthy
+    develop:
+      watch:
+        # 3. On synchronise le code du dossier backend local avec le dossier /app du conteneur
+        - action: sync+restart
+          path: ./backend
+          target: /app
+        - action: rebuild
+          path: ./backend/package.json
+
+  frontend:
+    # 1. On dit à Docker d'aller chercher le Dockerfile dans le sous-dossier frontend
+    build: ./frontend
+    ports:
+      - "${VITE_PORT:-5173}:5173"
+    # 2. On pointe vers le fichier .env qui est dans le dossier frontend
+    env_file:
+      - ./frontend/.env
+    develop:
+      watch:
+        # 3. On synchronise le code du dossier frontend local avec le dossier /app du conteneur
+        - action: sync+restart
+          path: ./frontend
+          target: /app
+        - action: rebuild
+          path: ./frontend/package.json
+
+# Déclare le volume nommé utilisé par MySQL pour persister les données
+# Docker le crée automatiquement s'il n'existe pas encore
+volumes:
+  mysql_data:
