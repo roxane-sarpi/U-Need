@@ -38,8 +38,8 @@ services:
     # 3. Surcharge DB_HOST du .env local : dans Docker le host est le nom du service, pas localhost
     environment:
       DB_HOST: mysql
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     # 4. Le backend ne démarre qu'une fois MySQL opérationnel (healthcheck OK)
     depends_on:
       mysql:
