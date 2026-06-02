@@ -10,6 +10,11 @@ CREATE TABLE IF NOT EXISTS categories (
     name VARCHAR(100) NOT NULL
 );
 
+INSERT IGNORE INTO categories (id, name) VALUES
+(1, 'Déménagement'), (2, 'Bricolage'), (3, 'Aide ménagère'), (4, 'Aide aux séniors'),
+(5, 'Informatique'), (6, 'Petit travaux'), (7, 'Course'), (8, 'Animaux'),
+(9, 'Jardinerie'), (10, 'Transport'), (11, 'Aide scolaire'), (12, 'Autre');
+
 CREATE TABLE IF NOT EXISTS users (
     id        INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(100) NOT NULL,
@@ -22,6 +27,10 @@ CREATE TABLE IF NOT EXISTS users (
     role      ENUM('admin', 'user', 'moderateur') DEFAULT 'user',
     points    INT DEFAULT 0
 );
+
+INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
+(1, 'Test', 'User', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$p2AX9GTaCMB9S8D6LOXAJQ$yI2oASEA1LIqkub4LbiPCaZopICTqdew1n7484VwJBQ', '0600000001', '75001', 'Paris', 'user', 10),
+(2, 'Admin', 'User', 'admin@test.com', '$argon2id$v=19$m=65536,t=5,p=1$p2AX9GTaCMB9S8D6LOXAJQ$yI2oASEA1LIqkub4LbiPCaZopICTqdew1n7484VwJBQ', '0600000002', '75002', 'Paris', 'admin', 0);
 
 -- 2. Table ads (dépend de categories et users)
 CREATE TABLE IF NOT EXISTS ads (
