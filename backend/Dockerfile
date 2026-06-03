@@ -9,5 +9,5 @@ RUN npm install
 COPY . .
 
 # 3. On expose le port et on lance l'application
-EXPOSE 5000
+EXPOSE 5020
 CMD ["sh", "-c", "node migrate.js && node index.js"]
