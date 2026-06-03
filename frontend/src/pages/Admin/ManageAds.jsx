@@ -5,7 +5,6 @@ import AdDesktopRow from "../../components/admin/ads/AdDesktopRow";
 import AdMobileCard from "../../components/admin/ads/AdMobileCard";
 import AdFilters from "../../components/admin/ads/AdFilters";
 import EditAdModal from "../../components/admin/ads/EditAdModal";
-import { useEffect } from "react";
 
 function ManageAds() {
   const mockAds = [
@@ -24,9 +23,7 @@ function ManageAds() {
     editModalRef.current?.showModal();
   };
 
-  useEffect(()=>{
-    
-  },[]);
+ 
 
   return (
     <>

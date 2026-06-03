@@ -6,17 +6,15 @@ import UserFilters from "../../components/admin/users/UserFilters";
 import EditUserModal from "../../components/admin/users/EditUserModal";
 import UserMobileCard from "../../components/admin/users/UserMobileCard";
 import Pagination from "../../components/ui/Pagination";
+// import { useEffect } from "react";
+import { authFetch } from "../../components/services/api";
+import { useEffect } from "react";
 
 
 function ManageUsers() {
 
-  const mockUsers = [
-  { id: 1, name: "Lucas Martin", email: "l.martin@u-need.fr", city: "Marseille", role: "USER", balance: 17, joined: "03/04/2026", status: "ACTIF" },
-  { id: 2, name: "Sophie Bernard", email: "s.bernard@u-need.fr", city: "Paris", role: "MODÉRATEUR", balance: 42, joined: "28/03/2026", status: "ACTIF" },
-  { id: 3, name: "Thomas Petit", email: "t.petit@u-need.fr", city: "Lyon", role: "USER", balance: 3, joined: "22/03/2026", status: "SUSPENDU" },
-  { id: 4, name: "Emma Dubois", email: "e.dubois@u-need.fr", city: "Lille", role: "USER", balance: 24, joined: "15/03/2026", status: "ACTIF" },
-  { id: 5, name: "Jean Dupuis", email: "j.dupuis@u-need.fr", city: "Nantes", role: "USER", balance: 0, joined: "08/03/2026", status: "BANNI" },
-];
+
+  const [users, setUsers] = useState(null);
 
   // 1. On crée une boîte vide pour stocker notre modale
   const modalRef = useRef(null);
@@ -33,6 +31,27 @@ function ManageUsers() {
 
   //Pagination
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        console.log("fetch lancé");
+
+        const response = await authFetch("/users");
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("data :", data);
+        setUsers(data);
+      } catch (error) {
+        console.error("Données api users non récupérées :", error);
+      }
+    };
+
+    getUsers();
+  }, []);
 
   return (
     <>
@@ -67,18 +86,32 @@ function ManageUsers() {
               </tr>
             </thead>
             <tbody>
-              {mockUsers.map(user => (
-                <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
-              ))}
+              {users ? (
+                users.map(user => (
+                  <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-6 text-sm text-gray-500">
+                    Chargement des utilisateurs...
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
-          {mockUsers.map(user => (
-            <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
-          ))}
+          {users ? (
+            users.map(user => (
+              <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
+            ))
+          ) : (
+            <div className="p-6 text-center text-sm text-gray-500">
+              Chargement des utilisateurs...
+            </div>
+          )}
         </div>
 
         {/* Bloc Pagination unique et partagé */}

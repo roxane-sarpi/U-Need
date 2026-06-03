@@ -8,6 +8,8 @@ const { hashPassword, verifyPassword, verifyToken } = require("./auth");
 
 //Users
 const userControllers = require("./controllers/userControllers");
+//A rajouter dans private route
+router.get("/users", userControllers.browse);
 router.post("/users", hashPassword, userControllers.add);
 router.post(
   "/users/login",
@@ -32,6 +34,7 @@ router.get("/categories/:id", CategoryControllers.read);
 // Authentication wall : verifyToken is activated for each route after this line
 router.use(verifyToken);
 
+//Requests
 const requestControllers = require("./controllers/requestControllers");
 router.post("/requests", requestControllers.addRequest);
 router.get("/requests/helper/:id", requestControllers.browseByHelper);
