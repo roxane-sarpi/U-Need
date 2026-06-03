@@ -1,7 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FormPhoto from './FormPhoto';
+import { useAuth } from '../context/AuthContext';
+import { authFetch } from '../services/api';
 
 function Adform({ selectedCoins, setSelectedCoins }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -12,7 +17,16 @@ function Adform({ selectedCoins, setSelectedCoins }) {
   });
 
   const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    authFetch('/categories')
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch((err) => console.error('Erreur chargement catégories :', err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,11 +44,41 @@ function Adform({ selectedCoins, setSelectedCoins }) {
     const files = Array.from(e.target.files);
     const newImageUrls = files.map((file) => URL.createObjectURL(file));
     setImages((prevImages) => [...prevImages, ...newImageUrls].slice(0, 3));
+    setImageFiles((prevFiles) => [...prevFiles, ...files].slice(0, 3));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Données soumises :', { ...formData, images });
+
+    const formPayload = new FormData();
+    formPayload.append('title', formData.title);
+    formPayload.append('description', formData.description);
+    formPayload.append('zip_code', formData.zipCode);
+    formPayload.append('city', formData.city);
+    formPayload.append('urgent', formData.isUrgent ? 1 : 0);
+    formPayload.append('id_category', formData.category);
+    formPayload.append('points', selectedCoins);
+    formPayload.append('statut', 'disponible');
+    formPayload.append('id_user', user.id);
+    formPayload.append('date_execution', '');
+    if (imageFiles[0]) formPayload.append('image_1', imageFiles[0]);
+    if (imageFiles[1]) formPayload.append('image_2', imageFiles[1]);
+    if (imageFiles[2]) formPayload.append('image_3', imageFiles[2]);
+
+    try {
+      const res = await authFetch('/ads', {
+        method: 'POST',
+        body: formPayload,
+      });
+
+      if (res.ok) {
+        navigate('/profile', { state: { message: 'Annonce postée !' } });
+      } else {
+        console.error('Erreur création annonce :', res.status);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Styles pour les boutons de pièces
@@ -76,18 +120,9 @@ function Adform({ selectedCoins, setSelectedCoins }) {
             onChange={handleChange}
           >
             <option value="" disabled>Sélectionnez une catégorie</option>
-            <option value="demenagement">Déménagement</option>
-            <option value="bricolage">Bricolage</option>
-            <option value="aide-menagere">Aide ménagère</option>
-            <option value="aide-seniors">Aide aux séniors</option>
-            <option value="informatique">Informatique</option>
-            <option value="petits-travaux">Petit travaux</option>
-            <option value="course">Course</option>
-            <option value="animaux">Animaux</option>
-            <option value="jardinerie">Jardinerie</option>
-            <option value="transport">Transport</option>
-            <option value="aide-scolaire">Aide scolaire</option>
-            <option value="autre">Autre</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
           </select>
         </div>
 

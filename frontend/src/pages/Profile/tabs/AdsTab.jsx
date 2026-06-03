@@ -1,4 +1,5 @@
 import AdRow from '../../../components/profile/AdRow'
+import { API_URL } from '../../../components/services/api'
 
 function AdsTab({ ads }) {
   if (ads.length === 0)
@@ -12,6 +13,7 @@ function AdsTab({ ads }) {
       coins={ad.points}
       title={ad.title}
       desc={ad.description}
+      image={ad.image_1 ? `${API_URL}${ad.image_1}` : null}
     />
   ))
 }

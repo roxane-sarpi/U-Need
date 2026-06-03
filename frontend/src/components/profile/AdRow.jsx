@@ -20,7 +20,7 @@ function IconBtn({ children }) {
   )
 }
 
-function AdRow({ category, status, coins, title, desc }) {
+function AdRow({ category, status, coins, title, desc, image }) {
   const st = STATUS_STYLE[status] ?? STATUS_STYLE['disponible']
   const showEye   = status !== 'brouillon'
   const showEdit  = status !== 'terminé'
@@ -29,8 +29,11 @@ function AdRow({ category, status, coins, title, desc }) {
 
   return (
     <div className="flex items-center gap-3 border border-gray-100 rounded-xl p-4">
-      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg shrink-0 flex items-center justify-center text-xs text-gray-400 font-medium" style={HATCH_BG}>
-        IMAGE
+      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg shrink-0 overflow-hidden">
+        {image
+          ? <img src={image} alt={title} className="w-full h-full object-cover" />
+          : <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-medium" style={HATCH_BG}>IMAGE</div>
+        }
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap gap-1.5 mb-1.5">
