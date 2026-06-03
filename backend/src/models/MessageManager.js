@@ -23,6 +23,10 @@ class MessageManager extends AbstractManager {
     read(id_request) {
         return this.database.query(
             `SELECT 
+            messages.id,
+            messages.id_sender,
+            messages.id_receiver,
+            messages.id_request,
             messages.content, 
             messages.created_at, 
             users.firstname, 
