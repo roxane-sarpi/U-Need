@@ -14,7 +14,7 @@ class RequestManager extends AbstractManager {
 
   findByHelper(id_helper) {
     return this.database.query(
-      `SELECT r.*, a.title, a.points, c.name as category_name,
+      `SELECT r.*, r.status AS state, a.title, a.points, c.name as category_name,
               u.firstname as needer_firstname, u.lastname as needer_lastname
        FROM ${this.table} r
        JOIN ads a ON a.id = r.id_ad
@@ -36,6 +36,24 @@ class RequestManager extends AbstractManager {
       [id_user, id_user, id_user]
     );
   }
+
+  findConversationsByUser(id_user) {
+  return this.database.query(
+    `SELECT 
+        r.*, 
+        r.status AS status, 
+        a.title AS ad_title,
+        IF(r.id_user = ?, h.firstname, u.firstname) AS firstname,
+        IF(r.id_user = ?, h.lastname, u.lastname) AS lastname
+     FROM ${this.table} r
+     JOIN ads a ON a.id = r.id_ad
+     LEFT JOIN users u ON u.id = r.id_user
+     LEFT JOIN users h ON h.id = r.id_helper
+     WHERE r.id_helper = ? OR r.id_user = ?
+     ORDER BY r.id DESC`,
+    [id_user, id_user, id_user, id_user]
+  );
+}
 
   update(request) {
     return this.database.query(

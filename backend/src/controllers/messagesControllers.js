@@ -45,13 +45,8 @@ const readConversation = (req, res) => {
   models.messages
     .read(id_request)
     .then(([rows]) => {
-      console.log(rows);
-      if (rows.length === 0) {
-        res.status(404).send("Aucun message trouvé pour cette annonce");
-      } else {
-        console.log("Messages récupérés :", rows);
-        res.json(rows);
-      }
+      console.log("Messages récupérés :", rows);
+      res.json(rows || []);
     })
     .catch((err) => {
       console.error(err);
