@@ -19,6 +19,7 @@ import AdDetail from './pages/AdDetail';
 import Catalog from './pages/Catalog';
 import FAQ from './pages/FAQ';
 import ManageAds from './pages/Admin/ManageAds';
+import RequireAdmin from './components/routes/RequireAdmin';
 
 function App() {
   return (
@@ -48,8 +49,8 @@ function App() {
 
 
         {/* Layout admin */}
-        {/* handle est utile pour attacher des métadonnées à une route sans les mettre dans le composant lui-même. */}
-        <Route element={<AdminLayout />}>
+        {/* Il faudra se logguer avec les identifiants admin de la bdd */}
+        <Route element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
           <Route path="/admin/dashboard" element={<Dashboard />}/>
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/ads" element={<ManageAds />} />

@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS users (
     zip_code  VARCHAR(10),
     city      VARCHAR(100) NOT NULL,
     role      ENUM('admin', 'user', 'moderateur') DEFAULT 'user',
-    points    INT DEFAULT 0
+    points    INT DEFAULT 10,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 2. Table ads (dépend de categories et users)
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS ads (
     id_user        INT,
     date_execution DATE,
     date_creation  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_category FOREIGN KEY (id_category) REFERENCES categories(id),
     CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id)
 );
@@ -58,6 +61,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     content       VARCHAR(500) NOT NULL,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     has_been_read BOOLEAN DEFAULT FALSE,
     id_user       INT,
     CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id)
@@ -70,6 +74,7 @@ CREATE TABLE IF NOT EXISTS requests (
     id_user       INT,
     status        ENUM('signalé', 'en cours', 'terminé') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_adRequest FOREIGN KEY (id_ad)     REFERENCES ads(id),
     CONSTRAINT fk_helper    FOREIGN KEY (id_helper) REFERENCES users(id),
     CONSTRAINT fk_needer    FOREIGN KEY (id_user)   REFERENCES users(id)

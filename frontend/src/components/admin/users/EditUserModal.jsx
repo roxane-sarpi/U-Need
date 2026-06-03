@@ -1,20 +1,65 @@
 import { useState } from "react";
 import { X, ShieldAlert, Trash2} from "lucide-react";
+import { authFetch } from "../../services/api";
 
-function EditUserModal({ modalRef, user }) {
+function EditUserModal({ modalRef, user, onSuccess }) {
   // États locaux pour manipuler le rôle et l'ajustement du solde
   const [role, setRole] = useState(user?.role || "USER");
   const [pointsAdjustment, setPointsAdjustment] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
-    // Logique V1 / Simulation de modification
-    console.log(`Modifications enregistrées pour ${user.name}: Rôle ${role}, Points: ${pointsAdjustment}`);
-    modalRef.current?.close();
-  };
+    const formData = new FormData(e.target);
+    const rawValues = Object.fromEntries(formData);
+    const formValues = {
+      ...rawValues,
+      points: rawValues.points !== "" ? Number(rawValues.points) : undefined,
+    };
+
+    if (formValues.points === undefined) {
+      delete formValues.points;
+    }
+
+    try {
+      setIsSaving(true);
+      setError("");
+      setFeedback("");
+
+      const response = await authFetch(`/users/${user?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la mise à jour";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      await response.json();
+      setFeedback("Utilisateur mis à jour avec succès.");
+      setError("");
+      if (onSuccess) {
+        await onSuccess();
+      }
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 900);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de mettre à jour le compte. Vérifiez les données et réessayez.");
+      setFeedback("");
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   const handleAnonymize = () => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer et anonymiser les données de ${user.name} ? Cette action est irréversible.`)) {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer et anonymiser les données de ${user.firstname} ${user.lastname} ? Cette action est irréversible.`)) {
       console.log(`Utilisateur ${user.id} anonymisé conformément au RGPD.`);
       modalRef.current?.close();
     }
@@ -44,7 +89,7 @@ function EditUserModal({ modalRef, user }) {
             Modifier le membre
           </h3>
           <p className="text-xs text-gray-400 mt-0.5">
-            Actions rapides sur le compte de <span className="font-bold text-gray-700">{user?.name}</span>
+            Actions rapides sur le compte de <span className="font-bold text-gray-700">{user?.firstname} {user?.lastname}</span>
           </p>
         </div>
 
@@ -56,14 +101,15 @@ function EditUserModal({ modalRef, user }) {
             <label className="label py-1">
               <span className="label-text font-bold text-gray-600 text-xs">Rôle sur la plateforme</span>
             </label>
-            <select 
+            <select
+              name = "role" 
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="select select-bordered select-sm w-full rounded-xl bg-white border-gray-200 text-xs text-gray-700 font-semibold"
             >
-              <option value="USER">Utilisateur (USER)</option>
-              <option value="MODÉRATEUR">Modérateur</option>
-              <option value="ADMIN">Administrateur</option>
+              <option value="user">Utilisateur</option>
+              {/* <option value="moderateur">Modérateur</option> */}
+              <option value="admin">Administrateur</option>
             </select>
           </div>
 
@@ -71,10 +117,11 @@ function EditUserModal({ modalRef, user }) {
           <div className="form-control">
             <label className="label py-1 flex justify-between items-center">
               <span className="label-text font-bold text-gray-600 text-xs">Ajuster le solde</span>
-              <span className="text-[11px] font-medium text-gray-400">Solde actuel : {user?.balance} UC</span>
+              <span className="text-[11px] font-medium text-gray-400">Solde actuel : {user?.points} UC</span>
             </label>
             <div className="flex items-center gap-2">
-              <input 
+              <input
+                name = "points" 
                 type="number" 
                 placeholder="Ex: 50 ou -30"
                 value={pointsAdjustment === 0 ? "" : pointsAdjustment}
@@ -86,6 +133,12 @@ function EditUserModal({ modalRef, user }) {
           </div>
 
           <div className="divider before:bg-gray-50 after:bg-gray-50 my-2"></div>
+
+          {(feedback || error) && (
+            <div className={`rounded-xl p-3 text-sm ${feedback ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-rose-50 text-rose-700 border border-rose-100"}`}>
+              {feedback || error}
+            </div>
+          )}
 
           {/* 3. ZONE DANGER : SUPPRESSION RGPD */}
           <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-start justify-between gap-3">
@@ -115,8 +168,8 @@ function EditUserModal({ modalRef, user }) {
             >
               Annuler
             </button>
-            <button type="submit" className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
-              Enregistrer
+            <button type="submit" disabled={isSaving} className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
+              {isSaving ? "Enregistrement..." : "Enregistrer"}
             </button>
           </div>
         </form>

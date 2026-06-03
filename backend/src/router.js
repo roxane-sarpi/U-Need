@@ -2,14 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 
-const { hashPassword, verifyPassword, verifyToken } = require("./auth");
+const { hashPassword, verifyPassword, verifyToken, requireAdmin } = require("./auth");
 
 //Public routes
 
 //Users
 const userControllers = require("./controllers/userControllers");
-//A rajouter dans private route
-router.get("/users", userControllers.browse);
 router.post("/users", hashPassword, userControllers.add);
 router.post(
   "/users/login",
@@ -45,6 +43,7 @@ router.delete("/requests/:id", requestControllers.destroyRequest);
 router.put("/requests/:id", requestControllers.updateRequest);
 
 //Users
+router.get("/users", requireAdmin, userControllers.browse);
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);

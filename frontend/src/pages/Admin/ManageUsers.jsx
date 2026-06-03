@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import NewUserModal from "../../components/admin/users/NewUserModal";
 import PageHeader from "../../components/admin/PageHeader";
 import UserDesktopRow from "../../components/admin/users/UserDesktopRow";
@@ -6,15 +6,12 @@ import UserFilters from "../../components/admin/users/UserFilters";
 import EditUserModal from "../../components/admin/users/EditUserModal";
 import UserMobileCard from "../../components/admin/users/UserMobileCard";
 import Pagination from "../../components/ui/Pagination";
-// import { useEffect } from "react";
 import { authFetch } from "../../components/services/api";
-import { useEffect } from "react";
-
 
 function ManageUsers() {
 
-
   const [users, setUsers] = useState(null);
+  const [fetchError, setFetchError] = useState("");
 
   // 1. On crée une boîte vide pour stocker notre modale
   const modalRef = useRef(null);
@@ -32,25 +29,28 @@ function ManageUsers() {
   //Pagination
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
     const getUsers = async () => {
-      try {
-        console.log("fetch lancé");
-
-        const response = await authFetch("/users");
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("data :", data);
-        setUsers(data);
-      } catch (error) {
-        console.error("Données api users non récupérées :", error);
+    try {
+      const response = await authFetch("/users");
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
       }
+
+      const data = await response.json();
+      setUsers(data);
+      setFetchError("");
+    } catch (error) {
+      console.error("Données api users non récupérées :", error);
+      setFetchError("Impossible de récupérer la liste des utilisateurs. Vérifiez votre connexion et réessayez.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      await getUsers();
     };
 
-    getUsers();
+    void fetchUsers();
   }, []);
 
   return (
@@ -67,6 +67,12 @@ function ManageUsers() {
 
       {/* Zone de filtrage */}
       <UserFilters />
+
+      {fetchError && (
+        <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
+          {fetchError}
+        </div>
+      )}
 
       {/* Conteneur de données unique */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -127,7 +133,7 @@ function ManageUsers() {
 
       </div>
       <NewUserModal modalRef={modalRef}/>
-      <EditUserModal modalRef={detailsModalRef} user={selectedUser}/>
+      <EditUserModal modalRef={detailsModalRef} user={selectedUser} onSuccess={getUsers} />
     </>
   );
 }
