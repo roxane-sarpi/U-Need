@@ -93,6 +93,18 @@ const browseHistoryByUser = (req, res) => {
     });
 };
 
+const browseConversationsByUser = (req, res) => {
+  models.request
+    .findConversationsByUser(req.params.id)
+    .then(([rows]) => {
+      res.json(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 const browseByHelper = (req, res) => {
   models.request
     .findByHelper(req.params.id)
@@ -112,5 +124,6 @@ exports = module.exports = {
     browseByHelper,
     browseHistoryByUser,
     updateRequest,
-    destroyRequest
+    destroyRequest,
+    browseConversationsByUser,
 };

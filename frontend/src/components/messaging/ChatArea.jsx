@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
 import { Link } from 'react-router-dom';
 
-function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, user }) {
+function ChatArea({ request, messages, currentUserId, onSendMessage }) {
     const [text, setText] = useState('');
 
     const statusStyles = {
         'en cours': 'text-accent-orange-dark font-medium bg-accent-orange-light',
-        'terminé': 'text-emerald-600 font-medium bg-emerald-100',   // Vert pour ce qui est fini
-        'signalé': 'text-red-600 font-bold bg-red-100' // Rouge clignotant si problème
+        'terminé': 'text-emerald-600 font-medium bg-emerald-100',
+        'signalé': 'text-red-600 font-bold bg-red-100'
     };
 
     const statusTexts = {
@@ -17,23 +17,16 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, us
         'signalé': 'Signalée'
     };
 
-    // 1. On trouve l'annonce correspondante à CETTE conversation spécifique
-    const currentAd = mockAds.find(ad => ad.id === request.id_ad);
-
-    const userName = user ? user.name : "Utilisateur";
-
-    const [showChatOnMobile, setShowChatOnMobile] = useState(false);
+    const adTitle = request.ad_title || request.title || 'Annonce';
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!text.trim()) return;
 
-        onSendMessage(text); // On envoie le texte au parent
-        setText(''); // On vide l'input
+        onSendMessage(text);
+        setText('');
     };
 
-    // Récupération sécurisée du titre et de la première lettre pour l'avatar
-    const adTitle = currentAd ? currentAd.title : 'Annonce';
     const firstLetter = adTitle.charAt(0).toUpperCase();
 
     return (
@@ -47,10 +40,10 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, mockAds, us
                     <div>
                         <h2 className="text-xl font-bold">{adTitle}</h2>
                         <p className="text-xs text-gray-500">
-                            <Link to={`/ads/${currentAd.id}`}>Annonce liée : <span className="underline">{adTitle}</span></Link>
+                            <Link to={`/ads/${request.id_ad}`}>Annonce liée : <span className="underline">{adTitle}</span></Link>
                         </p>
-                        <span className={`px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase ${statusStyles[request.state] || 'bg-gray-100 text-gray-700'}`}>
-                            {statusTexts[request.state] || 'État inconnu'}
+                        <span className={`px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase ${statusStyles[request.status] || 'bg-gray-100 text-gray-700'}`}>
+                            {statusTexts[request.status] || 'État inconnu'}
                         </span>
                     </div>
                 </div>
