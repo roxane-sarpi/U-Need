@@ -42,6 +42,13 @@ const browseByUser = (req, res) => {
 
 const add = (req, res) => {
   const ad = req.body;
+  ad.date_execution = ad.date_execution || null;
+
+  if (req.files) {
+    ad.image_1 = req.files.image_1 ? `/uploads/${req.files.image_1[0].filename}` : null;
+    ad.image_2 = req.files.image_2 ? `/uploads/${req.files.image_2[0].filename}` : null;
+    ad.image_3 = req.files.image_3 ? `/uploads/${req.files.image_3[0].filename}` : null;
+  }
 
   models.ad
   .insert(ad)

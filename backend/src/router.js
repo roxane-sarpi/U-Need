@@ -47,7 +47,8 @@ router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);
 
 //Ads
-router.post("/ads", adControllers.add);
+const upload = require('./middlewares/upload');
+router.post("/ads", upload.fields([{ name: 'image_1', maxCount: 1 }, { name: 'image_2', maxCount: 1 }, { name: 'image_3', maxCount: 1 }]), adControllers.add);
 router.delete("/ads/:id", adControllers.destroy);
 router.put("/ads/:id", adControllers.edit);
 

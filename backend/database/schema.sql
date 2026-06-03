@@ -28,9 +28,10 @@ CREATE TABLE IF NOT EXISTS users (
     points    INT DEFAULT 0
 );
 
-INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
-(1, 'Test', 'User', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$p2AX9GTaCMB9S8D6LOXAJQ$yI2oASEA1LIqkub4LbiPCaZopICTqdew1n7484VwJBQ', '0600000001', '75001', 'Paris', 'user', 10),
-(2, 'Admin', 'User', 'admin@test.com', '$argon2id$v=19$m=65536,t=5,p=1$p2AX9GTaCMB9S8D6LOXAJQ$yI2oASEA1LIqkub4LbiPCaZopICTqdew1n7484VwJBQ', '0600000002', '75002', 'Paris', 'admin', 0);
+INSERT INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
+(1, 'Test', 'User', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000001', '75001', 'Paris', 'user', 10),
+(2, 'Admin', 'User', 'admin@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000002', '75002', 'Paris', 'admin', 0)
+ON DUPLICATE KEY UPDATE password = VALUES(password);
 
 -- 2. Table ads (dépend de categories et users)
 CREATE TABLE IF NOT EXISTS ads (
@@ -92,6 +93,6 @@ CREATE TABLE IF NOT EXISTS evaluations (
     CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id)
 );
 
-INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role) VALUES
+INSERT IGNORE INTO users (firstname, lastname, email, password, phone, zip_code, city, role) VALUES
 ('Wendy', 'test', 'wendy@gmail.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user' ),
 ('admin', 'admin', 'admin@gmail.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin' );

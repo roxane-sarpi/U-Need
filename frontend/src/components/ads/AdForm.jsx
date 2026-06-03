@@ -17,6 +17,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
   });
 
   const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [categories, setCategories] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -43,35 +44,35 @@ function Adform({ selectedCoins, setSelectedCoins }) {
     const files = Array.from(e.target.files);
     const newImageUrls = files.map((file) => URL.createObjectURL(file));
     setImages((prevImages) => [...prevImages, ...newImageUrls].slice(0, 3));
+    setImageFiles((prevFiles) => [...prevFiles, ...files].slice(0, 3));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      title: formData.title,
-      description: formData.description,
-      zip_code: formData.zipCode,
-      city: formData.city,
-      urgent: formData.isUrgent ? 1 : 0,
-      id_category: formData.category,
-      points: selectedCoins,
-      statut: 'disponible',
-      id_user: user.id,
-      date_execution: null,
-      image_1: images[0] || null,
-      image_2: images[1] || null,
-      image_3: images[2] || null,
-    };
+    const formPayload = new FormData();
+    formPayload.append('title', formData.title);
+    formPayload.append('description', formData.description);
+    formPayload.append('zip_code', formData.zipCode);
+    formPayload.append('city', formData.city);
+    formPayload.append('urgent', formData.isUrgent ? 1 : 0);
+    formPayload.append('id_category', formData.category);
+    formPayload.append('points', selectedCoins);
+    formPayload.append('statut', 'disponible');
+    formPayload.append('id_user', user.id);
+    formPayload.append('date_execution', '');
+    if (imageFiles[0]) formPayload.append('image_1', imageFiles[0]);
+    if (imageFiles[1]) formPayload.append('image_2', imageFiles[1]);
+    if (imageFiles[2]) formPayload.append('image_3', imageFiles[2]);
 
     try {
       const res = await authFetch('/ads', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: formPayload,
       });
 
       if (res.ok) {
-        navigate('/ads');
+        navigate('/profile', { state: { message: 'Annonce postée !' } });
       } else {
         console.error('Erreur création annonce :', res.status);
       }
