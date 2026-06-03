@@ -82,3 +82,7 @@ CREATE TABLE IF NOT EXISTS evaluations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id)
 );
+
+INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role) VALUES
+('Wendy', 'test', 'wendy@gmail.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user' ),
+('admin', 'admin', 'admin@gmail.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin' );
