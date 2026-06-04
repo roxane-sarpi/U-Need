@@ -28,11 +28,9 @@ function UserDesktopRow({ user, onEdit }) {
       <td className="text-xs text-gray-400 font-medium">{formattedDate}</td>
       <td className="text-right">
         <div className="inline-flex items-center gap-1">
-          {user.status !== "BANNI" && (
             <button onClick={onEdit} className="btn btn-square btn-xs btn-outline border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-ink rounded-lg shadow-sm">
               <Pencil size={15} />
             </button>
-          )}
         </div>
       </td>
     </tr>

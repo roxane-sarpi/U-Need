@@ -172,9 +172,9 @@ function EditUserModal({ modalRef, user, onSuccess }) {
             </div>
           )}
 
-          {/* 3. ZONE DANGER : SUPPRESSION RGPD */}
-          <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-start justify-between gap-3">
-            <div className="space-y-1">
+          {/* 3. SUPPRESSION */}
+          <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-center justify-between gap-3">
+            <div className="flex items-center">
               <h4 className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
                 <ShieldAlert size={14} /> Supprimer le compte
               </h4>

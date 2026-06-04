@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect } from "react";
-import NewUserModal from "../../components/admin/users/NewUserModal";
+import { useRef, useState, useEffect, useMemo } from "react";
 import PageHeader from "../../components/admin/PageHeader";
 import UserDesktopRow from "../../components/admin/users/UserDesktopRow";
 import UserFilters from "../../components/admin/users/UserFilters";
@@ -10,26 +9,31 @@ import { authFetch } from "../../components/services/api";
 
 function ManageUsers() {
 
+  //Variables
   const [users, setUsers] = useState(null);
+  const [usersCount,setUsersCount] = useState(0);
   const [fetchError, setFetchError] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
 
-  // 1. On crée une boîte vide pour stocker notre modale
-  const modalRef = useRef(null);
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Création d'une boîte vide pour stocker notre modale
   const detailsModalRef = useRef(null);
 
   // État pour savoir quel utilisateur afficher dans la modale de détails
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Fonction magique déclenchée au clic sur l'œil
+  // Fonctions
   const handleOpenDetails = (user) => {
     setSelectedUser(user); // On mémorise le user cliqué
     detailsModalRef.current?.showModal(); // On ouvre la modale d'historique
   };
 
-  //Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-
-    const getUsers = async () => {
+  const getUsers = async () => {
     try {
       const response = await authFetch("/users");
       if (!response.ok) {
@@ -38,6 +42,7 @@ function ManageUsers() {
 
       const data = await response.json();
       setUsers(data);
+      setUsersCount(data.length);
       setFetchError("");
     } catch (error) {
       console.error("Données api users non récupérées :", error);
@@ -53,20 +58,57 @@ function ManageUsers() {
     void fetchUsers();
   }, []);
 
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+
+    const q = searchText.trim().toLowerCase();
+
+    const filtered = users.filter((u) => {
+      const matchesText = q === "" || [u.firstname, u.lastname, u.email, u.city]
+        .filter(Boolean)
+        .some((s) => s.toLowerCase().includes(q));
+
+      const matchesRole = selectedRole ? (u.role && u.role.toLowerCase() === selectedRole.toLowerCase()) : true;
+
+      return matchesText && matchesRole;
+    });
+
+    if (sortOrder === "recent") {
+      filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (sortOrder === "oldest") {
+      filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+
+    return filtered;
+  }, [users, searchText, selectedRole, sortOrder]);
+
+  const filteredCount = filteredUsers.length;
+
+  const handleResetFilters = () => {
+    setSearchText("");
+    setSelectedRole("");
+    setSortOrder("");
+    setCurrentPage(1);
+  };
+
   return (
     <>
       {/* En-tête de page */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageHeader title={"Utilisateurs"} subtitle={"1 247 utilisateurs enregistrés"} />
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button onClick={() => modalRef.current?.showModal()} className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
-            <span>+</span> <span>Nouvel utilisateur</span>
-          </button>
-        </div>
+
+        <PageHeader title={"Utilisateurs"} subtitle={`${usersCount} utilisateurs enregistrés`} />
       </div>
 
       {/* Zone de filtrage */}
-      <UserFilters />
+      <UserFilters
+        searchText={searchText}
+        onSearchTextChange={setSearchText}
+        selectedRole={selectedRole}
+        onRoleChange={setSelectedRole}
+        sortOrder={sortOrder}
+        onSortOrderChange={setSortOrder}
+        onReset={handleResetFilters}
+      />
 
       {fetchError && (
         <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
@@ -92,14 +134,20 @@ function ManageUsers() {
               </tr>
             </thead>
             <tbody>
-              {users ? (
-                users.map(user => (
+              {users === null ? (
+                <tr>
+                  <td colSpan="7" className="text-center py-6 text-sm text-gray-500">
+                    Chargement des utilisateurs...
+                  </td>
+                </tr>
+              ) : filteredUsers.length ? (
+                filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(user => (
                   <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
                 ))
               ) : (
                 <tr>
                   <td colSpan="7" className="text-center py-6 text-sm text-gray-500">
-                    Chargement des utilisateurs...
+                    {fetchError ? fetchError : 'Aucun utilisateur trouvé.'}
                   </td>
                 </tr>
               )}
@@ -109,14 +157,14 @@ function ManageUsers() {
 
         {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
-          {users ? (
-            users.map(user => (
+          {users === null ? (
+            <div className="p-6 text-center text-sm text-gray-500">Chargement des utilisateurs...</div>
+          ) : filteredUsers.length ? (
+            filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(user => (
               <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
             ))
           ) : (
-            <div className="p-6 text-center text-sm text-gray-500">
-              Chargement des utilisateurs...
-            </div>
+            <div className="p-6 text-center text-sm text-gray-500">{fetchError ? fetchError : 'Aucun utilisateur trouvé.'}</div>
           )}
         </div>
 
@@ -124,15 +172,14 @@ function ManageUsers() {
         {/* <TablePagination /> */}
         <Pagination 
           currentPage={currentPage}
-          pageCount={3} // Par exemple, pour afficher 3 pages de mock data
+          pageCount={Math.max(1, Math.ceil(filteredCount / itemsPerPage))}
           onPageChange={(page) => setCurrentPage(page)}
-          isAdmin={true} // Activation magique du mode Admin !
-          totalCount={1247}
-          itemsPerPage={5}
+          isAdmin={true}
+          totalCount={filteredCount}
+          itemsPerPage={itemsPerPage}
         />
 
       </div>
-      <NewUserModal modalRef={modalRef}/>
       <EditUserModal modalRef={detailsModalRef} user={selectedUser} onSuccess={getUsers} />
     </>
   );
