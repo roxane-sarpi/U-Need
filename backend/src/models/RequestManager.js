@@ -43,6 +43,7 @@ class RequestManager extends AbstractManager {
         r.*, 
         r.status AS status, 
         a.title AS ad_title,
+        a.id_user AS ad_owner_id,
         IF(r.id_user = ?, h.firstname, u.firstname) AS firstname,
         IF(r.id_user = ?, h.lastname, u.lastname) AS lastname
      FROM ${this.table} r
@@ -54,6 +55,16 @@ class RequestManager extends AbstractManager {
     [id_user, id_user, id_user, id_user]
   );
 }
+
+  findById(id_request) {
+    return this.database.query(
+      `SELECT r.*, a.id_user AS ad_owner_id
+       FROM ${this.table} r
+       JOIN ads a ON a.id = r.id_ad
+       WHERE r.id = ?`,
+      [id_request]
+    );
+  }
 
   update(request) {
     return this.database.query(

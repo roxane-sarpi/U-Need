@@ -23,8 +23,12 @@ const add = (req, res) => {
       res.status(201).send({ ...user, id: result.insertId });
     })
     .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
+      if (err.code === 'ER_DUP_ENTRY') {
+        res.status(409).json({ message: 'mail déjà utilisé' });
+      } else {
+        console.error(err);
+        res.sendStatus(500);
+      }
     });
 };
 
