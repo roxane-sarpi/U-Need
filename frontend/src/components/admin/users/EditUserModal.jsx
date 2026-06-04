@@ -58,10 +58,42 @@ function EditUserModal({ modalRef, user, onSuccess }) {
     }
   }
 
-  const handleAnonymize = () => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer et anonymiser les données de ${user.firstname} ${user.lastname} ? Cette action est irréversible.`)) {
-      console.log(`Utilisateur ${user.id} anonymisé conformément au RGPD.`);
-      modalRef.current?.close();
+  const handleDelete = async () => {
+    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement ${user.firstname} ${user.lastname} ? Cette action est irréversible.`)) {
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setError("");
+      setFeedback("");
+
+      const response = await authFetch(`/users/${user?.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la suppression";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      setFeedback("Utilisateur supprimé avec succès.");
+      setError("");
+
+      if (onSuccess) {
+        await onSuccess();
+      }
+
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 900);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de supprimer l'utilisateur. Réessayez plus tard.");
+      setFeedback("");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -146,13 +178,13 @@ function EditUserModal({ modalRef, user, onSuccess }) {
               <h4 className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
                 <ShieldAlert size={14} /> Supprimer le compte
               </h4>
-              <p className="text-[11px] text-rose-600/80 font-medium leading-relaxed">
+              {/* <p className="text-[11px] text-rose-600/80 font-medium leading-relaxed">
                 Efface définitivement les infos privées. Le profil deviendra anonyme pour préserver l'historique de l'application.
-              </p>
+              </p> */}
             </div>
             <button 
               type="button" 
-              onClick={handleAnonymize}
+              onClick={handleDelete}
               className="btn btn-square btn-sm btn-outline border-rose-200 hover:bg-rose-600 hover:border-rose-600 text-rose-500 hover:text-white rounded-lg shadow-none flex-none"
             >
               <Trash2 size={15} />
