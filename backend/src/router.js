@@ -38,7 +38,6 @@ router.get("/requests/helper/:id", requestControllers.browseByHelper);
 router.get("/requests/history/:id", requestControllers.browseHistoryByUser);
 router.get("/requests/:id", requestControllers.readRequest);
 router.get("/requests", requestControllers.browseRequest);
-router.delete("/requests/:id", requestControllers.destroyRequest);
 router.put("/requests/:id", requestControllers.updateRequest);
 
 //Users
