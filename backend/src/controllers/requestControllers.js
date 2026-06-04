@@ -64,39 +64,6 @@ const updateRequest = (req, res) => {
         });
 }
 
-const destroyRequest = async (req, res) => {
-  const requestId = req.params.id;
-  const currentUserId = Number(req.payload?.sub);
-
-  try {
-    const [[request]] = await models.request.findById(requestId);
-
-    if (!request) {
-      return res.sendStatus(404);
-    }
-
-    const isAdOwner = request.ad_owner_id === currentUserId;
-    const isHelper = request.id_helper === currentUserId;
-
-    if (!isAdOwner && !(isHelper && request.status !== 'en cours')) {
-      return res.status(403).send("Vous n'êtes pas autorisé à supprimer cette requête");
-    }
-
-    // then delete the request
-    const [result] = await models.request.delete(requestId);
-
-    if (result.affectedRows === 0) {
-      return res.sendStatus(404);
-    }
-
-    return res.sendStatus(204);
-  } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
-  }
-};
-
-
 const browseHistoryByUser = (req, res) => {
   models.request
     .findHistoryByUser(req.params.id)
@@ -140,6 +107,5 @@ exports = module.exports = {
     browseByHelper,
     browseHistoryByUser,
     updateRequest,
-    destroyRequest,
     browseConversationsByUser,
 };
