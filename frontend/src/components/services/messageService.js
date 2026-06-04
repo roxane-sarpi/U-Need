@@ -18,3 +18,16 @@ export const sendMessage = (payload) =>
     if (res.status === 201) return { success: true };
     return res.json().catch(() => ({ success: true }));
   });
+
+// Supprimer une conversation existante
+export const deleteConversation = (requestId) =>
+  authFetch(`/messages/conversation/${requestId}`, {
+    method: "DELETE",
+  }).then((res) => {
+    if (!res.ok) {
+      return res.text().then((text) => {
+        throw new Error(text || "Erreur lors de la suppression de la conversation");
+      });
+    }
+    return true;
+  });

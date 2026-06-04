@@ -54,23 +54,45 @@ const readConversation = (req, res) => {
     });
 };
 
-const deleteConversation = (req, res) => {
+const deleteConversation = async (req, res) => {
   const { id_request } = req.params;
+  const currentUserId = Number(req.payload?.sub);
 
-  models.messages
-    .delete(id_request)
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        res.status(404).send("Aucun message à supprimer");
-      } else {
-        res.status(200).send(`Conversation ${id_request} supprimée avec succès`);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
-}
+  try {
+    const [[request]] = await models.request.findById(id_request);
+
+    if (!request) {
+      return res.status(404).send("Conversation introuvable");
+    }
+
+    const isAdOwner = request.ad_owner_id === currentUserId;
+    const isHelper = request.id_helper === currentUserId;
+
+    if (!isAdOwner && !(isHelper && request.status !== 'en cours')) {
+      return res.status(403).send("Vous n'êtes pas autorisé à supprimer cette conversation");
+    }
+
+    const [result] = await models.messages.delete(id_request);
+
+    if (result.affectedRows === 0) {
+      // no messages, but we may still want to remove the request if allowed
+      // fall through to attempt request deletion when appropriate
+    }
+
+    // If the current user is allowed to delete the request as well (ad owner or helper when not 'en cours'), delete it
+    const shouldDeleteRequest = isAdOwner || (isHelper && request.status !== 'en cours');
+
+    if (shouldDeleteRequest) {
+      await models.request.delete(id_request);
+      return res.status(200).send(`Conversation et requête ${id_request} supprimées`);
+    }
+
+    return res.status(200).send(`Conversation ${id_request} supprimée avec succès`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erreur serveur lors de la suppression de la conversation");
+  }
+};
 
 module.exports = {
   send,
