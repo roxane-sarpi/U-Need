@@ -49,7 +49,7 @@ function UserFilters({
       </div>
 
       <div className="flex gap-2">
-        <button type="button" onClick={onReset} className="btn btn-sm btn-ghost rounded-xl text-xs font-bold text-gray-500">Réinitialiser</button>
+        <button type="button" onClick={onReset} className="btn btn-sm btn-ghost rounded-xl text-xs font-bold bg-blue-600 border-blue-600 text-white hover:bg-blue-700">Réinitialiser</button>
       </div>
     </div>
   );
