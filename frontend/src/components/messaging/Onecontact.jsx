@@ -4,7 +4,8 @@ export default function Onecontact({ request, isActive, onClick, canDelete, onDe
 
     const statusTexts = {
     'en cours': 'Discussion en cours...',
-    'terminé': 'Aide terminée',
+    'accepter': 'Aide acceptée',
+    'refuser': 'Aide refusée',
     'signalé': '⚠️ Discussion signalée'
   };
 
@@ -39,7 +40,6 @@ export default function Onecontact({ request, isActive, onClick, canDelete, onDe
                     <p className="text-[11px] text-gray-400 font-medium truncate w-36">
                         Avec : {contactName}
                     </p>
-                    {/* Correction ici : request.status à la place de request.state */}
                     <p className="text-xs text-[#5C4FE5] truncate w-36 mt-0.5">
                         {statusTexts[request.status] || 'État inconnu'}
                     </p>

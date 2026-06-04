@@ -44,24 +44,34 @@ const browseRequest = (req, res) => {
     )
 }
 
-const updateRequest = (req, res) => {
-    const request = req.body;
-    request.id = req.params.id;
-    console.log(request);
+const updateRequest = async (req, res) => {
+    const request = {
+        id: req.params.id,
+        status: req.body.status,
+    };
 
-    models.request
-        .update(request)
-        .then(([result]) => {
-            if (result.affectedRows === 0) {
-                res.sendStatus(404);
-            } else {
-                res.sendStatus(204);
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
-        });
+    if (!['en cours', 'accepter', 'refuser'].includes(request.status)) {
+        return res.status(400).json({ error: 'Statut de requête invalide.' });
+    }
+
+    try {
+        const [[existingRequest]] = await models.request.findById(request.id);
+        if (!existingRequest) {
+            return res.sendStatus(404);
+        }
+
+        await models.request.update(request);
+
+        if (request.status === 'accepter') {
+            await models.ad.updateStatus(existingRequest.id_ad, 'en cours');
+            await models.request.refuseOtherRequestsByAd(existingRequest.id_ad, request.id);
+        }
+
+        res.sendStatus(204);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
 }
 
 const browseHistoryByUser = (req, res) => {
@@ -99,6 +109,8 @@ const browseByHelper = (req, res) => {
       res.sendStatus(500);
     });
 };
+
+
 
 exports = module.exports = {
     addRequest,

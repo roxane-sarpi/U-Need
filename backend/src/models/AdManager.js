@@ -6,7 +6,7 @@ class AdManager extends AbstractManager {
   }
 
   insert(ad) {
-    return this.database.query(`insert into ${this.table} (title, description, image_1, image_2, image_3, id_category, points, statut, zip_code, city, urgent, id_user, date_execution) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+    return this.database.query(`insert into ${this.table} (title, description, image_1, image_2, image_3, id_category, points, status, zip_code, city, urgent, id_user, date_execution) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
       ad.title,
       ad.description,
       ad.image_1,
@@ -14,7 +14,7 @@ class AdManager extends AbstractManager {
       ad.image_3,
       ad.id_category,
       ad.points,
-      ad.statut,
+      ad.status,
       ad.zip_code,
       ad.city,
       ad.urgent,
@@ -34,8 +34,15 @@ class AdManager extends AbstractManager {
 
   update(ad) {
     return this.database.query(
-      `update ${this.table} set title = ?, description = ?, image_1 = ?, image_2 = ?, image_3 = ?, id_category = ?, points = ?, statut = ?, zip_code = ?, city = ?, urgent = ?, date_execution = ? where id = ?`,
-      [ad.title, ad.description, ad.image_1, ad.image_2, ad.image_3, ad.id_category, ad.points, ad.statut, ad.zip_code, ad.city, ad.urgent, ad.date_execution, ad.id]
+      `update ${this.table} set title = ?, description = ?, image_1 = ?, image_2 = ?, image_3 = ?, id_category = ?, points = ?, status = ?, zip_code = ?, city = ?, urgent = ?, date_execution = ? where id = ?`,
+      [ad.title, ad.description, ad.image_1, ad.image_2, ad.image_3, ad.id_category, ad.points, ad.status, ad.zip_code, ad.city, ad.urgent, ad.date_execution, ad.id]
+    );
+  }
+
+  updateStatus(id, status) {
+    return this.database.query(
+      `UPDATE ${this.table} SET status = ? WHERE id = ?`,
+      [status, id]
     );
   }
 }
