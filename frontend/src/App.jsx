@@ -33,7 +33,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/catalogue" element={<Catalog />} />
-          <Route path="/details" element={<AdDetail />} />
+          <Route path="/detail" element={<AdDetail />} />
           <Route path="/faq" element={<FAQ />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
