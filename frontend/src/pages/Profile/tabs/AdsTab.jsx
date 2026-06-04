@@ -8,6 +8,7 @@ function AdsTab({ ads }) {
   return ads.map(ad => (
     <AdRow
       key={ad.id}
+      id={ad.id}
       category={ad.category_name}
       status={ad.statut}
       coins={ad.points}
