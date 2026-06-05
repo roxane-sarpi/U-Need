@@ -12,7 +12,8 @@ function CreateAds() {
     if (!isAuthenticated) navigate('/login', { replace: true });
   }, [isAuthenticated]);
 
-  const userUCoins = 15;
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const coins = storedUser?.points;
 
   // Le state vit ici, à la racine de la page
   const [selectedCoins, setSelectedCoins] = useState(3); 
@@ -46,12 +47,12 @@ function CreateAds() {
           <div className="card bg-white border border-gray-300 rounded-2xl p-6 text-center shadow-sm">
             <h3 className="text-xs font-bold uppercase tracking-wider text-black mb-4">Votre solde de U-coins :</h3>
             <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="text-6xl font-extrabold text-[#e2a04e] leading-none">{userUCoins}</span>
+              <span className="text-6xl font-extrabold text-[#e2a04e] leading-none">{coins}</span>
               <img src="/UneedCoin.png" alt="U-Coin" className='w-15' />
             </div>
             {/* Le calcul se met automatiquement à jour grâce au state partagé ! */}
             <p className="text-xs text-gray-600 font-medium">
-              après création : <strong className="text-black">{userUCoins - selectedCoins}</strong> <img src="/UneedCoin.png" alt="U-Coin" className="inline w-4 h-4 mb-1" />
+              après création : <strong className="text-black">{coins - selectedCoins}</strong> <img src="/UneedCoin.png" alt="U-Coin" className="inline w-4 h-4 mb-1" />
             </p>
           </div>
 
