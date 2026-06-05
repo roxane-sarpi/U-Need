@@ -24,7 +24,7 @@ const seedSQL = `
   INSERT INTO categories (name) VALUES
   ('Déménagement'), ('Bricolage'), ('Aide ménagère'), ('Aide aux séniors'),
   ('Informatique'), ('Petit travaux'), ('Course'), ('Animaux'),
-  ('Jardinerie'), ('Transport'), ('Aide scolaire'), ('Autre');
+  ('Jardinage'), ('Transport'), ('Aide scolaire'), ('Autre');
 
   INSERT INTO users (firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
   ('Paul',   'LeDu',   'paul@test.com',   '${hash123456}', '0654322343', '13010', 'Marseille', 'user',        10),

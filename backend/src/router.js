@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { hashPassword, verifyPassword, verifyToken } = require("./auth");
+const { hashPassword, verifyPassword, verifyToken, requireAdmin } = require("./auth");
 
 //Public routes
 
@@ -32,6 +32,7 @@ router.get("/categories/:id", CategoryControllers.read);
 // Authentication wall : verifyToken is activated for each route after this line
 router.use(verifyToken);
 
+//Requests
 const requestControllers = require("./controllers/requestControllers");
 router.post("/requests", requestControllers.addRequest);
 router.get("/requests/helper/:id", requestControllers.browseByHelper);
@@ -41,6 +42,7 @@ router.get("/requests", requestControllers.browseRequest);
 router.put("/requests/:id", requestControllers.updateRequest);
 
 //Users
+router.get("/users", requireAdmin, userControllers.browse);
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);

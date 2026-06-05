@@ -71,15 +71,27 @@ const read = (req, res) => {
 };
 
 const edit = (req, res) => {
-  const user = { ...req.body, id: req.params.id };
-
   models.user
-    .update(user)
+    .findById(req.params.id)
+    .then(([rows]) => {
+      if (!rows[0]) {
+        return res.sendStatus(404);
+      }
+
+      const existingUser = rows[0];
+      const user = {
+        ...existingUser,
+        ...req.body,
+        id: req.params.id,
+      };
+
+      return models.user.update(user);
+    })
     .then(([result]) => {
       if (result.affectedRows === 0) {
         res.sendStatus(404);
       } else {
-        res.sendStatus(204);
+        res.status(200).json({ success: true });
       }
     })
     .catch((err) => {
@@ -95,7 +107,7 @@ const destroy = (req, res) => {
       if (result.affectedRows === 0) {
         res.sendStatus(404);
       } else {
-        res.sendStatus(204);
+        res.status(200).json({ success: true });
       }
     })
     .catch((err) => {

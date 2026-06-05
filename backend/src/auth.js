@@ -25,13 +25,14 @@ const hashPassword = (req, res, next) => {
 };
 
 const verifyPassword = (req, res) => {
-    console.log("USER2 : ", req.user);
-    console.log("PASSWORD2 : ", req.body.password);
     argon2
     .verify(req.user.password, req.body.password)
     .then((isVerified) => {
         if (isVerified) {
-            const payload = {sub: req.user.id};
+
+          const isAdmin = req.user.role === "admin";
+
+            const payload = {sub: req.user.id, admin: isAdmin};
             console.log("PAYLOAD : ", payload);
 
             const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '4h'});
@@ -76,6 +77,11 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+const requireAdmin = (req, res, next) => {
+  if(req.payload?.admin){
+    return next();
+  }
+  return res.sendStatus(403);
+}
 
-
-module.exports = { hashPassword, verifyPassword, verifyToken };
+module.exports = { hashPassword, verifyPassword, verifyToken, requireAdmin };
