@@ -24,7 +24,14 @@ const Login = () => {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
     login({ email, password })
-      .then(({ token, user }) => { loginUser(user, token); navigate('/'); })
+      .then(({ token, user }) => {
+        loginUser(user, token);
+        if (user?.role === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/');
+        }
+      })
       .catch(() => setServerError('Email ou mot de passe incorrect.'));
   };
 

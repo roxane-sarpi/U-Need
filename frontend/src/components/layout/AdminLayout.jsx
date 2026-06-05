@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { 
   LayoutDashboard, 
   Users, 
@@ -7,13 +8,21 @@ import {
   // AlertTriangle, 
   FolderTree,
   Menu,
-  X
+  X,
+  LogOut
 } from "lucide-react";
 
 function AdminLayout() {
   // Gestion de l'état pour ouvrir/fermer le drawer sur mobile
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const closeDrawer = () => setIsDrawerOpen(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
@@ -115,6 +124,17 @@ function AdminLayout() {
               );
             })}
           </nav>
+
+          {/* Bouton Déconnecter en bas */}
+          <div className="border-t border-gray-800 p-4">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-400 hover:bg-gray-900/50 hover:text-red-400 transition-all"
+            >
+              <LogOut size={20} />
+              <span>Se déconnecter</span>
+            </button>
+          </div>
         </aside>
       </div>
     </div>
