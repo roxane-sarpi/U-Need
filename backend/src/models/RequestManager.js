@@ -72,6 +72,17 @@ class RequestManager extends AbstractManager {
       [request.status, request.id]
     );
   }
+
+  refuseOtherRequestsByAd(id_ad, excludedRequestId) {
+    return this.database.query(
+      `UPDATE ${this.table}
+       SET status = 'refuser'
+       WHERE id_ad = ?
+         AND id != ?
+         AND status = 'en cours'`,
+      [id_ad, excludedRequestId]
+    );
+  }
 }
 
 module.exports = RequestManager;
