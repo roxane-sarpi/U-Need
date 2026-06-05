@@ -22,7 +22,11 @@ const Register = () => {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
     register({ firstname: form.firstName, lastname: form.lastName, phone: form.phone, email: form.email, city: form.city, zip_code: form.postalCode, password: form.password })
-      .then((res) => { if (!res.ok) throw new Error(); navigate('/login'); })
+      .then((res) => {
+        if (res.status === 409) { setErrors((p) => ({ ...p, email: 'Cette adresse mail est déjà utilisée' })); return; }
+        if (!res.ok) throw new Error();
+        navigate('/login');
+      })
       .catch(() => setServerError('Une erreur est survenue, veuillez réessayer.'));
   };
 
@@ -51,7 +55,10 @@ const Register = () => {
                 <FormInput label="Ville" id="city" value={form.city} onChange={set('city')} placeholder="Votre ville" error={errors.city} onClear={() => clearError('city')} />
                 <FormInput label="Code postal" id="postalCode" value={form.postalCode} onChange={set('postalCode')} placeholder="Votre code postal" error={errors.postalCode} onClear={() => clearError('postalCode')} />
               </div>
-              <FormInput label="Mot de passe" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Créer un mot de passe" error={errors.password} onClear={() => clearError('password')} />
+              <div className="flex flex-col gap-1">
+                <FormInput label="Mot de passe" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Créer un mot de passe" error={errors.password} onClear={() => clearError('password')} />
+                {!errors.password && <p className="text-xs text-gray-400 font-sans">Min. 8 caractères, 1 majuscule et 1 chiffre</p>}
+              </div>
               <FormInput label="Confirmer le mot de passe" id="confirmPassword" type="password" value={form.confirmPassword} onChange={set('confirmPassword')} placeholder="Répéter le mot de passe" error={errors.confirmPassword} onClear={() => clearError('confirmPassword')} />
 
               <CustomCheckbox id="acceptTerms" checked={acceptTerms} onChange={(e) => { setAcceptTerms(e.target.checked); clearError('acceptTerms'); }} error={errors.acceptTerms}>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../components/context/AuthContext';
 import Onecontact from '../../components/messaging/Onecontact';
 import ChatArea from '../../components/messaging/ChatArea';
-import { getConversationsByUser } from '../../components/services/requestService';
-import { getConversationByRequestId, sendMessage } from '../../components/services/messageService';
+import { getConversationsByUser, updateRequestStatus } from '../../components/services/requestService';
+import { getConversationByRequestId, sendMessage, deleteConversation } from '../../components/services/messageService';
 
 function MessagerieScreen() {
   const { user } = useAuth();
@@ -89,6 +89,45 @@ function MessagerieScreen() {
     }
   };
 
+  const handleDeleteConversation = async (requestId) => {
+    if (!user) return;
+
+    try {
+      await deleteConversation(requestId);
+      setRequests((prev) => prev.filter((req) => req.id !== requestId));
+      if (activeRequestId === requestId) {
+        const remaining = requests.filter((req) => req.id !== requestId);
+        setActiveRequestId(remaining.length ? remaining[0].id : null);
+        setMessages([]);
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Impossible de supprimer la conversation.");
+    }
+  };
+
+const handleRequestDecision = async (status) => {
+    if (!currentRequest || !user) return;
+
+    // Sécurité : on force la valeur à correspondre à l'ENUM MySQL ('accepter' ou 'refuser')
+    const cleanStatus = status.toLowerCase().trim();
+
+    try {
+      await updateRequestStatus(currentRequest.id, cleanStatus);
+      const refreshedRequests = await getConversationsByUser(user.id);
+      setRequests(refreshedRequests || []);
+      
+      if (!refreshedRequests.some((req) => req.id === currentRequest.id)) {
+        setActiveRequestId(refreshedRequests.length ? refreshedRequests[0].id : null);
+      } else {
+        setActiveRequestId(currentRequest.id);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Impossible de mettre à jour l'état de la demande.");
+    }
+  };
+
   if (!user) {
     return (
       <div className="p-8 text-center text-gray-600">
@@ -113,6 +152,8 @@ function MessagerieScreen() {
                 request={req}
                 isActive={req.id === activeRequestId}
                 onClick={() => handleSelectContact(req.id)}
+                canDelete={req.ad_owner_id === user.id || (req.id_helper === user.id && req.status !== 'en cours')}
+                onDeleteConversation={handleDeleteConversation}
               />
             ))
           ) : (
@@ -143,6 +184,8 @@ function MessagerieScreen() {
             messages={messages}
             currentUserId={user.id}
             onSendMessage={handleSendMessage}
+            onAccept={() => handleRequestDecision('accepter')} 
+            onRefuse={() => handleRequestDecision('refuser')}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 font-medium p-4 text-center">

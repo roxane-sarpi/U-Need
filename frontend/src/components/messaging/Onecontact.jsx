@@ -1,21 +1,24 @@
 import React from 'react';
 
-export default function Onecontact({ request, isActive, onClick }) {
+export default function Onecontact({ request, isActive, onClick, canDelete, onDeleteConversation }) {
 
     const statusTexts = {
     'en cours': 'Discussion en cours...',
-    'terminé': 'Aide terminée',
+    'accepter': 'Aide acceptée',
+    'refuser': 'Aide refusée',
     'signalé': '⚠️ Discussion signalée'
   };
 
     const adTitle = request.ad_title || request.title || "Annonce inconnue";
     const firstLetter = adTitle.charAt(0).toUpperCase();
 
-    // Récupération du nom du correspondant calculé par le SQL (Optionnel mais sympa pour la messagerie !)
     const contactName = request.firstname ? `${request.firstname} ${request.lastname}` : "Interlocuteur";
 
-    function supprimerDiscussion(requestId) {
-        console.log(`Discussion avec ID ${requestId} supprimée.`);
+    function handleDeleteClick(e) {
+        e.stopPropagation();
+        if (typeof onDeleteConversation === 'function') {
+          onDeleteConversation(request.id);
+        }
     }
 
     return (
@@ -37,7 +40,6 @@ export default function Onecontact({ request, isActive, onClick }) {
                     <p className="text-[11px] text-gray-400 font-medium truncate w-36">
                         Avec : {contactName}
                     </p>
-                    {/* Correction ici : request.status à la place de request.state */}
                     <p className="text-xs text-[#5C4FE5] truncate w-36 mt-0.5">
                         {statusTexts[request.status] || 'État inconnu'}
                     </p>
@@ -45,16 +47,14 @@ export default function Onecontact({ request, isActive, onClick }) {
             </div>
 
             {/* Bouton Poubelle */}
-            <button
-                onClick={(e) => {
-                    e.stopPropagation(); 
-                    alert(`Supprimer la discussion : ${adTitle}`);
-                    supprimerDiscussion(request.id);
-                }}
+            {canDelete && (
+              <button
+                onClick={handleDeleteClick}
                 className="text-gray-400 hover:text-red-500 p-1"
-            >
-                <img width="24" height="24" src="https://img.icons8.com/material-outlined/50/waste.png" alt="waste" />
-            </button>
+              >
+                <img width="24" height="24" src="https://img.icons8.com/material-outlined/50/waste.png" alt="Supprimer" />
+              </button>
+            )}
         </div>
     );
 }
