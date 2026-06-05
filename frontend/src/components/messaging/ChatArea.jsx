@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
 import { Link } from 'react-router-dom';
 
-function ChatArea({ request, messages, currentUserId, onSendMessage }) {
+function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, onRefuse }) {
     const [text, setText] = useState('');
 
     const statusStyles = {
         'en cours': 'text-accent-orange-dark font-medium bg-accent-orange-light',
+        'accepter': 'text-emerald-600 font-medium bg-emerald-100',
+        'refuser': 'text-red-600 font-bold bg-red-100',
         'terminé': 'text-emerald-600 font-medium bg-emerald-100',
         'signalé': 'text-red-600 font-bold bg-red-100'
     };
 
     const statusTexts = {
         'en cours': 'En cours',
-        'terminé': 'Terminée',
+        'accepter': 'Acceptée',
+        'refuser': 'Refusée',
         'signalé': 'Signalée'
     };
 
@@ -47,9 +50,26 @@ function ChatArea({ request, messages, currentUserId, onSendMessage }) {
                         </span>
                     </div>
                 </div>
-                <button className="bg-primary text-white px-3 py-2.5 md:px-6 rounded-xl font-semibold text-xs md:text-sm hover:bg-accent-orange">
-                    Valider son aide
-                </button>
+                <div className="flex items-center gap-3">
+                    {request.ad_owner_id === currentUserId && request.status === 'en cours' && (
+                        <>
+                            <button
+                                type="button"
+                                onClick={onRefuse}
+                                className="bg-red-500 text-white px-3 py-2.5 md:px-6 rounded-xl font-semibold text-xs md:text-sm hover:bg-red-600"
+                            >
+                                Refuser
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onAccept}
+                                className="bg-primary text-white px-3 py-2.5 md:px-6 rounded-xl font-semibold text-xs md:text-sm hover:bg-accent-orange"
+                            >
+                                Valider l'aide
+                            </button>
+                        </>
+                    )}
+                </div>
             </header>
 
             {/* Zone de Scroll des Messages */}

@@ -2,7 +2,7 @@ const models = require("../models");
 
 const browse = (req, res) => {
   models.ad
-    .findAll()
+    .findAllWithDetails()
     .then(([rows]) => {
       res.send(rows);
     })
@@ -14,15 +14,15 @@ const browse = (req, res) => {
 
 const read = (req, res) => {
   models.ad
-    .find(req.params.id)
+    .findByIdWithDetails(req.params.id)
     .then(([rows]) => {
-      if(rows[0] === null){
+      if (!rows[0]) {
         res.sendStatus(404);
       } else {
         res.send(rows[0]);
       }
     })
-    .catch(() => {
+    .catch((err) => {
       console.error(err);
       res.sendStatus(500);
     });

@@ -5,6 +5,7 @@
 -- ============================================================
 
 -- 1. Tables "parentes"
+
 CREATE TABLE IF NOT EXISTS categories (
     id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS ads (
     image_3        VARCHAR(500) DEFAULT '/public/images/default_image.svg',
     id_category    INT,
     points         INT NOT NULL,
-    statut         ENUM('signalé', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
+    status         ENUM('signalé', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
     zip_code       INT NOT NULL,
     city           VARCHAR(500) NOT NULL,
     urgent         BOOLEAN NOT NULL DEFAULT FALSE,
@@ -87,7 +88,7 @@ CREATE TABLE IF NOT EXISTS requests (
     id_ad         INT NOT NULL,
     id_helper     INT,
     id_user       INT,
-    status        ENUM('signalé', 'en cours', 'terminé') DEFAULT 'en cours',
+    status        ENUM('refuser', 'en cours', 'accepter') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     -- Si l'annonce saute, la requête saute
@@ -106,11 +107,12 @@ CREATE TABLE IF NOT EXISTS evaluations (
 );
 
 INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role) VALUES
-(3, 'Wendy',   'test',    'wendy@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
+(3, 'Wendy',   'test',    'wendy@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
 (4, 'admin',   'admin',   'admin@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin'),
 (5, 'Alice',   'Dupont',  'alice@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000001', '75001', 'Paris', 'user'),
 (6, 'Bob',     'Martin',  'bob@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000002', '75002', 'Paris', 'user'),
-(7, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user');
+(7, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user'),
+(8, 'David',   'Bernard', 'david@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000004', '75004', 'Paris', 'admin');
 
 INSERT IGNORE INTO ads (title, description, id_category, points, zip_code, city, urgent, id_user) VALUES
 ('Tondre la pelouse', 'Besoin d''aide pour tondre 100m2', 1, 5, 75010, 'Paris', FALSE, 1),
@@ -118,9 +120,11 @@ INSERT IGNORE INTO ads (title, description, id_category, points, zip_code, city,
 ('Monter meuble IKEA', 'Montage de meuble (2h)', 3, 3, 75012, 'Paris', FALSE, 3);
 
 INSERT IGNORE INTO requests (id, id_ad, id_helper, id_user, status) VALUES
-(1, 1, 4, 1, 'en cours'),
-(2, 2, 4, 5, 'terminé'),
-(3, 3, 1, 3, 'en cours');
+(1, 3, 4, 3, 'en cours'),
+(2, 3, 5, 3, 'en cours'),
+(3, 3, 1, 3, 'en cours'),
+(2, 2, 4, 5, 'en cours'),
+(3, 1, 3, 1, 'en cours');
 
 INSERT IGNORE INTO messages (id, content, id_sender, id_receiver, id_request) VALUES
 (1, 'Bonjour, je peux t''aider samedi matin', 4, 1, 1),
