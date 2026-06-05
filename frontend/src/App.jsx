@@ -21,6 +21,7 @@ import Catalog from './pages/Catalog';
 import FAQ from './pages/FAQ';
 import ManageAds from './pages/Admin/ManageAds';
 import RequireAdmin from './components/routes/RequireAdmin';
+import ManageCategories from './pages/Admin/ManageCategories';
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
           <Route path="/admin/dashboard" element={<Dashboard />}/>
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/ads" element={<ManageAds />} />
+          <Route path='/admin/categories' element={<ManageCategories />} />
         </Route>
 
 
