@@ -95,12 +95,12 @@ CREATE TABLE IF NOT EXISTS evaluations (
 );
 
 INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role) VALUES
-(1, 'Wendy',   'test',    'wendy@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
-(2, 'admin',   'admin',   'admin@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin'),
-(3, 'Alice',   'Dupont',  'alice@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000001', '75001', 'Paris', 'user'),
-(4, 'Bob',     'Martin',  'bob@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000002', '75002', 'Paris', 'user'),
-(5, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user');
-
+(3, 'Wendy',   'test',    'wendy@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
+(4, 'admin',   'admin',   'admin@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin'),
+(5, 'Alice',   'Dupont',  'alice@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000001', '75001', 'Paris', 'user'),
+(6, 'Bob',     'Martin',  'bob@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000002', '75002', 'Paris', 'user'),
+(7, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user'),
+(8, 'David',   'Bernard', 'david@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000004', '75004', 'Paris', 'admin');
 
 INSERT IGNORE INTO ads (title, description, id_category, points, zip_code, city, urgent, id_user) VALUES
 ('Tondre la pelouse', 'Besoin d''aide pour tondre 100m2', 1, 5, 75010, 'Paris', FALSE, 1),
