@@ -38,6 +38,7 @@ function App() {
           <Route path="/detail" element={<AdDetail />} />
           <Route path="/edit-ad" element={<EditAd />} />
           <Route path="/faq" element={<FAQ />} />
+          
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
           <Route path="/create-ads" element={<CreateAds />} />

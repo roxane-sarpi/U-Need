@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, onRefuse }) {
     const [text, setText] = useState('');
+    const navigate = useNavigate();
 
     const statusStyles = {
         'en cours': 'text-accent-orange-dark font-medium bg-accent-orange-light',
@@ -43,7 +44,12 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, o
                     <div>
                         <h2 className="text-xl font-bold">{adTitle}</h2>
                         <p className="text-xs text-gray-500">
-                            <Link to={`/ads/${request.id_ad}`}>Annonce liée : <span className="underline">{adTitle}</span></Link>
+                            <span
+                                className="cursor-pointer hover:text-gray-700"
+                                onClick={() => navigate('/detail', { state: { id: request.id_ad } })}
+                            >
+                                Annonce liée : <span className="underline">{adTitle}</span>
+                            </span>
                         </p>
                         <span className={`px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase ${statusStyles[request.status] || 'bg-gray-100 text-gray-700'}`}>
                             {statusTexts[request.status] || 'État inconnu'}
