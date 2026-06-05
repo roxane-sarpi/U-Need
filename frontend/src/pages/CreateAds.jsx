@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import CreerAnnonce from "../components/ads/AdForm";
 import Adform from "../components/ads/AdForm";
+import { useAuth } from "../components/context/AuthContext";
 
 function CreateAds() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) navigate('/login', { replace: true });
+  }, [isAuthenticated]);
+
   const userUCoins = 15;
-  
+
   // Le state vit ici, à la racine de la page
   const [selectedCoins, setSelectedCoins] = useState(3); 
 

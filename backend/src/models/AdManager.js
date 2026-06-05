@@ -5,7 +5,6 @@ class AdManager extends AbstractManager {
     super({ table: "ads" });
   }
 
-
   insert(ad) {
     return this.database.query(`insert into ${this.table} (title, description, image_1, image_2, image_3, id_category, points, statut, zip_code, city, urgent, id_user, date_execution) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
       ad.title,
@@ -24,7 +23,7 @@ class AdManager extends AbstractManager {
     ]);
   }
 
-      findAllWithDetails() {
+  findAllWithDetails() {
     return this.database.query(
       `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
        FROM ${this.table} a
@@ -32,6 +31,17 @@ class AdManager extends AbstractManager {
        LEFT JOIN users u ON u.id = a.id_user
        WHERE a.statut = 'disponible'
        ORDER BY a.date_creation DESC`
+    );
+  }
+
+  findByIdWithDetails(id) {
+    return this.database.query(
+      `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
+       FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       LEFT JOIN users u ON u.id = a.id_user
+       WHERE a.id = ?`,
+      [id]
     );
   }
 

@@ -1,4 +1,5 @@
-import { Eye, Pencil, MoreHorizontal, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Eye, Pencil, Trash2 } from 'lucide-react'
 import CoinsBadge from './CoinsBadge'
 
 const STATUS_STYLE = {
@@ -12,19 +13,22 @@ const HATCH_BG = {
   background: 'repeating-linear-gradient(45deg,#e5e7eb 0,#e5e7eb 1px,#fff 1px,#fff 8px)',
 }
 
-function IconBtn({ children }) {
+function IconBtn({ onClick, children }) {
   return (
-    <button className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 transition-colors">
+    <button
+      onClick={onClick}
+      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+    >
       {children}
     </button>
   )
 }
 
-function AdRow({ category, status, coins, title, desc, image }) {
+function AdRow({ id, category, status, coins, title, desc, image }) {
+  const navigate = useNavigate()
   const st = STATUS_STYLE[status] ?? STATUS_STYLE['disponible']
   const showEye   = status !== 'brouillon'
   const showEdit  = status !== 'terminé'
-  const showMore  = status !== 'brouillon'
   const showTrash = status === 'brouillon'
 
   return (
@@ -46,9 +50,8 @@ function AdRow({ category, status, coins, title, desc, image }) {
       <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-2 shrink-0">
         <CoinsBadge amount={coins} />
         <div className="flex gap-1">
-          {showEye   && <IconBtn><Eye size={14} /></IconBtn>}
-          {showEdit  && <IconBtn><Pencil size={14} /></IconBtn>}
-          {showMore  && <IconBtn><MoreHorizontal size={14} /></IconBtn>}
+          {showEye  && <IconBtn onClick={() => navigate('/detail', { state: { id } })}><Eye size={14} /></IconBtn>}
+          {showEdit && <IconBtn onClick={() => navigate('/edit-ad', { state: { id } })}><Pencil size={14} /></IconBtn>}
           {showTrash && <IconBtn><Trash2 size={14} /></IconBtn>}
         </div>
       </div>

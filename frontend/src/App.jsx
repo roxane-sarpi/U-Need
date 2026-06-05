@@ -16,6 +16,7 @@ import About from './pages/About';
 import ManageUsers from './pages/Admin/ManageUsers';
 import MessagerieScreen from './pages/Messaging/Messaging';
 import AdDetail from './pages/AdDetail';
+import EditAd from './pages/EditAd';
 import Catalog from './pages/Catalog';
 import FAQ from './pages/FAQ';
 import ManageAds from './pages/Admin/ManageAds';
@@ -33,7 +34,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/catalogue" element={<Catalog />} />
-          <Route path="/details" element={<AdDetail />} />
+          <Route path="/detail" element={<AdDetail />} />
+          <Route path="/edit-ad" element={<EditAd />} />
           <Route path="/faq" element={<FAQ />} />
 
           {/* Layout privé - à implémenter plus tard avec une logique d'authentification */}
