@@ -55,23 +55,10 @@ CREATE TABLE IF NOT EXISTS ads (
     date_creation  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_category FOREIGN KEY (id_category) REFERENCES categories(id),
-    CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id)
     CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- 3. Autres tables
-CREATE TABLE IF NOT EXISTS messages (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    content     TEXT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_sender   INT NOT NULL,
-    id_receiver INT NOT NULL,
-    id_request  INT NOT NULL,
-    CONSTRAINT fk_msg_sender   FOREIGN KEY (id_sender)   REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_msg_receiver FOREIGN KEY (id_receiver) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_msg_request  FOREIGN KEY (id_request)  REFERENCES requests(id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS notifications (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     content       VARCHAR(500) NOT NULL,
@@ -79,7 +66,6 @@ CREATE TABLE IF NOT EXISTS notifications (
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     has_been_read BOOLEAN DEFAULT FALSE,
     id_user       INT,
-    CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id)
     CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -96,6 +82,19 @@ CREATE TABLE IF NOT EXISTS requests (
     -- Si le helper ou le needer saute, la requête saute
     CONSTRAINT fk_helper    FOREIGN KEY (id_helper) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_needer    FOREIGN KEY (id_user)   REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- messages doit être après requests car elle référence requests(id)
+CREATE TABLE IF NOT EXISTS messages (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    content     TEXT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_sender   INT NOT NULL,
+    id_receiver INT NOT NULL,
+    id_request  INT NOT NULL,
+    CONSTRAINT fk_msg_sender   FOREIGN KEY (id_sender)   REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_msg_receiver FOREIGN KEY (id_receiver) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_msg_request  FOREIGN KEY (id_request)  REFERENCES requests(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS evaluations (
@@ -123,12 +122,11 @@ INSERT IGNORE INTO requests (id, id_ad, id_helper, id_user, status) VALUES
 (1, 3, 4, 3, 'en cours'),
 (2, 3, 5, 3, 'en cours'),
 (3, 3, 1, 3, 'en cours'),
-(2, 2, 4, 5, 'en cours'),
-(3, 1, 3, 1, 'en cours');
+(4, 2, 4, 5, 'en cours'),
+(5, 1, 3, 1, 'en cours');
 
 INSERT IGNORE INTO messages (id, content, id_sender, id_receiver, id_request) VALUES
 (1, 'Bonjour, je peux t''aider samedi matin', 4, 1, 1),
 (2, 'Merci -- samedi ça marche', 1, 4, 1),
 (3, 'Le camion est réservé', 4, 5, 2),
 (4, 'Salut, as-tu les instructions pour le montage?', 3, 1, 3);
-
