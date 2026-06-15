@@ -178,9 +178,6 @@ function EditUserModal({ modalRef, user, onSuccess }) {
               <h4 className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
                 <ShieldAlert size={14} /> Supprimer le compte
               </h4>
-              {/* <p className="text-[11px] text-rose-600/80 font-medium leading-relaxed">
-                Efface définitivement les infos privées. Le profil deviendra anonyme pour préserver l'historique de l'application.
-              </p> */}
             </div>
             <button 
               type="button" 
