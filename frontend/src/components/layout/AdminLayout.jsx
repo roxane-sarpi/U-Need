@@ -4,8 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { 
   LayoutDashboard, 
   Users, 
-  FileText, 
-  // AlertTriangle, 
+  FileText,  
   FolderTree,
   Menu,
   X,
@@ -32,6 +31,10 @@ function AdminLayout() {
     { name: "Catégories", path: "/admin/categories", icon: FolderTree },
     // { name: "Paramètres", path: "/admin/parametres", icon: Settings } BONUS,
   ];
+
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const firstName = storedUser?.firstname ?? "Admin";
+  const lastName = storedUser?.lastname ?? "";
 
   return (
     // md:drawer-open force le menu à rester visible à partir des écrans intermédiaires/bureau
@@ -79,7 +82,7 @@ function AdminLayout() {
           
           {/* Header de la Sidebar */}
           <div className="p-6 flex items-center justify-between border-b border-gray-800">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-3">
               <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
               <div className="flex flex-col">
                 <span className="font-bold text-lg tracking-wide">U-Need</span>
@@ -93,7 +96,10 @@ function AdminLayout() {
               <X size={20} />
             </button>
           </div>
-
+<div className="mt-4 text-center mx-auto">
+                  <p className="text-[11px] uppercase text-gray-400 tracking-[0.2em]">Bonjour</p>
+                  <p className="text-sm font-semibold text-white leading-tight">{firstName} {lastName}</p>
+                </div>
           {/* Navigation : On utilise notre astuce de propagation (onClick) apprise juste avant ! */}
           <nav className="flex-1 p-4 space-y-1" onClick={closeDrawer}>
             {menuItems.map((item) => {

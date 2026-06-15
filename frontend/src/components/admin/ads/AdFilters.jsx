@@ -1,6 +1,16 @@
 import { Search } from "lucide-react";
 
-function AdFilters() {
+function AdFilters({
+  searchText,
+  onSearchTextChange,
+  selectedStatus,
+  onStatusChange,
+  selectedCategory,
+  onCategoryChange,
+  sortOrder,
+  onSortOrderChange,
+  onReset,
+}) {
   return (
     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mt-6">
       
@@ -15,50 +25,55 @@ function AdFilters() {
           />
           <input 
             type="text" 
-            placeholder="Rechercher un auteur" 
+            value={searchText}
+            onChange={(e) => onSearchTextChange(e.target.value)}
+            placeholder="Rechercher un auteur"
             className="input input-bordered input-sm w-full pl-9 rounded-lg bg-white border-gray-200 text-xs focus:outline-none focus:border-blue-500 text-gray-700 font-medium"
           />
         </div>
 
         {/* 2. FILTRE STATUT */}
         <select 
-          defaultValue="" 
+          value={selectedStatus}
+          onChange={(e) => onStatusChange(e.target.value)}
           className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium focus:outline-none"
         >
           <option value="" disabled>Statut de l'annonce</option>
-          <option>En attente</option>
-          <option>Validée</option>
-          {/* <option>Signalée</option> */}
-          <option>Refusée</option>
+          <option value="EN ATTENTE">En attente</option>
+          <option value="VALIDÉE">Validée</option>
+          <option value="REFUSÉE">Refusée</option>
         </select>
 
         {/* 3. FILTRE CATÉGORIE */}
         <select 
-          defaultValue="" 
+          value={selectedCategory}
+          onChange={(e) => onCategoryChange(e.target.value)}
           className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium focus:outline-none"
         >
           <option value="" disabled>Catégorie</option>
-          <option>Bricolage</option>
-          <option>Jardinage</option>
-          <option>Maison / Mobilier</option>
-          <option>Services & Cours</option>
-          <option>Électroménager</option>
+          <option value="Bricolage">Bricolage</option>
+          <option value="Jardinage">Jardinage</option>
+          <option value="Maison / Mobilier">Maison / Mobilier</option>
+          <option value="Services & Cours">Services & Cours</option>
+          <option value="Électroménager">Électroménager</option>
         </select>
 
         {/* 4. FILTRE DATE */}
         <select 
-          defaultValue="" 
+          value={sortOrder}
+          onChange={(e) => onSortOrderChange(e.target.value)}
           className="select select-bordered select-sm w-full rounded-lg bg-white border-gray-200 text-xs text-gray-500 font-medium focus:outline-none"
         >
           <option value="" disabled>Date de publication</option>
-          <option>Les plus récentes</option>
-          <option>Les plus anciennes</option>
+          <option value="recent">Les plus récentes</option>
+          <option value="oldest">Les plus anciennes</option>
         </select>
       </div>
 
       {/* Bouton de réinitialisation rapide, très pratique pour l'expérience d'administration */}
       <button 
         type="button"
+        onClick={onReset}
         className="text-xs font-bold text-gray-400 hover:text-blue-600 transition-colors self-start lg:self-auto px-2 whitespace-nowrap"
       >
         Réinitialiser
