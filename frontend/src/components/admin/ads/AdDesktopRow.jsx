@@ -26,10 +26,10 @@ function AdDesktopRow({ ad, onEdit }) {
       </td>
 
       {/* Auteur */}
-      <td className="text-sm text-gray-600 font-semibold">{ad.author}</td>
+      <td className="text-sm text-gray-600 font-semibold">{ad.firstname} {ad.lastname}</td>
 
       {/* Catégorie */}
-      <td className="text-xs text-gray-400 font-medium">{ad.category}</td>
+      <td className="text-xs text-gray-400 font-medium">{ad.category_name}</td>
 
       {/* Prix (UC) */}
       <td className="text-xs font-bold text-gray-700">{ad.points} UC</td>

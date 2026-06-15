@@ -1,26 +1,106 @@
-import { useState } from "react"; // On retire useEffect ici
+import { useState } from "react";
 import { X, ShieldAlert, Trash2 } from "lucide-react";
+import { authFetch } from "../../services/api";
 
-function EditAdModal({ modalRef, ad }) {
-  // CORRECTION : On initialise directement avec le statut de l'annonce en cours
-  const [status, setStatus] = useState(ad?.status || "EN ATTENTE");
+function EditAdModal({ modalRef, ad, onSuccess }) {
+  const [status, setStatus] = useState(ad?.status || "disponible");
+  const [feedback, setFeedback] = useState("");
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
-    console.log(`Statut mis à jour pour l'annonce "${ad.title}" : ${status}`);
-    modalRef.current?.close();
+    setIsSaving(true);
+    setError("");
+    setFeedback("");
+
+    const payload = {
+      id: ad?.id,
+      title: ad?.title,
+      description: ad?.description,
+      image_1: ad?.image_1,
+      image_2: ad?.image_2,
+      image_3: ad?.image_3,
+      id_category: ad?.id_category,
+      points: ad?.points,
+      status,
+      zip_code: ad?.zip_code,
+      city: ad?.city,
+      urgent: ad?.urgent,
+      date_execution: ad?.date_execution,
+    };
+
+    try {
+      const response = await authFetch(`/ads/${ad?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la mise à jour";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      setFeedback("Statut de l'annonce mis à jour avec succès.");
+      setError("");
+
+      if (onSuccess) {
+        await onSuccess();
+      }
+
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 900);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de mettre à jour l'annonce. Vérifiez les données et réessayez.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleDeleteAd = () => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement l'annonce "${ad.title}" ?`)) {
-      console.log(`Annonce ${ad.id} supprimée définitivement.`);
-      modalRef.current?.close();
+  const handleDeleteAd = async () => {
+    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement l'annonce "${ad?.title}" ?`)) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError("");
+    setFeedback("");
+
+    try {
+      const response = await authFetch(`/ads/${ad?.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la suppression";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      setFeedback("Annonce supprimée avec succès.");
+      setError("");
+
+      if (onSuccess) {
+        await onSuccess();
+      }
+
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 1000);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de supprimer l'annonce. Réessayez plus tard.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle" onClick={(e) => {
-    // Si l'élément cliqué est le <dialog> lui-même (et non la modal-box à l'intérieur)
     if (e.target === modalRef.current) {
       modalRef.current.close();
     }
@@ -40,7 +120,7 @@ function EditAdModal({ modalRef, ad }) {
         <div className="mb-6">
           <h3 className="font-black text-lg text-ink tracking-tight">Modérer l'annonce</h3>
           <p className="text-xs text-gray-400 mt-0.5">
-            Auteur : <span className="font-bold text-gray-700">{ad?.author}</span> • Catégorie : <span className="font-medium text-gray-600">{ad?.category}</span>
+            Auteur : <span className="font-bold text-gray-700">{ad?.firstname} {ad?.lastname}</span> • Catégorie : <span className="font-medium text-gray-600">{ad?.category_name}</span>
           </p>
         </div>
 
@@ -49,7 +129,7 @@ function EditAdModal({ modalRef, ad }) {
           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Titre de l'offre</h4>
           <p className="text-sm font-bold text-ink leading-snug">{ad?.title}</p>
           <span className="inline-block text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md mt-2">
-            Valeur : {ad?.price} UC
+            Valeur : {ad?.points} UC
           </span>
         </div>
 
@@ -65,14 +145,19 @@ function EditAdModal({ modalRef, ad }) {
               onChange={(e) => setStatus(e.target.value)}
               className="select select-bordered select-sm w-full rounded-xl bg-white border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none"
             >
-              <option value="EN ATTENTE">⏳ En attente de validation</option>
-              <option value="VALIDÉE">✅ Validée (En ligne)</option>
-              <option value="REFUSÉE">❌ Refusée / Rejetée</option>
-              {/* <option value="SIGNALÉE">⚠️ Signalée par la communauté</option> */}
+              <option value="disponible">Disponible </option>
+              <option value="en cours">En cours</option>
+              <option value="terminé">Terminée</option>
             </select>
           </div>
 
           <div className="divider before:bg-gray-50 after:bg-gray-50 my-2"></div>
+
+          {(feedback || error) && (
+            <div className={`rounded-xl p-3 text-sm ${feedback ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-rose-50 text-rose-700 border border-rose-100"}`}>
+              {feedback || error}
+            </div>
+          )}
 
           {/* ZONE DANGER */}
           <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-start justify-between gap-3">
@@ -86,6 +171,7 @@ function EditAdModal({ modalRef, ad }) {
             </div>
             <button 
               type="button" 
+              disabled={isSaving}
               onClick={handleDeleteAd}
               className="btn btn-square btn-sm btn-outline border-rose-200 hover:bg-rose-600 hover:border-rose-600 text-rose-500 hover:text-white rounded-lg shadow-none flex-none"
             >
@@ -102,8 +188,8 @@ function EditAdModal({ modalRef, ad }) {
             >
               Annuler
             </button>
-            <button type="submit" className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
-              Enregistrer les modifications
+            <button type="submit" disabled={isSaving} className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
+              {isSaving ? "Enregistrement..." : "Enregistrer les modifications"}
             </button>
           </div>
         </form>

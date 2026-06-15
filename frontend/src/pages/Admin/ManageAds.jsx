@@ -66,7 +66,7 @@ function ManageAds() {
       .filter((ad) => {
         const matchesText =
           query === "" ||
-          [ad.title, ad.author, ad.category]
+          [ad.title, ad.firstname, ad.lastname, ad.category_name]
             .filter(Boolean)
             .some((value) => value.toLowerCase().includes(query));
 
@@ -75,17 +75,17 @@ function ManageAds() {
           : true;
 
         const matchesCategory = selectedCategory
-          ? ad.category?.toLowerCase() === selectedCategory.toLowerCase()
+          ? ad.category_name?.toLowerCase() === selectedCategory.toLowerCase()
           : true;
 
         return matchesText && matchesStatus && matchesCategory;
       })
       .sort((a, b) => {
         if (sortOrder === "recent") {
-          return new Date(b.date) - new Date(a.date);
+          return new Date(b.date_creation) - new Date(a.date_creation);
         }
         if (sortOrder === "oldest") {
-          return new Date(a.date) - new Date(b.date);
+          return new Date(a.date_creation) - new Date(b.date_creation);
         }
         return 0;
       });
@@ -97,7 +97,7 @@ function ManageAds() {
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageHeader title={"Annonces"} subtitle={`${adsCount} annonces en ligne sur la plateforme`} />
+        <PageHeader title={"Annonces"} subtitle={`${adsCount} annonces enregistrées`} />
       </div>
 
       {/* Barre de filtrage spécifique aux annonces */}
@@ -191,7 +191,7 @@ function ManageAds() {
       </div>
 
       {/* Modale d'action (Changement statut / Suppression) */}
-      <EditAdModal modalRef={editModalRef} ad={selectedAd} key={selectedAd?.id} />
+      <EditAdModal modalRef={editModalRef} ad={selectedAd} onSuccess={getAllAds} key={selectedAd?.id} />
     </>
   );
 }

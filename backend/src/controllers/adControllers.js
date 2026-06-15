@@ -62,24 +62,50 @@ const add = (req, res) => {
 }
 
 const edit = (req, res) => {
-  const ad = req.body;
-
-  ad.id = parseInt(req.params.id, 10);
+  const updatedFields = req.body;
+  const adId = parseInt(req.params.id, 10);
 
   models.ad
-    .update(ad)
-    .then(([result]) => {
-      if(result.affectedRows === 0){
-        res.sendStatus(404);
-      } else {
-        res.sendStatus(204);
+    .findByIdWithDetails(adId)
+    .then(([rows]) => {
+      const existingAd = rows[0];
+
+      if (!existingAd) {
+        return res.sendStatus(404);
       }
+
+      const fields = [
+        "title",
+        "description",
+        "image_1",
+        "image_2",
+        "image_3",
+        "id_category",
+        "points",
+        "status",
+        "zip_code",
+        "city",
+        "urgent",
+        "date_execution",
+      ];
+
+      const ad = { id: adId };
+      for (const field of fields) {
+        ad[field] = field in updatedFields ? updatedFields[field] : existingAd[field];
+      }
+
+      return models.ad.update(ad);
+    })
+    .then(([result]) => {
+      if (!result || result.affectedRows === 0) {
+        return res.sendStatus(404);
+      }
+      res.sendStatus(204);
     })
     .catch((err) => {
       console.error(err);
       res.sendStatus(500);
-    })
-  ;
+    });
 };
 
 const destroy = (req, res) => {
