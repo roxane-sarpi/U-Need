@@ -152,7 +152,10 @@ function AdDetail() {
                   <img src="/UneedCoin.png" alt="Uneed Coin" className="h-full w-full object-contain" />
                 </span>
               </div>
-              <button className="w-full rounded-xl bg-primary-dark py-3 text-sm font-bold text-white transition-colors hover:bg-primary">
+              <button 
+                onClick={() => navigate('/messagerie', { state: { id_ad: ad.id, id_user: ad.id_user } })}
+                className="w-full rounded-xl bg-primary-dark py-3 text-sm font-bold text-white transition-colors hover:bg-primary"
+              >
                 Proposer mon aide
               </button>
               <p className="mt-3 cursor-pointer text-sm text-ink/60 hover:text-ink">
