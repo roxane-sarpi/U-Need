@@ -32,6 +32,20 @@ export const getConversationsByUser = (id) =>
       return [];
     });
 
+export const createRequest = (id_ad, id_user, id_helper) =>
+  authFetch('/requests', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id_ad, id_user, id_helper }),
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error(`Impossible de créer la requête (${res.status})`);
+    }
+    return res.status === 201 ? true : res.json().catch(() => true);
+  });
+
 export const updateRequestStatus = (requestId, status) =>
   authFetch(`/requests/${requestId}`, {
     method: 'PUT',

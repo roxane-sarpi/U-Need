@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../components/context/AuthContext';
+import { useLocation } from 'react-router-dom';
 import Onecontact from '../../components/messaging/Onecontact';
 import ChatArea from '../../components/messaging/ChatArea';
-import { getConversationsByUser, updateRequestStatus } from '../../components/services/requestService';
+import { getConversationsByUser, updateRequestStatus, createRequest } from '../../components/services/requestService';
 import { getConversationByRequestId, sendMessage, deleteConversation } from '../../components/services/messageService';
 
 function MessagerieScreen() {
   const { user } = useAuth();
+  const location = useLocation();
   const [requests, setRequests] = useState([]);
   const [activeRequestId, setActiveRequestId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -33,6 +35,30 @@ function MessagerieScreen() {
 
     loadConversations();
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const { id_ad, id_user } = location.state || {};
+    
+    if (id_ad && id_user && id_user !== user.id) {
+      const createNewRequest = async () => {
+        try {
+          await createRequest(id_ad, id_user, user.id);
+          const conversationList = await getConversationsByUser(user.id);
+          setRequests(conversationList || []);
+          if (conversationList?.length) {
+            setActiveRequestId(conversationList[0].id);
+          }
+        } catch (err) {
+          console.error(err);
+          setError('Impossible de créer la conversation. Vérifiez que vous n\'avez pas déjà postulé.');
+        }
+      };
+
+      createNewRequest();
+    }
+  }, [user, location.state]);
 
   useEffect(() => {
     if (!activeRequestId || !user) return;
