@@ -37,7 +37,8 @@ function Card({
           {categories.map((category) => (
             <span
               key={category.label}
-              className={`rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${category.className}`}
+              className={`rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${category.className ?? ''}`}
+              style={category.style}
             >
               {category.label}
             </span>

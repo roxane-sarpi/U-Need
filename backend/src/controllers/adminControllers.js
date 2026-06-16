@@ -7,7 +7,8 @@ const getStats = async (req, res) => {
       models.user.count(),
       models.ad.countAvailable(), 
       models.request.count(),     
-      models.user.sumPoints()     
+      models.user.sumPoints(),
+      models.ad.countAdsByCategories()     
     ]);
 
     // CORRECTION DES CLÉS D'EXTRACTION :
@@ -17,12 +18,16 @@ const getStats = async (req, res) => {
     const totalExchanges = requestResult[0][0].total_exchanges || 0;
     const totalPoints = pointsResult[0][0].total_points || 0;
 
+    // Récupération des lignes brutes de la répartition par catégorie
+    const rawCategories = categoryResult[0];
+
     // On renvoie l'objet complet au frontend
     res.status(200).json({
       totalUsers,
       availableAds,
       totalExchanges,
-      totalPoints
+      totalPoints,
+      categoriesDistribution: rawCategories
     });
 
   } catch (err) {

@@ -1,3 +1,5 @@
+import { getCategoryColor } from "../../ads/adsData";
+
 function AdMobileCard({ ad, onEdit }) {
   const statusStyles = {
     "en cours": "bg-amber-50 text-amber-600",
@@ -33,7 +35,12 @@ function AdMobileCard({ ad, onEdit }) {
       {/* Ligne inférieure : Catégorie, Date et Statut */}
       <div className="flex items-center justify-between pt-1 text-xs">
         <div className="flex gap-2 text-gray-400 font-medium">
-          <span className="text-gray-500 font-semibold">{ad.category_name}</span>
+          <span
+            className="font-semibold px-1.5 py-0.5 rounded text-[10px]"
+            style={{ backgroundColor: getCategoryColor(ad.id_category), color: '#374151' }}
+          >
+            {ad.category_name}
+          </span>
           <span>•</span>
           <span>{formattedDate}</span>
         </div>

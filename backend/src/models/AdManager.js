@@ -23,6 +23,19 @@ class AdManager extends AbstractManager {
     ]);
   }
 
+  findRecent(limit = 4) {
+    return this.database.query(
+      `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
+       FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       LEFT JOIN users u ON u.id = a.id_user
+       WHERE a.status = 'disponible'
+       ORDER BY a.date_creation DESC
+       LIMIT ?`,
+      [limit]
+    );
+  }
+
   findAllWithDetails() {
     return this.database.query(
       `SELECT a.*, c.name AS category_name, u.firstname, u.lastname

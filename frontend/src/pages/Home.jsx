@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Gift, MessageSquare, PencilLine, Smile, Sparkles } from 'lucide-react';
+import { ArrowRight, Gift, MessageSquare, PencilLine, Smile } from 'lucide-react';
 import Card from '../components/ui/Card';
+import { getRecentAds } from '../components/services/adService';
+import { getCategoryColor } from '../components/ads/adsData';
+import { API_URL } from '../components/services/api';
 
 const steps = [
 	{
@@ -23,70 +27,30 @@ const steps = [
 	},
 ];
 
-const featuredCards = [
-	{
-		title: 'Besoin de bras pour un déménagement',
-		description:
-			"J’ai besoin de bras pour déménager mon appartement situé dans le 9ème. Petits meubles, cartons et gros meubles à monter.",
-		location: '13009, Marseille',
-		authorName: 'Le T.',
-		rating: '4,5',
-		reviews: 1,
-		image: '/images/photos-login.webp',
-		categories: [
-			{ label: 'Déménagement', className: 'bg-[#6D6D6D] text-white' },
-			{ label: 'Jardinage', className: 'bg-[#F88B8B] text-white' },
-		],
-		points: '4 PTS',
-	},
-	{
-		title: 'Besoin d’aide pour une après-midi jardin',
-		description:
-			'Je cherche quelqu’un pour m’aider à tailler les haies, rempoter quelques plantes et déplacer des pots lourds.',
-		location: '13008, Marseille',
-		authorName: 'Camille M.',
-		rating: '5,0',
-		reviews: 3,
-		image: '/images/photos-login.webp',
-		categories: [
-			{ label: 'Jardinage', className: 'bg-[#6D6D6D] text-white' },
-			{ label: 'Maison', className: 'bg-[#F88B8B] text-white' },
-		],
-		points: '6 PTS',
-	},
-	{
-		title: 'Cours de guitare pour débutant',
-		description:
-			'Je cherche une personne patiente pour m’aider à progresser sur les accords de base et les rythmiques simples.',
-		location: '13005, Marseille',
-		authorName: 'Nina B.',
-		rating: '4,8',
-		reviews: 5,
-		image: '/images/photos-login.webp',
-		categories: [
-			{ label: 'Musique', className: 'bg-[#6D6D6D] text-white' },
-			{ label: 'Cours', className: 'bg-[#F88B8B] text-white' },
-		],
-		points: '5 PTS',
-	},
-	{
-		title: 'Besoin d’un coup de main pour un bureau',
-		description:
-			'Je monte un bureau et une étagère, mais il me faut une paire de mains pour tenir et aligner les éléments.',
-		location: '13001, Marseille',
-		authorName: 'Karim D.',
-		rating: '4,5',
-		reviews: 1,
-		image: '/images/photos-login.webp',
-		categories: [
-			{ label: 'Bricolage', className: 'bg-[#6D6D6D] text-white' },
-			{ label: 'Travaux', className: 'bg-[#F88B8B] text-white' },
-		],
-		points: '4 PTS',
-	},
-];
+function mapAdToCard(ad) {
+	return {
+		id: ad.id,
+		title: ad.title,
+		description: ad.description,
+		location: `${ad.zip_code}, ${ad.city}`,
+		authorName: `${ad.firstname} ${ad.lastname}`,
+		image: ad.image_1 ? `${API_URL}${ad.image_1}` : null,
+		categories: ad.category_name
+			? [{ label: ad.category_name.toUpperCase(), style: { backgroundColor: getCategoryColor(ad.id_category), color: "#374151" } }]
+			: [],
+		points: `${ad.points} PTS`,
+	};
+}
 
 function Home() {
+	const [recentAds, setRecentAds] = useState([]);
+
+	useEffect(() => {
+		getRecentAds(4)
+			.then((ads) => setRecentAds(ads.map(mapAdToCard)))
+			.catch(() => {});
+	}, []);
+
 	return (
 		<main className="min-h-screen bg-canvas text-ink">
 			<section className="relative overflow-hidden">
@@ -188,8 +152,8 @@ function Home() {
 					</div>
 
 					<div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-						{featuredCards.map((card) => (
-							<Card key={card.title} {...card} />
+						{recentAds.map((card) => (
+							<Card key={card.id} {...card} />
 						))}
 					</div>
 				</div>
