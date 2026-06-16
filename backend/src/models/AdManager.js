@@ -29,7 +29,6 @@ class AdManager extends AbstractManager {
        FROM ${this.table} a
        LEFT JOIN categories c ON c.id = a.id_category
        LEFT JOIN users u ON u.id = a.id_user
-       WHERE a.status = 'disponible'
        ORDER BY a.date_creation DESC`
     );
   }
