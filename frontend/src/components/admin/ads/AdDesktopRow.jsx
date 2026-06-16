@@ -3,11 +3,17 @@ import { Pencil } from "lucide-react";
 function AdDesktopRow({ ad, onEdit }) {
   // Styles spécifiques pour les statuts d'annonces
   const statusStyles = {
-    "EN ATTENTE": "bg-amber-50 text-amber-600 font-bold border-amber-100",
-    "VALIDÉE": "bg-emerald-50 text-emerald-600 font-bold border-emerald-100",
-    "SIGNALÉE": "bg-rose-50 text-rose-600 font-bold border-rose-100 animate-pulse",
-    "REFUSÉE": "bg-gray-100 text-gray-500 font-medium border-transparent",
+    "en cours": "bg-amber-50 text-amber-600 font-bold border-amber-100",
+    "disponible": "bg-emerald-50 text-emerald-600 font-bold border-emerald-100",
+    "signalé": "bg-rose-50 text-rose-600 font-bold border-rose-100 animate-pulse",
+    "terminé": "bg-gray-100 text-gray-500 font-medium border-transparent",
   };
+
+  const date =ad.date_creation;
+
+  const formattedDate =
+  new Date(date)
+    .toLocaleDateString("fr-FR");
 
   return (
     <tr className="hover:bg-gray-50/40 transition-colors border-b border-gray-100 last:border-none">
@@ -20,16 +26,16 @@ function AdDesktopRow({ ad, onEdit }) {
       </td>
 
       {/* Auteur */}
-      <td className="text-sm text-gray-600 font-semibold">{ad.author}</td>
+      <td className="text-sm text-gray-600 font-semibold">{ad.firstname} {ad.lastname}</td>
 
       {/* Catégorie */}
-      <td className="text-xs text-gray-400 font-medium">{ad.category}</td>
+      <td className="text-xs text-gray-400 font-medium">{ad.category_name}</td>
 
       {/* Prix (UC) */}
-      <td className="text-xs font-bold text-gray-700">{ad.price} UC</td>
+      <td className="text-xs font-bold text-gray-700">{ad.points} UC</td>
 
       {/* Date de dépôt */}
-      <td className="text-xs text-gray-400 font-medium">{ad.date}</td>
+      <td className="text-xs text-gray-400 font-medium">{formattedDate}</td>
 
       {/* Statut de l'annonce */}
       <td>

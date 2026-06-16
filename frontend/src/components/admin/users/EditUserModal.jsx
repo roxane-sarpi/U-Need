@@ -48,7 +48,7 @@ function EditUserModal({ modalRef, user, onSuccess }) {
       }
       setTimeout(() => {
         modalRef.current?.close();
-      }, 900);
+      }, 1000);
     } catch (err) {
       console.error("L'api call n'a pas abouti :", err);
       setError("Impossible de mettre à jour le compte. Vérifiez les données et réessayez.");
@@ -140,7 +140,6 @@ function EditUserModal({ modalRef, user, onSuccess }) {
               className="select select-bordered select-sm w-full rounded-xl bg-white border-gray-200 text-xs text-gray-700 font-semibold"
             >
               <option value="user">Utilisateur</option>
-              {/* <option value="moderateur">Modérateur</option> */}
               <option value="admin">Administrateur</option>
             </select>
           </div>
