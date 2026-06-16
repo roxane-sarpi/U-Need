@@ -66,6 +66,24 @@ class AdManager extends AbstractManager {
       [status, id]
     );
   }
+
+  countAvailable(){
+    return this.database.query(
+      `SELECT count(*) as available_ads FROM ${this.table} WHERE status = 'disponible'`
+    );
+  }
+
+
+  countAdsByCategories() {
+    return this.database.query(
+      `SELECT c.name, COUNT(a.id) as count 
+       FROM categories c
+       LEFT JOIN ads a ON c.id = a.id_category
+       GROUP BY c.id
+       ORDER BY count DESC`
+    );
+}
+
 }
 
 module.exports = AdManager;

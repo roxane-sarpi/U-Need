@@ -83,6 +83,12 @@ class RequestManager extends AbstractManager {
       [id_ad, excludedRequestId]
     );
   }
+
+  count() {
+    return this.database.query(
+      `select count(*) as total_exchanges from ${this.table}`
+    );
+  }
 }
 
 module.exports = RequestManager;

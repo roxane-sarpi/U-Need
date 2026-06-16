@@ -71,13 +71,18 @@ router.post("/evaluations", evaluationControllers.addEvaluation);
 router.get("/evaluations/user/:id", evaluationControllers.readEvaluationsByUser);
 router.put("/evaluations/:id", evaluationControllers.updateEvaluation);
 
+//Conversations
 router.get("/requests/conversations/:id", requestControllers.browseConversationsByUser);
 
+//Messagerie
 const messagesControllers = require("./controllers/messagesControllers");
-router.post("/messages", messagesControllers.send); // Plus propre que /addmessages
-router.put("/messages/:id", messagesControllers.update); // Plus propre que /modifymessage/:id
+router.post("/messages", messagesControllers.send);
+router.put("/messages/:id", messagesControllers.update);
 router.get("/messages/:id_request", messagesControllers.readConversation); // /messages/:id_request au lieu de /conversation/:id_request
 router.delete("/messages/conversation/:id_request", messagesControllers.deleteConversation);
 
+//Admin
+const adminControllers = require("./controllers/adminControllers");
+router.get("/admin/stats", adminControllers.getStats);
 
 module.exports = router;
