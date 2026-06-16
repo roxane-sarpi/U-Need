@@ -18,6 +18,7 @@ router.post(
 //Ads
 const adControllers =require("./controllers/adControllers");
 router.get("/ads", adControllers.browse);
+router.get("/ads/recent", adControllers.browseRecent);
 router.get("/ads/user/:id", adControllers.browseByUser);
 router.get("/ads/:id", adControllers.read);
 
