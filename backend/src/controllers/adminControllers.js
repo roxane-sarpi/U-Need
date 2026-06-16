@@ -2,23 +2,22 @@ const models = require("../models");
 
 const getStats = async (req, res) => {
   try {
-    // On lance toutes les requêtes de comptage en parallèle
-    const [userResult, adResult, requestResult, pointsResult] = await Promise.all([
+    // 1. AJOUT DE categoryResult DANS LE TABLEAU DE DESTRUCTURATION
+    const [userResult, adResult, requestResult, pointsResult, categoryResult] = await Promise.all([
       models.user.count(),
       models.ad.countAvailable(), 
       models.request.count(),     
       models.user.sumPoints(),
-      models.ad.countAdsByCategories()     
+      models.ad.countAdsByCategories() // 5e promesse lancée
     ]);
 
-    // CORRECTION DES CLÉS D'EXTRACTION :
-    // On va chercher l'alias exact renvoyé par vos managers respectifs
+    // 2. Extraction des valeurs via les alias SQL de vos managers
     const totalUsers = userResult[0][0].total_users || 0;
     const availableAds = adResult[0][0].available_ads || 0;
     const totalExchanges = requestResult[0][0].total_exchanges || 0;
     const totalPoints = pointsResult[0][0].total_points || 0;
 
-    // Récupération des lignes brutes de la répartition par catégorie
+    // 3. Extraction de la distribution (Désormais categoryResult est bien défini !)
     const rawCategories = categoryResult[0];
 
     // On renvoie l'objet complet au frontend

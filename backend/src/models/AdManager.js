@@ -89,10 +89,10 @@ class AdManager extends AbstractManager {
 
   countAdsByCategories() {
     return this.database.query(
-      `SELECT c.name, COUNT(a.id) as count 
+      `SELECT c.id, c.name, COUNT(a.id) as count 
        FROM categories c
        LEFT JOIN ads a ON c.id = a.id_category
-       GROUP BY c.id
+       GROUP BY c.id, c.name
        ORDER BY count DESC`
     );
 }

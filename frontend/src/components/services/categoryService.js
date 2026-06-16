@@ -8,7 +8,9 @@ export const updateCategory = (id, category) =>
   });
 
   export const getCategories = async () => {
-  const response = await fetch(`${API_URL}/categories`);;
+  const response = await fetch(`${API_URL}/categories`);
+
+  console.log("RESPPPONSE :", response);
   
   if (!response.ok) {
     throw new Error(`Erreur HTTP ! Statut: ${response.status}`);

@@ -27,12 +27,8 @@ function ManageCategories() {
 
   const getAllCategories = async () => {
     try {
-      const response = await getCategories();
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await getCategories();
+      
       setCategories(data);
       setCategoriesCount(data.length);
       setFetchError("");
