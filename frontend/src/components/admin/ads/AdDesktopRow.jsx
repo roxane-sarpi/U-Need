@@ -1,4 +1,5 @@
 import { Pencil } from "lucide-react";
+import { getCategoryColor } from "../../ads/adsData";
 
 function AdDesktopRow({ ad, onEdit }) {
   // Styles spécifiques pour les statuts d'annonces
@@ -29,7 +30,14 @@ function AdDesktopRow({ ad, onEdit }) {
       <td className="text-sm text-gray-600 font-semibold">{ad.firstname} {ad.lastname}</td>
 
       {/* Catégorie */}
-      <td className="text-xs text-gray-400 font-medium">{ad.category_name}</td>
+      <td>
+        <span
+          className="text-[10px] font-semibold px-2 py-0.5 rounded"
+          style={{ backgroundColor: getCategoryColor(ad.id_category), color: '#374151' }}
+        >
+          {ad.category_name}
+        </span>
+      </td>
 
       {/* Prix (UC) */}
       <td className="text-xs font-bold text-gray-700">{ad.points} UC</td>
