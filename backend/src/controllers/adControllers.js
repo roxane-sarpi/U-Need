@@ -28,6 +28,19 @@ const read = (req, res) => {
     });
 };
 
+const browseRecent = (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 4;
+  models.ad
+    .findRecent(limit)
+    .then(([rows]) => {
+      res.send(rows);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 const browseByUser = (req, res) => {
   models.ad
     .findByUser(req.params.id)
@@ -124,5 +137,5 @@ const destroy = (req, res) => {
     });
 };
 
-module.exports = {browse, browseByUser, read, add, edit, destroy};
+module.exports = {browse, browseRecent, browseByUser, read, add, edit, destroy};
 
