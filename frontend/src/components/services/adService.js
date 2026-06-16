@@ -1,4 +1,6 @@
-import { API_URL } from "./api";
+
+import { API_URL} from "./api";
+
 
 export const getAds = () =>
   fetch(`${API_URL}/ads`).then((res) => {

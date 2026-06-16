@@ -1,109 +1,178 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageHeader from "../../components/admin/PageHeader";
 import CategoryDesktopRow from "../../components/admin/categories/CategoryDesktopRow";
 import CategoryMobileCard from "../../components/admin/categories/CategoryMobileCard";
 import NewCategoryModal from "../../components/admin/categories/NewCategoryModal";
 import EditCategoryModal from "../../components/admin/categories/EditCategoryModal";
 import Pagination from "../../components/ui/Pagination";
+import { getCategories } from "../../components/services/categoryService";
+import { authFetch } from "../../components/services/api";
 
 function ManageCategories() {
-  // Données mockées pour les catégories
-  const mockCategories = [
-    { id: 1, name: "Bricolage", description: "Travaux de bricolage et réparation", color: "#ff9eb5", isActive: true, adCount: 42 },
-    { id: 2, name: "Jardinage", description: "Entretien de jardin et espaces verts", color: "#a5d8a5", isActive: true, adCount: 28 },
-    { id: 3, name: "Déménagement", description: "Aide au déménagement et transport", color: "#9eb5ff", isActive: true, adCount: 15 },
-    { id: 4, name: "Cours particuliers", description: "Soutien scolaire et cours à domicile", color: "#f0a5d8", isActive: false, adCount: 8 },
-    { id: 5, name: "Informatique", description: "Dépannage et assistance informatique", color: "#d8d8a5", isActive: true, adCount: 33 },
-  ];
+  const [categories, setCategories] = useState(null);
+  const [categoriesCount, setCategoriesCount] = useState(0);
+  const [fetchError, setFetchError] = useState("");
 
-  // Références pour les modales
   const newCategoryModalRef = useRef(null);
   const editCategoryModalRef = useRef(null);
-
-  // État pour la catégorie sélectionnée
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // État pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-  // Fonction pour ouvrir la modale d'édition
   const handleOpenEdit = (category) => {
     setSelectedCategory(category);
     editCategoryModalRef.current?.showModal();
   };
 
+  const getAllCategories = async () => {
+    try {
+      const response = await getCategories();
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      setCategories(data);
+      setCategoriesCount(data.length);
+      setFetchError("");
+    } catch (error) {
+      console.error("Donnees api categories non recuperees :", error);
+      setFetchError(
+        "Impossible de recuperer la liste des categories. Verifiez votre connexion et reessayez."
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      await getAllCategories();
+    };
+
+    void fetchCategories();
+  }, []);
+
+  const handleDeleteCategory = async (category) => {
+  if (!window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement la catégorie "${category.name}" ? En cascade, toutes les annonces et requêtes liées seront supprimées.`)) {
+    return;
+  }
+
+  try {
+    const response = await authFetch(`/categories/${category.id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new Error(body?.message || "Erreur lors de la suppression");
+    }
+
+    // On rafraîchit la liste des catégories après suppression réussie !
+    await getAllCategories();
+  } catch (err) {
+    console.error("Erreur suppression catégorie :", err);
+    setFetchError("Impossible de supprimer la catégorie. Réessayez plus tard.");
+  }
+};
+
+  const paginatedCategories = categories
+    ? categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
+
   return (
     <>
-      {/* En-tête de page */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageHeader
-          title={"Catégories"}
-          subtitle={"Gérez les catégories d'annonces"}
+          title={"Categories"}
+          subtitle={`${categoriesCount} categories d'annonces`}
         />
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={() => newCategoryModalRef.current?.showModal()}
             className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none"
           >
-            <span>+</span> <span>Nouvelle catégorie</span>
+            <span>+</span> <span>Nouvelle categorie</span>
           </button>
         </div>
       </div>
 
-      {/* Conteneur de données */}
+      {fetchError && (
+        <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
+          {fetchError}
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {/* BLOC DESKTOP */}
         <div className="hidden xl:block overflow-x-auto">
           <table className="table table-md w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/30 text-gray-400 font-bold text-[10px] uppercase tracking-wider">
-                <th>Catégorie</th>
-                <th>Description</th>
-                <th>Couleur</th>
-                <th>Statut</th>
-                <th>Annonces</th>
+                <th>Categorie</th>
                 <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {mockCategories.map((category) => (
-                <CategoryDesktopRow
-                  key={category.id}
-                  category={category}
-                  onEdit={() => handleOpenEdit(category)}
-                />
-              ))}
+              {categories === null ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-6 text-sm text-gray-500">
+                    Chargement des categories...
+                  </td>
+                </tr>
+              ) : paginatedCategories.length ? (
+                paginatedCategories.map((category) => (
+                  <CategoryDesktopRow
+                    key={category.id}
+                    category={category}
+                    onEdit={() => handleOpenEdit(category)}
+                    onDelete={handleDeleteCategory}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-6 text-sm text-gray-500">
+                    {fetchError ? fetchError : "Aucune categorie trouvee."}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
-          {mockCategories.map((category) => (
-            <CategoryMobileCard
-              key={category.id}
-              category={category}
-              onEdit={() => handleOpenEdit(category)}
-            />
-          ))}
+          {categories === null ? (
+            <div className="p-6 text-center text-sm text-gray-500">
+              Chargement des categories...
+            </div>
+          ) : paginatedCategories.length ? (
+            paginatedCategories.map((category) => (
+              <CategoryMobileCard
+                key={category.id}
+                category={category}
+                onEdit={() => handleOpenEdit(category)}
+              />
+            ))
+          ) : (
+            <div className="p-6 text-center text-sm text-gray-500">
+              {fetchError ? fetchError : "Aucune categorie trouvee."}
+            </div>
+          )}
         </div>
 
-        {/* Pagination */}
         <Pagination
           currentPage={currentPage}
-          pageCount={3}
+          pageCount={Math.max(1, Math.ceil(categoriesCount / itemsPerPage))}
           onPageChange={(page) => setCurrentPage(page)}
           isAdmin={true}
-          totalCount={mockCategories.length}
-          itemsPerPage={5}
+          totalCount={categoriesCount}
+          itemsPerPage={itemsPerPage}
         />
       </div>
 
-      {/* Modales */}
-      <NewCategoryModal modalRef={newCategoryModalRef} />
+      <NewCategoryModal modalRef={newCategoryModalRef} onSuccess={getAllCategories}/>
       <EditCategoryModal
         modalRef={editCategoryModalRef}
         category={selectedCategory}
+        onDelete={handleDeleteCategory}
       />
     </>
   );
