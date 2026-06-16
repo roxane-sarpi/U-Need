@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { API_URL } from '../components/services/api';
+import { getCategoryColor } from '../components/ads/adsData';
 
 function AdDetail() {
   const navigate = useNavigate();
@@ -109,7 +110,10 @@ function AdDetail() {
             {/* Badges */}
             <div className="flex items-center justify-between">
               {ad.category_name && (
-                <span className="rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide bg-[#4E4E4E] text-white">
+                <span
+                  className="rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide"
+                  style={{ backgroundColor: getCategoryColor(ad.id_category), color: '#374151' }}
+                >
                   {ad.category_name}
                 </span>
               )}

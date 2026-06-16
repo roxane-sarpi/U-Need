@@ -5,6 +5,7 @@ import CatalogToolbar from '../components/catalog/CatalogToolbar';
 import Pagination from '../components/ui/Pagination';
 import { getAds } from '../components/services/adService';
 import { API_URL } from '../components/services/api';
+import { getCategoryColor } from '../components/ads/adsData';
 
 function matchesCatalogFilters(card, options) {
   const term = options.search.trim().toLowerCase();
@@ -29,7 +30,7 @@ function mapAd(ad) {
     image: ad.image_1,
     location: `${ad.zip_code}, ${ad.city}`,
     categories: ad.category_name
-      ? [{ label: ad.category_name.toUpperCase(), className: 'bg-[#4E4E4E] text-white' }]
+      ? [{ label: ad.category_name.toUpperCase(), style: { backgroundColor: getCategoryColor(ad.id_category), color: '#374151' } }]
       : [],
     authorName: `${ad.firstname} ${ad.lastname}`,
     pointsValue: ad.points,

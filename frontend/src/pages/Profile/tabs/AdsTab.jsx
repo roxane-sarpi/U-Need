@@ -10,6 +10,7 @@ function AdsTab({ ads }) {
       key={ad.id}
       id={ad.id}
       category={ad.category_name}
+      categoryId={ad.id_category}
       status={ad.statut}
       coins={ad.points}
       title={ad.title}

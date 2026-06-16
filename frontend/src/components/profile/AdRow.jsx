@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import CoinsBadge from './CoinsBadge'
+import { getCategoryColor } from '../ads/adsData'
 
 const STATUS_STYLE = {
   'en cours':   { bg: 'var(--color-accent-orange-light)', color: 'var(--color-accent-orange-dark)' },
@@ -24,7 +25,7 @@ function IconBtn({ onClick, children }) {
   )
 }
 
-function AdRow({ id, category, status, coins, title, desc, image }) {
+function AdRow({ id, category, categoryId, status, coins, title, desc, image }) {
   const navigate = useNavigate()
   const st = STATUS_STYLE[status] ?? STATUS_STYLE['disponible']
   const showEye   = status !== 'brouillon'
@@ -41,7 +42,10 @@ function AdRow({ id, category, status, coins, title, desc, image }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap gap-1.5 mb-1.5">
-          <span className="text-xs font-medium border border-gray-300 rounded px-2 py-0.5 text-gray-600">{(category ?? 'AUTRE').toUpperCase()}</span>
+          <span
+            className="text-xs font-medium rounded px-2 py-0.5"
+            style={{ backgroundColor: getCategoryColor(categoryId), color: '#374151' }}
+          >{(category ?? 'AUTRE').toUpperCase()}</span>
           <span className="text-xs font-semibold rounded px-2 py-0.5" style={{ background: st.bg, color: st.color }}>{status?.toUpperCase()}</span>
         </div>
         <p className="text-base font-semibold truncate" style={{ color: 'var(--color-ink)' }}>{title}</p>
