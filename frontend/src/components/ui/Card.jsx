@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Star } from 'lucide-react';
+import { buildUrl } from '../services/api';
 
 function Card({
   id,
@@ -15,6 +16,7 @@ function Card({
   reviews,
 }) {
   const navigate = useNavigate();
+  const resolvedImage = image && image.startsWith('/') ? buildUrl(image) : image;
 
   const handleDetail = () => {
     navigate('/detail', { state: { id } });
@@ -23,8 +25,8 @@ function Card({
   return (
     <article className="overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_14px_40px_rgba(26,22,51,0.08)] transition-transform duration-200 hover:-translate-y-1">
       <div className="relative aspect-4/3 overflow-hidden bg-primary-soft">
-        {image ? (
-          <img src={image} alt={title} className="h-full w-full object-cover" />
+        {resolvedImage ? (
+          <img src={resolvedImage} alt={title} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,rgba(91,79,207,0.12),rgba(245,158,44,0.18))]">
             <span className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-primary-dark">U-Need</span>
