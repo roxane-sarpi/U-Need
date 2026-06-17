@@ -50,6 +50,18 @@ class UserManager extends AbstractManager {
       [email]
     );
   }
+
+  count() {
+    return this.database.query(
+      `select count(*) as total_users from ${this.table}`
+    );
+  }
+
+  sumPoints() {
+    return this.database.query(
+      `select SUM(points) as total_points from ${this.table}`
+    );
+  }
 }
 
 module.exports = UserManager;
