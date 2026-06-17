@@ -45,7 +45,6 @@ function ManageUsers() {
       setUsersCount(data.length);
       setFetchError("");
     } catch (error) {
-      console.error("Données api users non récupérées :", error);
       setFetchError("Impossible de récupérer la liste des utilisateurs. Vérifiez votre connexion et réessayez.");
     }
   };

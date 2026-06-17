@@ -44,7 +44,6 @@ function ManageAds() {
       setAdsCount(data.length);
       setFetchError("");
     } catch (error) {
-      console.error("Données api annonces non récupérées :", error);
       setFetchError("Impossible de récupérer la liste des annonces. Vérifiez votre connexion et réessayez.");
     }
   };

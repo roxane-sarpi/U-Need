@@ -8,8 +8,7 @@ const addEvaluation = (req, res) => {
     .then(([result]) => {
       res.location(`/evaluations/${result.insertId}`).sendStatus(201);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -20,8 +19,7 @@ const readEvaluationsByUser = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -39,8 +37,7 @@ const updateEvaluation = (req, res) => {
         res.sendStatus(204);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };

@@ -36,6 +36,20 @@ const migrate = async () => {
   const sql = fs.readFileSync('./database/schema.sql', 'utf8')
   await connection.query(sql)
 
+  try {
+    const [rows] = await connection.query(
+      `SELECT COUNT(*) as cnt FROM information_schema.columns WHERE table_schema = ? AND table_name = 'ads' AND column_name = 'status'`,
+      [DB_NAME]
+    )
+    if (rows[0].cnt === 0) {
+      await connection.query(
+        "ALTER TABLE ads ADD COLUMN status ENUM('signalé','en cours','terminé','disponible') DEFAULT 'disponible'"
+      )
+    }
+  } catch (err) {
+    console.warn('Could not ensure ads.status column:', err && err.message)
+  }
+
   await connection.end()
   console.log('Migration done !')
 }

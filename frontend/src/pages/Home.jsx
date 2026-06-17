@@ -4,7 +4,7 @@ import { ArrowRight, Gift, MessageSquare, PencilLine, Smile } from 'lucide-react
 import Card from '../components/ui/Card';
 import { getRecentAds } from '../components/services/adService';
 import { getCategoryColor } from '../components/ads/adsData';
-import { API_URL } from '../components/services/api';
+import { API_URL, buildUrl } from '../components/services/api';
 
 const steps = [
 	{
@@ -34,7 +34,7 @@ function mapAdToCard(ad) {
 		description: ad.description,
 		location: `${ad.zip_code}, ${ad.city}`,
 		authorName: `${ad.firstname} ${ad.lastname}`,
-		image: ad.image_1 ? `${API_URL}${ad.image_1}` : null,
+		image: ad.image_1 ? buildUrl(ad.image_1) : null,
 		categories: ad.category_name
 			? [{ label: ad.category_name.toUpperCase(), style: { backgroundColor: getCategoryColor(ad.id_category), color: "#374151" } }]
 			: [],

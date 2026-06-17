@@ -8,8 +8,7 @@ const browse = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -37,8 +36,7 @@ models.notification
   .then(([result]) => {
    res.location(`/notifications/${result.insertId}`).sendStatus(201);
   })
-  .catch((err) => {
-   console.error(err);
+  .catch(() => {
    res.sendStatus(500);
   });
 };
@@ -53,8 +51,7 @@ const destroy = (req, res) => {
         res.sendStatus(204);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };

@@ -16,7 +16,6 @@ function Dashboard() {
       setStats(data);
       setFetchError("");
     } catch (error) {
-      console.error("Données api statistiques non récupérées :", error);
       setFetchError(
         "Impossible de récupérer les statistiques du tableau de bord. Vérifiez votre connexion et réessayez."
       );

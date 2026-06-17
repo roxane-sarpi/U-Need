@@ -5,7 +5,6 @@ const send = (req, res) => {
   const messages = req.body;
 
   if (!messages || !messages.content) {
-    console.error("Erreur : Le contenu du message est vide.");
     return res.status(400).send("Message content is required");
   }
   models.messages
@@ -33,8 +32,7 @@ const update = (req, res) => {
         res.status(200).json({ message: "Mise à jour réussie", id });
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.status(500).send("Erreur serveur lors de la mise à jour");
     });
 };
@@ -45,11 +43,9 @@ const readConversation = (req, res) => {
   models.messages
     .read(id_request)
     .then(([rows]) => {
-      console.log("Messages récupérés :", rows);
       res.json(rows || []);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.status(500).send("Erreur serveur lors de la récupération des messages");
     });
 };
@@ -87,8 +83,7 @@ const deleteConversation = (req, res) => {
 
       return res.status(200).send(`La conversation et la requête ${id_request} ont été supprimées avec succès`);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       if (!res.headersSent) {
         res.status(500).send("Erreur serveur lors de la suppression de la conversation");
       }

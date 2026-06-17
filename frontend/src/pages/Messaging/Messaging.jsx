@@ -28,7 +28,6 @@ function MessagerieScreen() {
           setActiveRequestId(conversationList[0].id);
         }
       } catch (err) {
-        console.error(err);
         setError('Impossible de charger les conversations.');
       }
     };
@@ -51,7 +50,6 @@ function MessagerieScreen() {
             setActiveRequestId(conversationList[0].id);
           }
         } catch (err) {
-          console.error(err);
           setError('Impossible de créer la conversation. Vérifiez que vous n\'avez pas déjà postulé.');
         }
       };
@@ -70,7 +68,6 @@ function MessagerieScreen() {
         const conversation = await getConversationByRequestId(activeRequestId);
         setMessages(conversation || []);
       } catch (err) {
-        console.error(err);
         setError('Impossible de charger les messages.');
       } finally {
         setIsLoading(false);
@@ -110,7 +107,6 @@ function MessagerieScreen() {
         },
       ]);
     } catch (err) {
-      console.error(err);
       setError("Impossible d'envoyer le message.");
     }
   };
@@ -127,7 +123,6 @@ function MessagerieScreen() {
         setMessages([]);
       }
     } catch (err) {
-      console.error(err);
       setError(err.message || "Impossible de supprimer la conversation.");
     }
   };
@@ -149,7 +144,6 @@ const handleRequestDecision = async (status) => {
         setActiveRequestId(currentRequest.id);
       }
     } catch (err) {
-      console.error(err);
       setError("Impossible de mettre à jour l'état de la demande.");
     }
   };

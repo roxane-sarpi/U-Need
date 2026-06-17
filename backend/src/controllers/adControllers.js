@@ -6,8 +6,7 @@ const browse = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -22,8 +21,7 @@ const read = (req, res) => {
         res.send(rows[0]);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -35,8 +33,7 @@ const browseRecent = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -63,15 +60,16 @@ const add = (req, res) => {
     ad.image_3 = req.files.image_3 ? `/uploads/${req.files.image_3[0].filename}` : null;
   }
 
+  // debug logs removed
+
   models.ad
-  .insert(ad)
-  .then(([result]) => {
-    res.location(`/ads/${result.insertId}`).sendStatus(201);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.sendStatus(500);
-  })
+    .insert(ad)
+    .then(([result]) => {
+      res.location(`/ads/${result.insertId}`).sendStatus(201);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Erreur lors de la création de l annonce', detail: err && err.message });
+    });
 }
 
 const edit = (req, res) => {
@@ -115,8 +113,7 @@ const edit = (req, res) => {
       }
       res.sendStatus(204);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -131,8 +128,7 @@ const destroy = (req, res) => {
         res.sendStatus(204);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
