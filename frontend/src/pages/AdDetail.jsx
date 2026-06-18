@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, Clock, ArrowLeft } from 'lucide-react';
-import { API_URL } from '../components/services/api';
+import { API_URL, buildUrl } from '../components/services/api';
 import { getCategoryColor } from '../components/ads/adsData';
 
 function AdDetail() {
@@ -22,6 +22,8 @@ function AdDetail() {
       .then((data) => { setAd(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, [id]);
+
+console.log("Ad data : ", ad);
 
   if (loading) {
     return (
@@ -45,7 +47,14 @@ function AdDetail() {
     );
   }
 
-  const images = [ad.image_1, ad.image_2, ad.image_3].filter(Boolean);
+  // 1. On garde les 3 valeurs (qu'elles soient valides ou nulles) pour tester précisément l'index 0
+  const allImages = [buildUrl(ad.image_1), buildUrl(ad.image_2), buildUrl(ad.image_3)];
+
+  // 2. On isole la première image
+  const firstImage = allImages[0];
+
+  // 3. On filtre le reste pour les miniatures (en enlevant la première)
+  const secondaryImages = allImages.slice(1).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-canvas p-4 sm:p-6 lg:p-8">
@@ -69,16 +78,24 @@ function AdDetail() {
           {/* Section gauche : Images et description */}
           <div className="flex-1">
             {/* Galerie d'images */}
-            {images.length > 0 && (
+            {allImages.length > 0 && (
               <div className="mb-6">
                 {/* Version mobile */}
                 <div className="lg:hidden">
+                  {firstImage ? (
                   <div className="relative aspect-4/3 overflow-hidden rounded-xl bg-primary-soft">
-                    <img src={images[0]} alt={ad.title} className="h-full w-full object-cover" />
+                    <img src={firstImage} alt={ad.title} className="h-full w-full object-cover" />
+                  </div>) : 
+                  (
+                  <div className="flex aspect-4/3 w-full items-center justify-center rounded-xl bg-[linear-gradient(135deg,rgba(91,79,207,0.12),rgba(245,158,44,0.18))]">
+                    <span className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-primary-dark">U-Need
+                    </span>
                   </div>
-                  {images.length > 1 && (
+                  )}
+                  
+                  {secondaryImages.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      {images.slice(1).map((image, index) => (
+                      {secondaryImages.map((image, index) => (
                         <div key={index} className="aspect-4/3 overflow-hidden rounded-xl bg-primary-soft">
                           <img src={image} alt={`${ad.title} ${index + 2}`} className="h-full w-full object-cover" />
                         </div>
@@ -90,13 +107,20 @@ function AdDetail() {
                 {/* Version bureau */}
                 <div className="hidden lg:flex lg:gap-4">
                   <div className="flex-1">
-                    <div className="relative aspect-4/3 overflow-hidden rounded-xl bg-primary-soft">
-                      <img src={images[0]} alt={ad.title} className="h-full w-full object-cover" />
+                    {firstImage ? (
+                      <div className="relative aspect-4/3 overflow-hidden rounded-xl bg-primary-soft">
+                        <img src={firstImage} alt={ad.title} className="h-full w-full object-cover" />
+                      </div>
+                    ) : (
+                    <div className="flex aspect-4/3 w-full items-center justify-center rounded-xl bg-[linear-gradient(135deg,rgba(91,79,207,0.12),rgba(245,158,44,0.18))]">
+                      <span className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-primary-dark">U-Need</span>
                     </div>
+                    )}
+                    
                   </div>
-                  {images.length > 1 && (
+                  {secondaryImages.length > 0 && (
                     <div className="flex w-48 flex-col gap-4">
-                      {images.slice(1).map((image, index) => (
+                      {secondaryImages.map((image, index) => (
                         <div key={index} className="aspect-4/3 overflow-hidden rounded-xl bg-primary-soft">
                           <img src={image} alt={`${ad.title} ${index + 2}`} className="h-full w-full object-cover" />
                         </div>
@@ -108,19 +132,35 @@ function AdDetail() {
             )}
 
             {/* Badges */}
-            <div className="flex items-center justify-between">
-              {ad.category_name && (
-                <span
-                  className="rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide"
-                  style={{ backgroundColor: getCategoryColor(ad.id_category), color: '#374151' }}
-                >
-                  {ad.category_name}
-                </span>
-              )}
-              <span className="rounded-md bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
-                {ad.points} PTS
-              </span>
-            </div>
+<div className="flex items-center justify-between">
+  {/* Partie gauche : Catégorie */}
+  <div>
+    {ad.category_name && (
+      <span
+        className="rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide"
+        style={{ backgroundColor: getCategoryColor(ad.id_category), color: '#374151' }}
+      >
+        {ad.category_name}
+      </span>
+    )}
+  </div>
+
+  {/* Partie droite : ASAP (si urgent) + Points */}
+  <div className="flex items-center gap-3">
+    {/* Affichage du texte ASAP à gauche des points */}
+    {ad.urgent === 1 && (
+      <div className="flex items-center gap-1.5 text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded-md text-[11px] uppercase tracking-wide border border-red-200">
+        <Clock size={12} />
+        <span>ASAP</span>
+      </div>
+    )}
+
+    {/* Le badge des Points */}
+        <span className="rounded-md bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+        {ad.points} PTS
+        </span>
+      </div>
+  </div>
 
             {/* Localisation et urgence */}
             <div className="mt-4 flex items-center gap-4 text-sm text-ink/60">
@@ -128,12 +168,6 @@ function AdDetail() {
                 <MapPin size={14} className="text-ink/45" />
                 <span>{ad.zip_code}, {ad.city}</span>
               </div>
-              {ad.urgent === 1 && (
-                <div className="flex items-center gap-1.5">
-                  <Clock size={14} className="text-ink/45" />
-                  <span>ASAP</span>
-                </div>
-              )}
             </div>
 
             {/* Titre et description */}

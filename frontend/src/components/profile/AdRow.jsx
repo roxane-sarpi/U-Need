@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Eye, Pencil, Trash2 } from 'lucide-react'
+import { Clock, Eye, Pencil, Trash2 } from 'lucide-react'
 import CoinsBadge from './CoinsBadge'
 import { getCategoryColor } from '../ads/adsData'
 
@@ -18,14 +18,14 @@ function IconBtn({ onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
     >
       {children}
     </button>
   )
 }
 
-function AdRow({ id, category, categoryId, status, coins, title, desc, image }) {
+function AdRow({ id, category, categoryId, status, coins, title, desc, image, urgent }) {
   const navigate = useNavigate()
   const st = STATUS_STYLE[status] ?? STATUS_STYLE['disponible']
   const showEye   = status !== 'brouillon'
@@ -45,8 +45,21 @@ function AdRow({ id, category, categoryId, status, coins, title, desc, image }) 
           <span
             className="text-xs font-medium rounded px-2 py-0.5"
             style={{ backgroundColor: getCategoryColor(categoryId), color: '#374151' }}
-          >{(category ?? 'AUTRE').toUpperCase()}</span>
-          <span className="text-xs font-semibold rounded px-2 py-0.5" style={{ background: st.bg, color: st.color }}>{status?.toUpperCase()}</span>
+          >
+            {(category ?? 'AUTRE').toUpperCase()}
+          </span>
+          
+          <span className="text-xs font-semibold rounded px-2 py-0.5" style={{ background: st.bg, color: st.color }}>
+            {status?.toUpperCase()}
+          </span>
+
+          {/* 🆕 AJOUT : Tag Urgent rouge dynamique commun au Mobile et Desktop */}
+          {urgent === 1 && (
+            <span className="flex items-center gap-1 text-[11px] font-bold rounded px-2 py-0.5 bg-red-100 text-red-700 border border-red-200 uppercase tracking-wide">
+              <Clock size={11} />
+              ASAP
+            </span>
+          )}
         </div>
         <p className="text-base font-semibold truncate" style={{ color: 'var(--color-ink)' }}>{title}</p>
         <p className="text-sm text-gray-400 truncate mt-0.5">{desc}</p>
