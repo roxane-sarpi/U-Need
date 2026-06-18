@@ -6,8 +6,7 @@ const browse = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -26,7 +25,6 @@ const add = (req, res) => {
       if (err.code === 'ER_DUP_ENTRY') {
         res.status(409).json({ message: 'mail déjà utilisé' });
       } else {
-        console.error(err);
         res.sendStatus(500);
       }
     });
@@ -34,23 +32,19 @@ const add = (req, res) => {
 
 const getUserbyEmailWithPasswordAndPassToNext = (req, res, next) => {
   const { email, password } = req.body;
-  console.log("EMAIL : ", email);
-  console.log("PASSWORD : ", password);
   models.user
     .findByEmail(email)
     .then(([users]) => {
       if (users[0] != null) {
         const [firstuser] = users;
         req.user = firstuser;
-        console.log(req.user);
-        next(); 
+        next();
       } else {
         res.sendStatus(401); 
       }
     })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500).send("Error retrieving data from database");
+    .catch(() => {
+      res.status(500).send("Error retrieving data from database");
     });
 };
 
@@ -64,8 +58,7 @@ const read = (req, res) => {
         res.sendStatus(404);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -94,8 +87,7 @@ const edit = (req, res) => {
         res.status(200).json({ success: true });
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -110,8 +102,7 @@ const destroy = (req, res) => {
         res.status(200).json({ success: true });
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };

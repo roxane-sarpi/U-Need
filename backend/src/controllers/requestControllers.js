@@ -2,16 +2,14 @@ const models = require("../models");
 
 const addRequest = (req, res) => {
     const request = req.body;
-    console.log(request);
 
     models.request
         .create(request)
         .then(([result]) => {
             res.location(`/requests/${result.insertId}`).sendStatus(201);
         })
-        .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
+        .catch(() => {
+          res.sendStatus(500);
         });
 }
 
@@ -25,8 +23,7 @@ const readRequest = (req, res) => {
             res.send(rows[0]);
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch(() => {
           res.sendStatus(500);
         });
     };
@@ -37,8 +34,7 @@ const browseRequest = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     }
     )
@@ -69,8 +65,7 @@ const updateRequest = async (req, res) => {
 
         res.sendStatus(204);
     } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+      res.sendStatus(500);
     }
 }
 
@@ -80,8 +75,7 @@ const browseHistoryByUser = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -92,8 +86,7 @@ const browseConversationsByUser = (req, res) => {
     .then(([rows]) => {
       res.json(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -104,8 +97,7 @@ const browseByHelper = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };

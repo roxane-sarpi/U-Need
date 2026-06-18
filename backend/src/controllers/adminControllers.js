@@ -30,7 +30,6 @@ const getStats = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Erreur lors de la récupération des statistiques :", err);
     res.status(500).json({ message: "Erreur serveur lors du calcul des statistiques." });
   }
 };

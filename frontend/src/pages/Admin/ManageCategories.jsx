@@ -33,7 +33,6 @@ function ManageCategories() {
       setCategoriesCount(data.length);
       setFetchError("");
     } catch (error) {
-      console.error("Donnees api categories non recuperees :", error);
       setFetchError(
         "Impossible de recuperer la liste des categories. Verifiez votre connexion et reessayez."
       );
@@ -66,7 +65,6 @@ function ManageCategories() {
     // On rafraîchit la liste des catégories après suppression réussie !
     await getAllCategories();
   } catch (err) {
-    console.error("Erreur suppression catégorie :", err);
     setFetchError("Impossible de supprimer la catégorie. Réessayez plus tard.");
   }
 };

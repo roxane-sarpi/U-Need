@@ -55,7 +55,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFeedback("");
+    setFeedback('Publication en cours...');
     setError("");
     setFormErrors({});
 
@@ -96,6 +96,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
         body: formPayload,
       });
 
+      
       if (res.ok) {
         setFeedback('Annonce postée avec succès.');
         setError("");

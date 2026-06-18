@@ -1,6 +1,12 @@
 
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5020";
 
+export function buildUrl(resourcePath) {
+  if (!resourcePath) return null;
+  const path = resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`;
+  return `${API_URL}${path}`;
+}
+
 // Décoder le JWT et récupérer le payload
 export const decodeToken = (token) => {
   if (!token) return null;
