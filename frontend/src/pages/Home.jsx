@@ -39,6 +39,7 @@ function mapAdToCard(ad) {
 			? [{ label: ad.category_name.toUpperCase(), style: { backgroundColor: getCategoryColor(ad.id_category), color: "#374151" } }]
 			: [],
 		points: `${ad.points} PTS`,
+		urgent: ad.urgent,
 	};
 }
 

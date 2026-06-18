@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Star } from 'lucide-react';
+import { Clock, MapPin, Star } from 'lucide-react';
 import { buildUrl } from '../services/api';
 
 function Card({
@@ -14,6 +14,7 @@ function Card({
   authorAvatar,
   rating,
   reviews,
+  urgent
 }) {
   const navigate = useNavigate();
   const resolvedImage = image && image.startsWith('/') ? buildUrl(image) : image;
@@ -34,7 +35,8 @@ function Card({
         )}
       </div>
 
-      <div className="p-5">
+<div className="p-5">
+        {/* Conteneur des Badges */}
         <div className="flex flex-wrap items-center gap-2">
           {categories.map((category) => (
             <span
@@ -46,9 +48,19 @@ function Card({
             </span>
           ))}
 
-          <span className="ml-auto rounded-md bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
-            {points}
-          </span>
+          {/* 🆕 Div globale englobant le tag Urgent et les Points alignés à droite */}
+          <div className="ml-auto flex items-center gap-2">
+            {urgent === 1 && (
+              <span className="flex items-center gap-1 rounded-md bg-red-100 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-red-700 border border-red-200">
+                <Clock size={12} />
+                ASAP
+              </span>
+            )}
+
+            <span className="rounded-md bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+              {points}
+            </span>
+          </div>
         </div>
 
         <h3 className="mt-6 text-lg font-extrabold leading-7 text-ink">{title}</h3>
@@ -65,7 +77,7 @@ function Card({
 
         <button
           onClick={handleDetail}
-          className="mt-4 w-full rounded-xl bg-primary py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-dark"
+          className="mt-4 w-full rounded-xl bg-primary py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-dark cursor-pointer"
         >
           Voir le détail
         </button>

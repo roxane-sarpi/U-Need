@@ -16,6 +16,7 @@ function AdsTab({ ads }) {
       title={ad.title}
       desc={ad.description}
       image={ad.image_1 ? buildUrl(ad.image_1) : null}
+      urgent={ad.urgent}
     />
   ))
 }
