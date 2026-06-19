@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Camera } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 function EditProfile() {
   const navigate = useNavigate()
+
+  // const initials = `${userData.firstname?.[0] ?? ''}${userData.lastname?.[0] ?? ''}`.toUpperCase()
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--color-canvas)' }}>
@@ -30,15 +32,7 @@ function EditProfile() {
                 className="w-24 h-24 rounded-full"
                 style={{ backgroundColor: 'var(--color-primary-light)' }}
               />
-              <button
-                type="button"
-                className="absolute bottom-0 right-0 p-1.5 rounded-full shadow-md text-white"
-                style={{ backgroundColor: 'var(--color-primary)' }}
-              >
-                <Camera size={14} />
-              </button>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Changer la photo</p>
           </div>
 
           <form className="flex flex-col gap-4">
