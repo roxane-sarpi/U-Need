@@ -25,12 +25,12 @@ function IconBtn({ onClick, children }) {
   )
 }
 
-function AdRow({ id, category, categoryId, status, coins, title, desc, image, urgent }) {
+function AdRow({ id, category, categoryId, status, coins, title, desc, image, urgent, readOnly = false }) {
   const navigate = useNavigate()
   const st = STATUS_STYLE[status] ?? STATUS_STYLE['disponible']
   const showEye   = status !== 'brouillon'
-  const showEdit  = status !== 'terminé'
-  const showTrash = status === 'brouillon'
+  const showEdit  = !readOnly && status !== 'terminé'
+  const showTrash = !readOnly && status === 'brouillon'
 
   return (
     <div className="flex items-center gap-3 border border-gray-100 rounded-xl p-4">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { API_URL, buildUrl } from '../components/services/api';
 import { getCategoryColor } from '../components/ads/adsData';
@@ -266,9 +266,12 @@ console.log("Ad data : ", ad);
                 </h3>
               </div>
 
-              <button className="mt-4 w-full rounded-xl border border-primary-dark py-2 text-sm font-bold text-primary-dark transition-colors hover:bg-primary-soft">
+              <Link
+                to={`/profile/${ad.id_user}`}
+                className="mt-4 block w-full rounded-xl border border-primary-dark py-2 text-center text-sm font-bold text-primary-dark transition-colors hover:bg-primary-soft"
+              >
                 Voir le profil
-              </button>
+              </Link>
             </div>
           </div>
         </div>
