@@ -60,12 +60,11 @@ function EditProfile() {
       return;
     }
 
-    try {
+try {
       setIsSaving(true);
       setError("");
       setFeedback("");
 
-      // 1. Récupération de l'utilisateur connecté pour avoir son ID
       const storedUser = localStorage.getItem("user");
       const userParsed = storedUser ? JSON.parse(storedUser) : null;
 
@@ -73,13 +72,24 @@ function EditProfile() {
         throw new Error("Session utilisateur introuvable. Veuillez vous reconnecter.");
       }
 
-      // 2. Appel de ton service avec le bon ID
-      const updatedUser = await updateUser(userParsed.id, formData);
+      const response = await updateUser(userParsed.id, formData);
       
-      // 3. Mise à jour du localStorage avec les nouvelles données renvoyées par l'API
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      // ✅ LA CORRECTION : Si la modification a réussi côté serveur
+      if (response && (response.success || response.id)) {
+        
+        // On fusionne l'ancien utilisateur avec les nouveaux champs du formulaire
+        const newUserLocalData = {
+          ...userParsed, // Garde l'id, le token, etc.
+          ...formData    // Écrase avec le nouveau prénom, nom, ville, etc.
+        };
 
-      setFeedback("Profil mis à jour avec succès !");
+        // On enregistre cette fusion propre dans le localStorage
+        localStorage.setItem("user", JSON.stringify(newUserLocalData));
+        
+        setFeedback("Profil mis à jour avec succès !");
+      } else {
+        throw new Error("Le serveur n'a pas validé les modifications.");
+      }
       
       setTimeout(() => {
         navigate(-1);
