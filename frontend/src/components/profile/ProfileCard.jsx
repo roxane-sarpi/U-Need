@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { MapPin, LogOut } from 'lucide-react'
-import EditProfile from '../../pages/Profile/EditProfile'
 
 function ProfileCard({ userData, onLogout }) {
   const initials = `${userData.firstname?.[0] ?? ''}${userData.lastname?.[0] ?? ''}`.toUpperCase()
@@ -30,7 +29,6 @@ function ProfileCard({ userData, onLogout }) {
             className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors"
             style={{ color: 'var(--color-ink)' }}
           >
-            <EditProfile user={userData} />
             Éditer mon profil
           </Link>
           <button
