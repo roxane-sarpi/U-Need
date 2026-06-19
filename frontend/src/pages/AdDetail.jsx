@@ -3,10 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { API_URL, buildUrl } from '../components/services/api';
 import { getCategoryColor } from '../components/ads/adsData';
+import { useAuth } from '../components/context/AuthContext';
+import { createRequest, getConversationsByUser } from '../components/services/requestService';
 
 function AdDetail() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
   const id = location.state?.id;
 
   const [ad, setAd] = useState(null);
@@ -55,6 +59,50 @@ console.log("Ad data : ", ad);
 
   // 3. On filtre le reste pour les miniatures (en enlevant la première)
   const secondaryImages = allImages.slice(1).filter(Boolean);
+
+  const getConversationKey = (request) => {
+    const participantA = Number(request?.id_user);
+    const participantB = Number(request?.id_helper);
+    const orderedParticipants = [participantA, participantB].sort((left, right) => left - right);
+
+    return [request?.id_ad, orderedParticipants[0], orderedParticipants[1]].join(':');
+  };
+
+  const handleContactHelper = async () => {
+    if (!ad) return;
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setIsCreatingConversation(true);
+      const conversationList = await getConversationsByUser(user.id);
+      const existingConversation = (conversationList || []).find((request) => (
+        getConversationKey(request) === [ad.id, [ad.id_user, user.id].sort((left, right) => left - right).join(':')].join(':')
+      ));
+
+      if (existingConversation) {
+        navigate(`/messagerie?requestId=${existingConversation.id}`, { replace: true });
+        return;
+      }
+
+      const conversation = await createRequest(ad.id, ad.id_user, user.id);
+      const requestId = conversation?.id;
+
+      if (requestId) {
+        navigate(`/messagerie?requestId=${requestId}`, { replace: true });
+      } else {
+        navigate('/messagerie', { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+      navigate('/messagerie', { replace: true });
+    } finally {
+      setIsCreatingConversation(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-canvas p-4 sm:p-6 lg:p-8">
@@ -191,10 +239,11 @@ console.log("Ad data : ", ad);
                 </span>
               </div>
               <button 
-                onClick={() => navigate('/messagerie', { state: { id_ad: ad.id, id_user: ad.id_user } })}
+                onClick={handleContactHelper}
+                disabled={isCreatingConversation}
                 className="w-full rounded-xl bg-primary-dark py-3 text-sm font-bold text-white transition-colors hover:bg-primary"
               >
-                Proposer mon aide
+                {isCreatingConversation ? 'Ouverture...' : 'Proposer mon aide'}
               </button>
               <p className="mt-3 cursor-pointer text-sm text-ink/60 hover:text-ink">
                 🚩 Signaler cette annonce

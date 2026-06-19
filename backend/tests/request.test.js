@@ -2,6 +2,7 @@ jest.mock('../src/models', () => ({
   request: {
     create: jest.fn(),
     findById: jest.fn(),
+    findByConversationIdentity: jest.fn(),
     findAll: jest.fn(),
     find: jest.fn(),
     update: jest.fn(),
@@ -34,17 +35,48 @@ describe('Request Controllers', () => {
       };
 
       const res = {
-        location: jest.fn().mockReturnThis(),
-        sendStatus: jest.fn(),
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
       };
 
+      models.request.findByConversationIdentity.mockResolvedValue([[]]);
       models.request.create.mockResolvedValue([{ insertId: 1 }]);
+      models.request.findById.mockResolvedValue([[{ id: 1, ...req.body }]]);
 
       await requestControllers.addRequest(req, res);
 
+      expect(models.request.findByConversationIdentity).toHaveBeenCalledWith(1, 10, 5);
       expect(models.request.create).toHaveBeenCalledWith(req.body);
-      expect(res.location).toHaveBeenCalledWith('/requests/1');
-      expect(res.sendStatus).toHaveBeenCalledWith(201);
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }));
+    });
+
+    test('doit retourner la conversation existante sans en créer une nouvelle', async () => {
+      const req = {
+        body: {
+          id_ad: 1,
+          id_user: 5,
+          id_helper: 10,
+        },
+      };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      const existingRequest = {
+        id: 42,
+        ...req.body,
+      };
+
+      models.request.findByConversationIdentity.mockResolvedValue([[existingRequest]]);
+
+      await requestControllers.addRequest(req, res);
+
+      expect(models.request.create).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(existingRequest);
     });
   });
 
