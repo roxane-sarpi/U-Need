@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { 
-  LayoutDashboard, 
-  Users, 
-  FileText,  
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
   FolderTree,
   Menu,
   X,
-  LogOut
+  LogOut,
+  ExternalLink
 } from "lucide-react";
 
 function AdminLayout() {
@@ -54,10 +55,10 @@ function AdminLayout() {
         
         {/* Barre supérieure visible UNIQUEMENT sur mobile (md:hidden) */}
         <header className="flex items-center justify-between p-4 bg-ink text-white md:hidden shadow-md">
-          <div className="flex flex-col items-center gap-1">
+          <Link to="/" className="flex flex-col items-center gap-1 hover:opacity-80 transition-opacity">
             <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
             <span className="text-[9px] bg-accent-orange px-1 py-0.5 rounded font-extrabold ml-1">ADMIN</span>
-          </div>
+          </Link>
           <label htmlFor="admin-drawer" className="btn btn-ghost btn-square btn-sm">
             <Menu size={22} />
           </label>
@@ -82,7 +83,7 @@ function AdminLayout() {
           
           {/* Header de la Sidebar */}
           <div className="p-6 flex items-center justify-between border-b border-gray-800">
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-3">
+            <Link to="/" className="flex flex-col gap-4 md:flex-row md:items-start md:gap-3 hover:opacity-80 transition-opacity">
               <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
               <div className="flex flex-col">
                 <span className="font-bold text-lg tracking-wide">U-Need</span>
@@ -90,7 +91,7 @@ function AdminLayout() {
                   Admin
                 </span>
               </div>
-            </div>
+            </Link>
             {/* Bouton fermeture visible UNIQUEMENT sur mobile */}
             <button className="md:hidden btn btn-ghost btn-circle btn-sm text-gray-400" onClick={closeDrawer}>
               <X size={20} />
@@ -131,9 +132,16 @@ function AdminLayout() {
             })}
           </nav>
 
-          {/* Bouton Déconnecter en bas */}
-          <div className="border-t border-gray-800 p-4">
-            <button 
+          {/* Bouton Voir le site + Déconnecter en bas */}
+          <div className="border-t border-gray-800 p-4 space-y-1">
+            <Link
+              to="/"
+              className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-400 hover:bg-gray-900/50 hover:text-white transition-all"
+            >
+              <ExternalLink size={20} />
+              <span>Voir le site</span>
+            </Link>
+            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-400 hover:bg-gray-900/50 hover:text-red-400 transition-all"
             >
