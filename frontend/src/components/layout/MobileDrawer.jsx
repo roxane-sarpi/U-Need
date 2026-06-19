@@ -43,10 +43,10 @@ function MobileDrawer({closeMenu}) {
             </Link>
 
             {/* if not connected link to login, if connected link to notifications, add a condition on the Link component */}
-            <Link to="/notifications" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+            {/* <Link to="/notifications" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <Bell size={20} className="text-gray-500" />
               <span className="font-medium">Notifications</span>
-            </Link>
+            </Link> */}
             <Link to="/messagerie" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
               <MessageCircle size={20} className="text-gray-500" />
               <span className="font-medium">Messagerie</span>

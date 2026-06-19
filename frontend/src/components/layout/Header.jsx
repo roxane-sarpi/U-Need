@@ -72,10 +72,10 @@ function Header() {
             <div className="flex items-center gap-2 md:gap-4">
               {/* Ces icônes sont masquées sur mobile dans la maquette Leboncoin car elles vont dans le Drawer */}
               <div className="hidden md:flex items-center gap-6">
-                <Link to="/notifications" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                {/* <Link to="/notifications" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <Bell size={24} />
                   <span className="text-[10px] font-medium uppercase">Notification</span>
-                </Link>
+                </Link> */}
                 <Link to="/messagerie" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <MessageCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
