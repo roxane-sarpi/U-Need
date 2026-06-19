@@ -3,9 +3,11 @@ import React from 'react';
 export default function Onecontact({ request, isActive, onClick, canDelete, onDeleteConversation }) {
 
     const statusTexts = {
-    'en cours': 'Discussion en cours...',
-    'accepter': 'Aide acceptée',
-    'refuser': 'Aide refusée',
+        '': "Commencer discussion",
+    'en cours': 'Ouvrir discussion',
+    // 'accepté': 'Aide acceptée',
+    'terminé':'service terminé',
+    'refusé': 'Aide refusée',
     'signalé': '⚠️ Discussion signalée'
   };
 
@@ -41,7 +43,7 @@ export default function Onecontact({ request, isActive, onClick, canDelete, onDe
                         Avec : {contactName}
                     </p>
                     <p className="text-xs text-[#5C4FE5] truncate w-36 mt-0.5">
-                        {statusTexts[request.status] || 'État inconnu'}
+                        {statusTexts[request.status] || ''}
                     </p>
                 </div>
             </div>

@@ -32,8 +32,8 @@ const addRequest = async (req, res) => {
     }
 
     const [result] = await connection.query(
-      `INSERT INTO requests (id_ad, id_helper, id_user) VALUES (?, ?, ?)`,
-      [request.id_ad, request.id_helper, request.id_user]
+      `INSERT INTO requests (id_ad, id_helper, id_user, status) VALUES (?, ?, ?, ?)`,
+      [request.id_ad, request.id_helper, request.id_user, request.status]
     );
 
     const [createdRows] = await connection.query(
@@ -110,27 +110,97 @@ const browseRequest = (req, res) => {
     )
 }
 
+// const updateRequest = async (req, res) => {
+//     const request = {
+//         id: req.params.id,
+//         status: req.body.status,
+//     };
+
+//     // 1. Autoriser tous les statuts valides de l'ENUM
+//     if (!['en cours', 'accepté', 'refusé', 'terminé', 'signalé'].includes(request.status)) {
+//         return res.status(400).json({ error: 'Statut de requête invalide.' });
+//     }
+
+//     try {
+//         const [[existingRequest]] = await models.request.findById(request.id);
+//         if (!existingRequest) {
+//             return res.sendStatus(404);
+//         }
+
+//         // Sauvegarde du nouveau statut de la requête
+//         await models.request.update(request);
+
+//         // 2. Si le propriétaire accepte l'aide de cet utilisateur
+//         if (request.status === 'accepté') {
+//             await models.ad.updateStatus(existingRequest.id_ad, 'en cours');
+//             await models.request.refuseOtherRequestsByAd(existingRequest.id_ad, request.id);
+//         }
+
+//         // 3. Si le service est marqué comme validé et terminé
+//         if (request.status === 'terminé') {
+//             await models.ad.updateStatus(existingRequest.id_ad, 'terminé');
+//             await models.user.updateHelperPoints(existingRequest.id_helper);
+//             await models.user.updateNeederPoints();
+//             // C'est ici que tu pourras déclencher ultérieurement ta fonction de transfert de points !
+//         }
+
+//         res.sendStatus(204);
+//     } catch (err) {
+//         console.error(err);
+//         res.sendStatus(500);
+//     }
+// }
 const updateRequest = async (req, res) => {
     const request = {
         id: req.params.id,
         status: req.body.status,
     };
 
-    if (!['en cours', 'accepter', 'refuser'].includes(request.status)) {
+    if (!['en cours', 'accepté', 'refusé', 'terminé', 'signalé'].includes(request.status)) {
         return res.status(400).json({ error: 'Statut de requête invalide.' });
     }
 
     try {
+        // 1. On récupère la requête de mise en relation existante
         const [[existingRequest]] = await models.request.findById(request.id);
         if (!existingRequest) {
             return res.sendStatus(404);
         }
 
+        // On bloque si le service est déjà terminé pour éviter la triche/doubles transactions
+        if (existingRequest.status === 'terminé') {
+            return res.status(400).json({ error: 'Ce service a déjà été clôturé et payé.' });
+        }
+
+        // Sauvegarde du nouveau statut de la requête
         await models.request.update(request);
 
-        if (request.status === 'accepter') {
+        // Si le propriétaire accepte l'aide de cet utilisateur
+        if (request.status === 'accepté') {
             await models.ad.updateStatus(existingRequest.id_ad, 'en cours');
             await models.request.refuseOtherRequestsByAd(existingRequest.id_ad, request.id);
+        }
+
+        // 🚀 2. Si le service est marqué comme validé et terminé
+        if (request.status === 'terminé') {
+            // On va chercher l'annonce pour récupérer le nombre exact de points à transférer
+            const [[associatedAd]] = await models.ad.find(existingRequest.id_ad);
+            
+            if (!associatedAd) {
+                return res.status(404).json({ error: "Annonce associée introuvable." });
+            }
+
+            const pointsToTransfer = associatedAd.points;
+
+            // On met à jour le statut de l'annonce à terminé
+            await models.ad.updateStatus(existingRequest.id_ad, 'terminé');
+            
+            // On déclenche le transfert de points entre le Needer (existingRequest.id_user) et le Helper (existingRequest.id_helper)
+            await models.user.updatePointsTransaction(
+                existingRequest.id_user,   // Le demandeur qui perd les points
+                existingRequest.id_helper, // L'aidant qui gagne les points
+                pointsToTransfer           // Le montant de l'annonce
+            );
         }
 
         res.sendStatus(204);
