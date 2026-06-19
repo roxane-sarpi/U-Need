@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
 import { useNavigate } from "react-router-dom";
 
-function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, onRefuse }) {
+function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage, onAccept, onRefuse }) {
     const [text, setText] = useState('');
     const navigate = useNavigate();
 
@@ -22,6 +22,15 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, o
     };
 
     const adTitle = request.ad_title || request.title || 'Annonce';
+    const currentUserFirstName = currentUser?.firstname || '';
+    const currentUserLastName = currentUser?.lastname || '';
+    const contactFirstName = request.firstname || '';
+    const contactLastName = request.lastname || '';
+
+    const buildInitials = (firstName = '', lastName = '') => {
+        const initials = `${firstName.trim().charAt(0)}${lastName.trim().charAt(0)}`.toUpperCase();
+        return initials || '?';
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -85,7 +94,9 @@ function ChatArea({ request, messages, currentUserId, onSendMessage, onAccept, o
                         key={msg.id}
                         text={msg.content} // Correction : msg.text -> msg.content
                         isMe={msg.id_sender === currentUserId} // Correction : msg.senderId -> msg.id_sender
-                        avatarUrl={msg.id_sender === currentUserId ? "moi.png" : "autre.png"}
+                        initials={msg.id_sender === currentUserId
+                          ? buildInitials(currentUserFirstName, currentUserLastName)
+                          : buildInitials(msg.firstname || contactFirstName, msg.lastname || contactLastName)}
                     />
                 ))}
             </div>

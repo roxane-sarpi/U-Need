@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle, LogOut } from "lucide-react";
+import { PlusCircle, BookOpen, Bell, MessageCircle, User, HelpCircle, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function MobileDrawer({closeMenu}) {
@@ -64,6 +64,12 @@ function MobileDrawer({closeMenu}) {
                   <User size={20} className="text-gray-500" />
                   <span className="font-medium">Mon profil</span>
                 </Link>
+                {user.role === "admin" && (
+                  <Link to="/admin/dashboard" className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors" onClick={closeMenu}>
+                    <LayoutDashboard size={20} className="text-gray-500" />
+                    <span className="font-medium">Dashboard Admin</span>
+                  </Link>
+                )}
                 <button onClick={handleLogout} className="flex items-center gap-4 p-3 hover:bg-primary-soft rounded-lg transition-colors w-full text-left text-red-500">
                   <LogOut size={20} />
                   <span className="font-medium">Se déconnecter</span>

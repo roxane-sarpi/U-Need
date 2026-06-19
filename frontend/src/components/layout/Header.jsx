@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { PlusCircle, Bell, MessageCircle, UserCircle, Menu, LogOut } from "lucide-react";
+import { PlusCircle, Bell, MessageCircle, UserCircle, Menu, LogOut, LayoutDashboard } from "lucide-react";
 import MobileDrawer from "./MobileDrawer";
 import { useAuth } from "../context/AuthContext";
 
@@ -81,10 +81,18 @@ function Header() {
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
                 </Link>
                 {user ? (
-                  <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
-                    <UserCircle size={24} />
-                    <span className="text-[10px] font-medium uppercase">Mon profil</span>
-                  </Link>
+                  <>
+                    <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                      <UserCircle size={24} />
+                      <span className="text-[10px] font-medium uppercase">Mon profil</span>
+                    </Link>
+                    {user.role === "admin" && (
+                      <Link to="/admin/dashboard" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                        <LayoutDashboard size={24} />
+                        <span className="text-[10px] font-medium uppercase">Dashboard</span>
+                      </Link>
+                    )}
+                  </>
                 ) : (
                   <Link to="/login" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                     <UserCircle size={24} />
