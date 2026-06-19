@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS requests (
     status        ENUM('refuser', 'en cours', 'accepter') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_request_conversation (id_ad, id_helper, id_user),
     -- Si l'annonce saute, la requête saute
     CONSTRAINT fk_adRequest FOREIGN KEY (id_ad)     REFERENCES ads(id) ON DELETE CASCADE,
     -- Si le helper ou le needer saute, la requête saute

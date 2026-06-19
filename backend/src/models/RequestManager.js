@@ -50,11 +50,27 @@ class RequestManager extends AbstractManager {
      JOIN ads a ON a.id = r.id_ad
      LEFT JOIN users u ON u.id = r.id_user
      LEFT JOIN users h ON h.id = r.id_helper
-     WHERE r.id_helper = ? OR r.id_user = ?
+     INNER JOIN (
+       SELECT MAX(id) AS id
+       FROM ${this.table}
+       WHERE id_helper = ? OR id_user = ?
+       GROUP BY id_ad, LEAST(id_user, id_helper), GREATEST(id_user, id_helper)
+     ) latest ON latest.id = r.id
      ORDER BY r.id DESC`,
     [id_user, id_user, id_user, id_user]
   );
 }
+  findByConversationIdentity(id_ad, id_helper, id_user) {
+    return this.database.query(
+      `SELECT *
+       FROM ${this.table}
+       WHERE id_ad = ?
+         AND ((id_helper = ? AND id_user = ?) OR (id_helper = ? AND id_user = ?))
+       ORDER BY id DESC
+       LIMIT 1`,
+      [id_ad, id_helper, id_user, id_user, id_helper]
+    );
+  }
 
   findById(id_request) {
     return this.database.query(
