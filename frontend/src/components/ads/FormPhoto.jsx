@@ -1,19 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 
-function FormPhoto() {
-
-    const fileInputRef = useRef(null);
-  const [images, setImages] = useState([]);
-
-    const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-
-    // On convertit les fichiers en URLs lisibles par la balise <img />
-    const newImageUrls = files.map((file) => URL.createObjectURL(file));
-
-    // On ajoute les nouvelles images dans la limite de 3 au total
-    setImages((prevImages) => [...prevImages, ...newImageUrls].slice(0, 3));
-  };
+function FormPhoto({ images, setImages, fileInputRef, handleFileChange }) {
 
     return (
          <div className="card bg-white border border-gray-200 rounded-[24px] p-8 shadow-sm">

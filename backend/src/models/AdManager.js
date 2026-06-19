@@ -6,7 +6,7 @@ class AdManager extends AbstractManager {
   }
 
   insert(ad) {
-    return this.database.query(`insert into ${this.table} (title, description, image_1, image_2, image_3, id_category, points, statut, zip_code, city, urgent, id_user, date_execution) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+    return this.database.query(`insert into ${this.table} (title, description, image_1, image_2, image_3, id_category, points, status, zip_code, city, urgent, id_user, date_execution) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
       ad.title,
       ad.description,
       ad.image_1,
@@ -14,13 +14,47 @@ class AdManager extends AbstractManager {
       ad.image_3,
       ad.id_category,
       ad.points,
-      ad.statut,
+      ad.status,
       ad.zip_code,
       ad.city,
       ad.urgent,
       ad.id_user,
       ad.date_execution
     ]);
+  }
+
+  findRecent(limit = 4) {
+    return this.database.query(
+      `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
+       FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       LEFT JOIN users u ON u.id = a.id_user
+       WHERE a.status = 'disponible'
+       ORDER BY a.date_creation DESC
+       LIMIT ?`,
+      [limit]
+    );
+  }
+
+  findAllWithDetails() {
+    return this.database.query(
+      `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
+       FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       LEFT JOIN users u ON u.id = a.id_user
+       ORDER BY a.date_creation DESC`
+    );
+  }
+
+  findByIdWithDetails(id) {
+    return this.database.query(
+      `SELECT a.*, c.name AS category_name, u.firstname, u.lastname
+       FROM ${this.table} a
+       LEFT JOIN categories c ON c.id = a.id_category
+       LEFT JOIN users u ON u.id = a.id_user
+       WHERE a.id = ?`,
+      [id]
+    );
   }
 
   findByUser(id_user) {
@@ -34,10 +68,35 @@ class AdManager extends AbstractManager {
 
   update(ad) {
     return this.database.query(
-      `update ${this.table} set title = ?, description = ?, image_1 = ?, image_2 = ?, image_3 = ?, id_category = ?, points = ?, statut = ?, zip_code = ?, city = ?, urgent = ?, date_execution = ? where id = ?`,
-      [ad.title, ad.description, ad.image_1, ad.image_2, ad.image_3, ad.id_category, ad.points, ad.statut, ad.zip_code, ad.city, ad.urgent, ad.date_execution, ad.id]
+      `update ${this.table} set title = ?, description = ?, image_1 = ?, image_2 = ?, image_3 = ?, id_category = ?, points = ?, status = ?, zip_code = ?, city = ?, urgent = ?, date_execution = ? where id = ?`,
+      [ad.title, ad.description, ad.image_1, ad.image_2, ad.image_3, ad.id_category, ad.points, ad.status, ad.zip_code, ad.city, ad.urgent, ad.date_execution, ad.id]
     );
   }
+
+  updateStatus(id, status) {
+    return this.database.query(
+      `UPDATE ${this.table} SET status = ? WHERE id = ?`,
+      [status, id]
+    );
+  }
+
+  countAvailable(){
+    return this.database.query(
+      `SELECT count(*) as available_ads FROM ${this.table} WHERE status = 'disponible'`
+    );
+  }
+
+
+  countAdsByCategories() {
+    return this.database.query(
+      `SELECT c.id, c.name, COUNT(a.id) as count 
+       FROM categories c
+       LEFT JOIN ads a ON c.id = a.id_category
+       GROUP BY c.id, c.name
+       ORDER BY count DESC`
+    );
+}
+
 }
 
 module.exports = AdManager;

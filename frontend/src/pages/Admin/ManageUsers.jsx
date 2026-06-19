@@ -1,53 +1,119 @@
-import { useRef, useState } from "react";
-import NewUserModal from "../../components/admin/NewUserModal";
+import { useRef, useState, useEffect, useMemo } from "react";
 import PageHeader from "../../components/admin/PageHeader";
-import UserDesktopRow from "../../components/admin/UserDesktopRow";
-import UserFilters from "../../components/admin/UserFilters";
-import EditUserModal from "../../components/admin/EditUserModal";
-import UserMobileCard from "../../components/admin/UserMobileCard";
+import UserDesktopRow from "../../components/admin/users/UserDesktopRow";
+import UserFilters from "../../components/admin/users/UserFilters";
+import EditUserModal from "../../components/admin/users/EditUserModal";
+import UserMobileCard from "../../components/admin/users/UserMobileCard";
 import Pagination from "../../components/ui/Pagination";
-
+import { authFetch } from "../../components/services/api";
 
 function ManageUsers() {
 
-  const mockUsers = [
-  { id: 1, name: "Lucas Martin", email: "l.martin@u-need.fr", city: "Marseille", role: "USER", balance: 17, joined: "03/04/2026", status: "ACTIF" },
-  { id: 2, name: "Sophie Bernard", email: "s.bernard@u-need.fr", city: "Paris", role: "MODÉRATEUR", balance: 42, joined: "28/03/2026", status: "ACTIF" },
-  { id: 3, name: "Thomas Petit", email: "t.petit@u-need.fr", city: "Lyon", role: "USER", balance: 3, joined: "22/03/2026", status: "SUSPENDU" },
-  { id: 4, name: "Emma Dubois", email: "e.dubois@u-need.fr", city: "Lille", role: "USER", balance: 24, joined: "15/03/2026", status: "ACTIF" },
-  { id: 5, name: "Jean Dupuis", email: "j.dupuis@u-need.fr", city: "Nantes", role: "USER", balance: 0, joined: "08/03/2026", status: "BANNI" },
-];
+  //Variables
+  const [users, setUsers] = useState(null);
+  const [usersCount,setUsersCount] = useState(0);
+  const [fetchError, setFetchError] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
 
-  // 1. On crée une boîte vide pour stocker notre modale
-  const modalRef = useRef(null);
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Création d'une boîte vide pour stocker notre modale
   const detailsModalRef = useRef(null);
 
   // État pour savoir quel utilisateur afficher dans la modale de détails
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Fonction magique déclenchée au clic sur l'œil
+  // Fonctions
   const handleOpenDetails = (user) => {
     setSelectedUser(user); // On mémorise le user cliqué
     detailsModalRef.current?.showModal(); // On ouvre la modale d'historique
   };
 
-  //Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const getUsers = async () => {
+    try {
+      const response = await authFetch("/users");
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      setUsers(data);
+      setUsersCount(data.length);
+      setFetchError("");
+    } catch (error) {
+      setFetchError("Impossible de récupérer la liste des utilisateurs. Vérifiez votre connexion et réessayez.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      await getUsers();
+    };
+
+    void fetchUsers();
+  }, []);
+
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+
+    const q = searchText.trim().toLowerCase();
+
+    const filtered = users.filter((u) => {
+      const matchesText = q === "" || [u.firstname, u.lastname, u.email, u.city]
+        .filter(Boolean)
+        .some((s) => s.toLowerCase().includes(q));
+
+      const matchesRole = selectedRole ? (u.role && u.role.toLowerCase() === selectedRole.toLowerCase()) : true;
+
+      return matchesText && matchesRole;
+    });
+
+    if (sortOrder === "recent") {
+      filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (sortOrder === "oldest") {
+      filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+
+    return filtered;
+  }, [users, searchText, selectedRole, sortOrder]);
+
+  const filteredCount = filteredUsers.length;
+
+  const handleResetFilters = () => {
+    setSearchText("");
+    setSelectedRole("");
+    setSortOrder("");
+    setCurrentPage(1);
+  };
 
   return (
     <>
       {/* En-tête de page */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageHeader title={"Utilisateurs"} subtitle={"1 247 utilisateurs enregistrés"} />
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button onClick={() => modalRef.current?.showModal()} className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
-            <span>+</span> <span>Nouvel utilisateur</span>
-          </button>
-        </div>
+
+        <PageHeader title={"Utilisateurs"} subtitle={`${usersCount} utilisateurs enregistrés`} />
       </div>
 
       {/* Zone de filtrage */}
-      <UserFilters />
+      <UserFilters
+        searchText={searchText}
+        onSearchTextChange={setSearchText}
+        selectedRole={selectedRole}
+        onRoleChange={setSelectedRole}
+        sortOrder={sortOrder}
+        onSortOrderChange={setSortOrder}
+        onReset={handleResetFilters}
+      />
+
+      {fetchError && (
+        <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
+          {fetchError}
+        </div>
+      )}
 
       {/* Conteneur de données unique */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -67,34 +133,53 @@ function ManageUsers() {
               </tr>
             </thead>
             <tbody>
-              {mockUsers.map(user => (
-                <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
-              ))}
+              {users === null ? (
+                <tr>
+                  <td colSpan="7" className="text-center py-6 text-sm text-gray-500">
+                    Chargement des utilisateurs...
+                  </td>
+                </tr>
+              ) : filteredUsers.length ? (
+                filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(user => (
+                  <UserDesktopRow key={user.id} user={user} onEdit={() => handleOpenDetails(user)}/>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-6 text-sm text-gray-500">
+                    {fetchError ? fetchError : 'Aucun utilisateur trouvé.'}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         {/* BLOC MOBILE */}
         <div className="block xl:hidden divide-y divide-gray-100">
-          {mockUsers.map(user => (
-            <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
-          ))}
+          {users === null ? (
+            <div className="p-6 text-center text-sm text-gray-500">Chargement des utilisateurs...</div>
+          ) : filteredUsers.length ? (
+            filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(user => (
+              <UserMobileCard key={user.id} user={user} onEdit={()=> handleOpenDetails(user)}/>
+            ))
+          ) : (
+            <div className="p-6 text-center text-sm text-gray-500">{fetchError ? fetchError : 'Aucun utilisateur trouvé.'}</div>
+          )}
         </div>
 
         {/* Bloc Pagination unique et partagé */}
         {/* <TablePagination /> */}
         <Pagination 
           currentPage={currentPage}
-          pageCount={3} // Par exemple, pour afficher 3 pages de mock data
+          pageCount={Math.max(1, Math.ceil(filteredCount / itemsPerPage))}
           onPageChange={(page) => setCurrentPage(page)}
-          isAdmin={true} // Activation magique du mode Admin !
-          totalCount={1247}
-          itemsPerPage={5}
+          isAdmin={true}
+          totalCount={filteredCount}
+          itemsPerPage={itemsPerPage}
         />
 
       </div>
-      <NewUserModal modalRef={modalRef}/>
-      <EditUserModal modalRef={detailsModalRef} user={selectedUser}/>
+      <EditUserModal modalRef={detailsModalRef} user={selectedUser} onSuccess={getUsers} />
     </>
   );
 }

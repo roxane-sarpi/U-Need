@@ -1,6 +1,13 @@
-import { roleStyles } from "./adminData";
+import { roleStyles } from "../adminData";
 
 function UserMobileCard({ user, onEdit }) {
+
+    const date =user.created_at;
+
+  const formattedDate =
+  new Date(date)
+    .toLocaleDateString("fr-FR");
+
   return (
     <div 
       onClick={onEdit} 
@@ -13,12 +20,12 @@ function UserMobileCard({ user, onEdit }) {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gray-200" />
           <div>
-            <h4 className="font-bold text-sm text-ink">{user.name}</h4>
+            <h4 className="font-bold text-sm text-ink">{user.firstname} {user.className}</h4>
             <p className="text-sm text-gray-400 font-medium">{user.email}</p>
           </div>
         </div>
         <span className="text-xs font-bold text-gray-700 bg-gray-50 px-2 py-0.5 rounded-md">
-          {user.balance} U-coins
+          {user.points} U-coins
         </span>
       </div>
       
@@ -26,7 +33,7 @@ function UserMobileCard({ user, onEdit }) {
         <div className="flex gap-2">
           <span className="text-gray-500 font-semibold">{user.city}</span>
           <span className="text-gray-300">•</span>
-          <span className="text-gray-400">Inscrit le {user.joined}</span>
+          <span className="text-gray-400">Inscrit le {formattedDate}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={`text-[9px] px-1.5 py-0.5 rounded ${roleStyles[user.role]}`}>{user.role}</span>

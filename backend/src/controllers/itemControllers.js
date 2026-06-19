@@ -6,8 +6,7 @@ const browse = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -22,8 +21,7 @@ const read = (req, res) => {
         res.send(rows[0]);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -44,8 +42,7 @@ const edit = (req, res) => {
         res.sendStatus(204);
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -60,8 +57,7 @@ const add = (req, res) => {
     .then(([result]) => {
       res.location(`/items/${result.insertId}`).sendStatus(201);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };

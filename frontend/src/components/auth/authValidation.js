@@ -1,4 +1,4 @@
-const NAME_RE = /^[a-zA-ZÀ-ÿ\s\-']{2,}$/;
+const NAME_RE = /^[a-zA-ZÀ-ÿ\s\-']+$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 const POSTAL_RE = /^\d{5}$/;
@@ -6,8 +6,8 @@ const PASSWORD_RE = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 export const validateRegister = ({ firstName, lastName, phone, email, city, postalCode, password, confirmPassword, acceptTerms }) => {
   const e = {};
-  if (!NAME_RE.test(firstName.trim())) e.firstName = 'Prénom invalide (min. 2 lettres)';
-  if (!NAME_RE.test(lastName.trim())) e.lastName = 'Nom invalide (min. 2 lettres)';
+  if (!firstName.trim() || !NAME_RE.test(firstName.trim())) e.firstName = 'Prénom invalide';
+  if (!lastName.trim() || !NAME_RE.test(lastName.trim())) e.lastName = 'Nom invalide';
   if (!PHONE_RE.test(phone.trim())) e.phone = 'Numéro de téléphone invalide';
   if (!EMAIL_RE.test(email.trim())) e.email = 'Adresse email invalide';
   if (!NAME_RE.test(city.trim())) e.city = 'Ville invalide';

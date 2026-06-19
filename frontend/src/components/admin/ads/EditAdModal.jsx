@@ -1,0 +1,207 @@
+import { useState } from "react";
+import { X, ShieldAlert, Trash2 } from "lucide-react";
+import { authFetch } from "../../services/api";
+
+function EditAdModal({ modalRef, ad, onSuccess }) {
+  const [status, setStatus] = useState(ad?.status || "disponible");
+  const [feedback, setFeedback] = useState("");
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setError("");
+    setFeedback("");
+
+    const payload = {
+      id: ad?.id,
+      title: ad?.title,
+      description: ad?.description,
+      image_1: ad?.image_1,
+      image_2: ad?.image_2,
+      image_3: ad?.image_3,
+      id_category: ad?.id_category,
+      points: ad?.points,
+      status,
+      zip_code: ad?.zip_code,
+      city: ad?.city,
+      urgent: ad?.urgent,
+      date_execution: ad?.date_execution,
+    };
+
+    try {
+      const response = await authFetch(`/ads/${ad?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la mise à jour";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      setFeedback("Statut de l'annonce mis à jour avec succès.");
+      setError("");
+
+      if (onSuccess) {
+        await onSuccess();
+      }
+
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 900);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de mettre à jour l'annonce. Vérifiez les données et réessayez.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAd = async () => {
+    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement l'annonce "${ad?.title}" ?`)) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError("");
+    setFeedback("");
+
+    try {
+      const response = await authFetch(`/ads/${ad?.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const serverMessage = body?.message || response.statusText || "Erreur lors de la suppression";
+        throw new Error(`HTTP ${response.status} - ${serverMessage}`);
+      }
+
+      setFeedback("Annonce supprimée avec succès.");
+      setError("");
+
+      if (onSuccess) {
+        await onSuccess();
+      }
+
+      setTimeout(() => {
+        modalRef.current?.close();
+      }, 1000);
+    } catch (err) {
+      console.error("L'api call n'a pas abouti :", err);
+      setError("Impossible de supprimer l'annonce. Réessayez plus tard.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle" onClick={(e) => {
+    if (e.target === modalRef.current) {
+      modalRef.current.close();
+    }
+  }}>
+      <div className="modal-box bg-white text-ink p-6 rounded-t-2xl sm:rounded-2xl border border-gray-100 shadow-2xl relative max-w-md w-full">
+        
+        {/* BOUTON FERMER */}
+        <button 
+          type="button"
+          onClick={() => modalRef.current?.close()} 
+          className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-gray-400 hover:text-ink hidden sm:flex"
+        >
+          <X size={16} />
+        </button>
+
+        {/* EN-TÊTE MODALE */}
+        <div className="mb-6">
+          <h3 className="font-black text-lg text-ink tracking-tight">Modérer l'annonce</h3>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Auteur : <span className="font-bold text-gray-700">{ad?.firstname} {ad?.lastname}</span> • Catégorie : <span className="font-medium text-gray-600">{ad?.category_name}</span>
+          </p>
+        </div>
+
+        {/* APERÇU RAPIDE DE L'ANNONCE */}
+        <div className="p-3 bg-gray-50 rounded-xl border border-gray-100/70 mb-5">
+          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Titre de l'offre</h4>
+          <p className="text-sm font-bold text-ink leading-snug">{ad?.title}</p>
+          <span className="inline-block text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md mt-2">
+            Valeur : {ad?.points} UC
+          </span>
+        </div>
+
+        {/* FORMULAIRE */}
+        <form onSubmit={handleSaveChanges} className="space-y-5">
+          {/* SÉLECTION DU STATUT */}
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text font-bold text-gray-600 text-xs">Statut de publication</span>
+            </label>
+            <select 
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="select select-bordered select-sm w-full rounded-xl bg-white border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none"
+            >
+              <option value="disponible">Disponible </option>
+              <option value="en cours">En cours</option>
+              <option value="terminé">Terminée</option>
+            </select>
+          </div>
+
+          <div className="divider before:bg-gray-50 after:bg-gray-50 my-2"></div>
+
+          {(feedback || error) && (
+            <div className={`rounded-xl p-3 text-sm ${feedback ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-rose-50 text-rose-700 border border-rose-100"}`}>
+              {feedback || error}
+            </div>
+          )}
+
+          {/* ZONE DANGER */}
+          <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100 flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
+                <ShieldAlert size={14} /> Supprimer l'annonce
+              </h4>
+              <p className="text-[11px] text-rose-600/80 font-medium leading-relaxed">
+                Retire définitivement cette publication de la plateforme. Cette action est immédiate et irréversible.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              disabled={isSaving}
+              onClick={handleDeleteAd}
+              className="btn btn-square btn-sm btn-outline border-rose-200 hover:bg-rose-600 hover:border-rose-600 text-rose-500 hover:text-white rounded-lg shadow-none flex-none"
+            >
+              <Trash2 size={15} />
+            </button>
+          </div>
+
+          {/* BOUTONS PIED DE PAGE */}
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t border-gray-50 mt-6">
+            <button 
+              type="button"
+              onClick={() => modalRef.current?.close()}
+              className="btn btn-sm btn-ghost rounded-xl text-xs font-bold text-gray-500"
+            >
+              Annuler
+            </button>
+            <button type="submit" disabled={isSaving} className="btn btn-sm btn-primary text-white font-bold rounded-xl text-xs shadow-none">
+              {isSaving ? "Enregistrement..." : "Enregistrer les modifications"}
+            </button>
+          </div>
+        </form>
+
+        {/* FERMETURE CLIC EXTÉRIEUR */}
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+
+      </div>
+    </dialog>
+  );
+}
+
+export default EditAdModal;

@@ -1,28 +1,40 @@
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { 
   LayoutDashboard, 
   Users, 
-  FileText, 
-  AlertTriangle, 
+  FileText,  
   FolderTree,
   Menu,
-  X
+  X,
+  LogOut
 } from "lucide-react";
 
 function AdminLayout() {
   // Gestion de l'état pour ouvrir/fermer le drawer sur mobile
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const closeDrawer = () => setIsDrawerOpen(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Utilisateurs", path: "/admin/users", icon: Users },
     { name: "Annonces", path: "/admin/ads", icon: FileText },
-    { name: "Signalements", path: "/admin/reports", icon: AlertTriangle, badge: 7 },
+    // { name: "Signalements", path: "/admin/reports", icon: AlertTriangle, badge: 7 } BONUS,
     { name: "Catégories", path: "/admin/categories", icon: FolderTree },
-    // { name: "Paramètres", path: "/admin/parametres", icon: Settings },
+    // { name: "Paramètres", path: "/admin/parametres", icon: Settings } BONUS,
   ];
+
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const firstName = storedUser?.firstname ?? "Admin";
+  const lastName = storedUser?.lastname ?? "";
 
   return (
     // md:drawer-open force le menu à rester visible à partir des écrans intermédiaires/bureau
@@ -70,7 +82,7 @@ function AdminLayout() {
           
           {/* Header de la Sidebar */}
           <div className="p-6 flex items-center justify-between border-b border-gray-800">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-3">
               <img src="/logo.webp" alt="logo" className="h-10 w-auto"/>
               <div className="flex flex-col">
                 <span className="font-bold text-lg tracking-wide">U-Need</span>
@@ -84,7 +96,10 @@ function AdminLayout() {
               <X size={20} />
             </button>
           </div>
-
+<div className="mt-4 text-center mx-auto">
+                  <p className="text-[11px] uppercase text-gray-400 tracking-[0.2em]">Bonjour</p>
+                  <p className="text-sm font-semibold text-white leading-tight">{firstName} {lastName}</p>
+                </div>
           {/* Navigation : On utilise notre astuce de propagation (onClick) apprise juste avant ! */}
           <nav className="flex-1 p-4 space-y-1" onClick={closeDrawer}>
             {menuItems.map((item) => {
@@ -115,6 +130,17 @@ function AdminLayout() {
               );
             })}
           </nav>
+
+          {/* Bouton Déconnecter en bas */}
+          <div className="border-t border-gray-800 p-4">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-400 hover:bg-gray-900/50 hover:text-red-400 transition-all"
+            >
+              <LogOut size={20} />
+              <span>Se déconnecter</span>
+            </button>
+          </div>
         </aside>
       </div>
     </div>

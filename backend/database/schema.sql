@@ -5,10 +5,16 @@
 -- ============================================================
 
 -- 1. Tables "parentes"
+
 CREATE TABLE IF NOT EXISTS categories (
     id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
+
+INSERT IGNORE INTO categories (id, name) VALUES
+(1, 'Déménagement'), (2, 'Bricolage'), (3, 'Aide ménagère'), (4, 'Aide aux séniors'),
+(5, 'Informatique'), (6, 'Petit travaux'), (7, 'Course'), (8, 'Animaux'),
+(9, 'Jardinage'), (10, 'Transport'), (11, 'Aide scolaire'), (12, 'Autre');
 
 CREATE TABLE IF NOT EXISTS users (
     id        INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -20,8 +26,15 @@ CREATE TABLE IF NOT EXISTS users (
     zip_code  VARCHAR(10),
     city      VARCHAR(100) NOT NULL,
     role      ENUM('admin', 'user', 'moderateur') DEFAULT 'user',
-    points    INT DEFAULT 0
+    points    INT DEFAULT 10,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+INSERT INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
+(1, 'Test', 'User', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000001', '75001', 'Paris', 'user', 10),
+(2, 'Admin', 'User', 'admin@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000002', '75002', 'Paris', 'admin', 0)
+ON DUPLICATE KEY UPDATE password = VALUES(password);
 
 -- 2. Table ads (dépend de categories et users)
 CREATE TABLE IF NOT EXISTS ads (
@@ -33,34 +46,27 @@ CREATE TABLE IF NOT EXISTS ads (
     image_3        VARCHAR(500) DEFAULT '/public/images/default_image.svg',
     id_category    INT,
     points         INT NOT NULL,
-    statut         ENUM('signalé', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
+    status         ENUM('signalé', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
     zip_code       INT NOT NULL,
     city           VARCHAR(500) NOT NULL,
     urgent         BOOLEAN NOT NULL DEFAULT FALSE,
     id_user        INT,
     date_execution DATE,
     date_creation  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_category FOREIGN KEY (id_category) REFERENCES categories(id),
-    CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id)
+    CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- 3. Autres tables
-CREATE TABLE IF NOT EXISTS messages (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    content     TEXT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_sender   INT NOT NULL,
-    id_receiver INT NOT NULL,
-    id_request  INT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS notifications (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     content       VARCHAR(500) NOT NULL,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     has_been_read BOOLEAN DEFAULT FALSE,
     id_user       INT,
-    CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id)
+    CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS requests (
@@ -68,11 +74,27 @@ CREATE TABLE IF NOT EXISTS requests (
     id_ad         INT NOT NULL,
     id_helper     INT,
     id_user       INT,
-    status        ENUM('signalé', 'en cours', 'terminé') DEFAULT 'en cours',
+    status        ENUM('refuser', 'en cours', 'accepter') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_adRequest FOREIGN KEY (id_ad)     REFERENCES ads(id),
-    CONSTRAINT fk_helper    FOREIGN KEY (id_helper) REFERENCES users(id),
-    CONSTRAINT fk_needer    FOREIGN KEY (id_user)   REFERENCES users(id)
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    -- Si l'annonce saute, la requête saute
+    CONSTRAINT fk_adRequest FOREIGN KEY (id_ad)     REFERENCES ads(id) ON DELETE CASCADE,
+    -- Si le helper ou le needer saute, la requête saute
+    CONSTRAINT fk_helper    FOREIGN KEY (id_helper) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_needer    FOREIGN KEY (id_user)   REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- messages doit être après requests car elle référence requests(id)
+CREATE TABLE IF NOT EXISTS messages (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    content     TEXT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_sender   INT NOT NULL,
+    id_receiver INT NOT NULL,
+    id_request  INT NOT NULL,
+    CONSTRAINT fk_msg_sender   FOREIGN KEY (id_sender)   REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_msg_receiver FOREIGN KEY (id_receiver) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_msg_request  FOREIGN KEY (id_request)  REFERENCES requests(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS evaluations (
@@ -80,5 +102,31 @@ CREATE TABLE IF NOT EXISTS evaluations (
     id_user    INT NOT NULL,
     note       INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id)
+    CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
 );
+
+INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role) VALUES
+(3, 'Wendy',   'test',    'wendy@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
+(4, 'admin',   'admin',   'admin@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin'),
+(5, 'Alice',   'Dupont',  'alice@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000001', '75001', 'Paris', 'user'),
+(6, 'Bob',     'Martin',  'bob@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000002', '75002', 'Paris', 'user'),
+(7, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user'),
+(8, 'David',   'Bernard', 'david@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000004', '75004', 'Paris', 'admin');
+
+INSERT IGNORE INTO ads (title, description, id_category, points, zip_code, city, urgent, id_user) VALUES
+('Tondre la pelouse', 'Besoin d''aide pour tondre 100m2', 1, 5, 75010, 'Paris', FALSE, 1),
+('Aide pour déménagement', 'Déménagement de studio à 10km', 2, 10, 75011, 'Paris', TRUE, 5),
+('Monter meuble IKEA', 'Montage de meuble (2h)', 3, 3, 75012, 'Paris', FALSE, 3);
+
+INSERT IGNORE INTO requests (id, id_ad, id_helper, id_user, status) VALUES
+(1, 3, 4, 3, 'en cours'),
+(2, 3, 5, 3, 'en cours'),
+(3, 3, 1, 3, 'en cours'),
+(4, 2, 4, 5, 'en cours'),
+(5, 1, 3, 1, 'en cours');
+
+INSERT IGNORE INTO messages (id, content, id_sender, id_receiver, id_request) VALUES
+(1, 'Bonjour, je peux t''aider samedi matin', 4, 1, 1),
+(2, 'Merci -- samedi ça marche', 1, 4, 1),
+(3, 'Le camion est réservé', 4, 5, 2),
+(4, 'Salut, as-tu les instructions pour le montage?', 3, 1, 3);

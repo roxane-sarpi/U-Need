@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../components/context/AuthContext'
 import { getUserById } from '../../components/services/userService'
 import { getAdsByUser } from '../../components/services/adService'
@@ -20,6 +20,8 @@ const buildTabs = (ads, services) => [
 function Profile() {
   const { user: authUser, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const successMessage = location.state?.message
   const [userData, setUserData] = useState(null)
   const [ads, setAds] = useState([])
   const [services, setServices] = useState([])
@@ -73,6 +75,11 @@ function Profile() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--color-canvas)' }}>
       <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col gap-4">
+        {successMessage && (
+          <div className="rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm font-medium text-green-700">
+            {successMessage}
+          </div>
+        )}
         <ProfileCard userData={userData} onLogout={handleLogout} />
 
         <div className="bg-white rounded-2xl shadow-sm">

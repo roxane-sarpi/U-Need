@@ -17,21 +17,21 @@ const cors = require("cors");
 
 
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
-    optionsSuccessStatus: 200,
-  })
+cors({
+origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
+optionsSuccessStatus: 200,
+})
 );
+
+// serve the `backend/public` folder for public resources
+
+app.use(express.static(path.join(__dirname, "../public")));
 
 // import and mount the API routes
 
 const router = require("./router");
 
 app.use(router);
-
-// serve the `backend/public` folder for public resources
-
-app.use(express.static(path.join(__dirname, "../public")));
 
 // serve REACT APP
 

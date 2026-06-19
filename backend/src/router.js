@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { hashPassword, verifyPassword, verifyToken } = require("./auth");
+const { hashPassword, verifyPassword, verifyToken, requireAdmin } = require("./auth");
 
 //Public routes
 
@@ -18,6 +18,7 @@ router.post(
 //Ads
 const adControllers =require("./controllers/adControllers");
 router.get("/ads", adControllers.browse);
+router.get("/ads/recent", adControllers.browseRecent);
 router.get("/ads/user/:id", adControllers.browseByUser);
 router.get("/ads/:id", adControllers.read);
 
@@ -32,22 +33,24 @@ router.get("/categories/:id", CategoryControllers.read);
 // Authentication wall : verifyToken is activated for each route after this line
 router.use(verifyToken);
 
+//Requests
 const requestControllers = require("./controllers/requestControllers");
 router.post("/requests", requestControllers.addRequest);
 router.get("/requests/helper/:id", requestControllers.browseByHelper);
 router.get("/requests/history/:id", requestControllers.browseHistoryByUser);
 router.get("/requests/:id", requestControllers.readRequest);
 router.get("/requests", requestControllers.browseRequest);
-router.delete("/requests/:id", requestControllers.destroyRequest);
 router.put("/requests/:id", requestControllers.updateRequest);
 
 //Users
+router.get("/users", requireAdmin, userControllers.browse);
 router.get("/users/:id", userControllers.read);
 router.put("/users/:id", userControllers.edit);
 router.delete("/users/:id", userControllers.destroy);
 
 //Ads
-router.post("/ads", adControllers.add);
+const upload = require('./middlewares/upload');
+router.post("/ads", upload.fields([{ name: 'image_1', maxCount: 1 }, { name: 'image_2', maxCount: 1 }, { name: 'image_3', maxCount: 1 }]), adControllers.add);
 router.delete("/ads/:id", adControllers.destroy);
 router.put("/ads/:id", adControllers.edit);
 
@@ -69,11 +72,18 @@ router.post("/evaluations", evaluationControllers.addEvaluation);
 router.get("/evaluations/user/:id", evaluationControllers.readEvaluationsByUser);
 router.put("/evaluations/:id", evaluationControllers.updateEvaluation);
 
-//Messages
+//Conversations
+router.get("/requests/conversations/:id", requestControllers.browseConversationsByUser);
+
+//Messagerie
 const messagesControllers = require("./controllers/messagesControllers");
-router.post("/addmessages", messagesControllers.send);
-router.put("/modifymessage/:id", messagesControllers.update);
-router.get("/conversation/:id_request", messagesControllers.readConversation);
-router.delete("/delete/conversation/:id_request", messagesControllers.deleteConversation);
+router.post("/messages", messagesControllers.send);
+router.put("/messages/:id", messagesControllers.update);
+router.get("/messages/:id_request", messagesControllers.readConversation); // /messages/:id_request au lieu de /conversation/:id_request
+router.delete("/messages/conversation/:id_request", messagesControllers.deleteConversation);
+
+//Admin
+const adminControllers = require("./controllers/adminControllers");
+router.get("/admin/stats", adminControllers.getStats);
 
 module.exports = router;

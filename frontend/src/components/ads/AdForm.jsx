@@ -1,7 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FormPhoto from './FormPhoto';
+import { useAuth } from '../context/AuthContext';
+import { authFetch } from '../services/api';
 
 function Adform({ selectedCoins, setSelectedCoins }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -12,7 +17,20 @@ function Adform({ selectedCoins, setSelectedCoins }) {
   });
 
   const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [feedback, setFeedback] = useState("");
+  const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    authFetch('/categories')
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch((err) => console.error('Erreur chargement catégories :', err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,21 +38,83 @@ function Adform({ selectedCoins, setSelectedCoins }) {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleCoinSelect = (value) => {
     setFormData((prev) => ({ ...prev, uCoins: value }));
+    setFormErrors((prev) => ({ ...prev, points: "" }));
   };
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     const newImageUrls = files.map((file) => URL.createObjectURL(file));
     setImages((prevImages) => [...prevImages, ...newImageUrls].slice(0, 3));
+    setImageFiles((prevFiles) => [...prevFiles, ...files].slice(0, 3));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Données soumises :', { ...formData, images });
+    setFeedback('Publication en cours...');
+    setError("");
+    setFormErrors({});
+
+    const nextFormErrors = {};
+    if (!formData.title.trim()) nextFormErrors.title = "Le titre est requis.";
+    if (!formData.category) nextFormErrors.category = "La catégorie est requise.";
+    if (!formData.description.trim()) nextFormErrors.description = "La description est requise.";
+    if (!formData.zipCode.trim()) nextFormErrors.zipCode = "Le code postal est requis.";
+    if (!formData.city.trim()) nextFormErrors.city = "La ville est requise.";
+    if (!selectedCoins || selectedCoins <= 0) nextFormErrors.points = "Choisissez un nombre de U-Coins.";
+
+    if (Object.keys(nextFormErrors).length > 0) {
+      setFormErrors(nextFormErrors);
+      setError("Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const formPayload = new FormData();
+    formPayload.append('title', formData.title);
+    formPayload.append('description', formData.description);
+    formPayload.append('zip_code', formData.zipCode);
+    formPayload.append('city', formData.city);
+    formPayload.append('urgent', formData.isUrgent ? 1 : 0);
+    formPayload.append('id_category', formData.category);
+    formPayload.append('points', selectedCoins);
+    formPayload.append('status', 'disponible');
+    formPayload.append('id_user', user.id);
+    formPayload.append('date_execution', '');
+    if (imageFiles[0]) formPayload.append('image_1', imageFiles[0]);
+    if (imageFiles[1]) formPayload.append('image_2', imageFiles[1]);
+    if (imageFiles[2]) formPayload.append('image_3', imageFiles[2]);
+
+    try {
+      const res = await authFetch('/ads', {
+        method: 'POST',
+        body: formPayload,
+      });
+
+      
+      if (res.ok) {
+        setFeedback('Annonce postée avec succès.');
+        setError("");
+        setTimeout(() => {
+          navigate('/profile', { state: { message: 'Annonce postée !' } });
+        }, 900);
+      } else {
+        const body = await res.json().catch(() => null);
+        setError(body?.message || 'Erreur lors de la création de l’annonce.');
+        setFeedback("");
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Impossible de publier l’annonce. Réessayez plus tard.');
+      setFeedback("");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Styles pour les boutons de pièces
@@ -64,6 +144,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
             value={formData.title}
             onChange={handleChange}
           />
+          {formErrors.title && <p className="text-rose-500 text-xs mt-1">{formErrors.title}</p>}
         </div>
 
         <div className="form-control w-full mb-4">
@@ -76,19 +157,11 @@ function Adform({ selectedCoins, setSelectedCoins }) {
             onChange={handleChange}
           >
             <option value="" disabled>Sélectionnez une catégorie</option>
-            <option value="demenagement">Déménagement</option>
-            <option value="bricolage">Bricolage</option>
-            <option value="aide-menagere">Aide ménagère</option>
-            <option value="aide-seniors">Aide aux séniors</option>
-            <option value="informatique">Informatique</option>
-            <option value="petits-travaux">Petit travaux</option>
-            <option value="course">Course</option>
-            <option value="animaux">Animaux</option>
-            <option value="jardinerie">Jardinerie</option>
-            <option value="transport">Transport</option>
-            <option value="aide-scolaire">Aide scolaire</option>
-            <option value="autre">Autre</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
           </select>
+          {formErrors.category && <p className="text-rose-500 text-xs mt-1">{formErrors.category}</p>}
         </div>
 
         <div className="form-control w-full">
@@ -100,6 +173,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
             value={formData.description}
             onChange={handleChange}
           />
+          {formErrors.description && <p className="text-rose-500 text-xs mt-1">{formErrors.description}</p>}
         </div>
       </div>
 
@@ -119,6 +193,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
               value={formData.zipCode}
               onChange={handleChange}
             />
+            {formErrors.zipCode && <p className="text-rose-500 text-xs mt-1">{formErrors.zipCode}</p>}
           </div>
           <div className="form-control flex-1">
             <label className="label font-bold text-black text-sm" htmlFor="city">Ville</label>
@@ -130,6 +205,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
               value={formData.city}
               onChange={handleChange}
             />
+            {formErrors.city && <p className="text-rose-500 text-xs mt-1">{formErrors.city}</p>}
           </div>
         </div>
       </div>
@@ -173,6 +249,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
             si annonce urgente cochez la case
           </label>
         </div>
+        {formErrors.points && <p className="text-rose-500 text-xs mt-1 text-center">{formErrors.points}</p>}
       </div>
 
       {/* Section 4 : Photo isolée */}
@@ -184,9 +261,19 @@ function Adform({ selectedCoins, setSelectedCoins }) {
       />
 
       {/* Boutons d'actions */}
+      {(feedback || error) && (
+        <div className={`rounded-xl p-3 text-sm ${feedback ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-rose-50 text-rose-700 border border-rose-100"}`}>
+          {feedback || error}
+        </div>
+      )}
+
       <div className="flex gap-4 mt-2">
-        <button type="submit" className="btn flex-1 bg-[#e2a04e] hover:bg-[#d18f3d] text-white border-none rounded-xl normal-case text-base font-bold">
-          Créer
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn flex-1 bg-[#e2a04e] hover:bg-[#d18f3d] text-white border-none rounded-xl normal-case text-base font-bold"
+        >
+          {isSubmitting ? 'Publication...' : 'Créer'}
         </button>
         <button type="button" className="btn flex-1 bg-[#3b32b3] hover:bg-[#2e2694] text-white border-none rounded-xl normal-case text-base font-bold">
           Annuler

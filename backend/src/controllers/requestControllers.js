@@ -2,16 +2,14 @@ const models = require("../models");
 
 const addRequest = (req, res) => {
     const request = req.body;
-    console.log(request);
 
     models.request
         .create(request)
         .then(([result]) => {
             res.location(`/requests/${result.insertId}`).sendStatus(201);
         })
-        .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
+        .catch(() => {
+          res.sendStatus(500);
         });
 }
 
@@ -25,8 +23,7 @@ const readRequest = (req, res) => {
             res.send(rows[0]);
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch(() => {
           res.sendStatus(500);
         });
     };
@@ -37,49 +34,40 @@ const browseRequest = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     }
     )
 }
 
-const updateRequest = (req, res) => {
-    const request = req.body;
-    request.id = req.params.id;
-    console.log(request);
+const updateRequest = async (req, res) => {
+    const request = {
+        id: req.params.id,
+        status: req.body.status,
+    };
 
-    models.request
-        .update(request)
-        .then(([result]) => {
-            if (result.affectedRows === 0) {
-                res.sendStatus(404);
-            } else {
-                res.sendStatus(204);
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
-        });
-}
+    if (!['en cours', 'accepter', 'refuser'].includes(request.status)) {
+        return res.status(400).json({ error: 'Statut de requête invalide.' });
+    }
 
-const destroyRequest = (req, res) => {
-  models.request
-    .delete(req.params.id)
-    .then(([result]) => {
-      if(result.affectedRows === 0){
-        res.sendStatus(404);
-      } else {
+    try {
+        const [[existingRequest]] = await models.request.findById(request.id);
+        if (!existingRequest) {
+            return res.sendStatus(404);
+        }
+
+        await models.request.update(request);
+
+        if (request.status === 'accepter') {
+            await models.ad.updateStatus(existingRequest.id_ad, 'en cours');
+            await models.request.refuseOtherRequestsByAd(existingRequest.id_ad, request.id);
+        }
+
         res.sendStatus(204);
-      }
-    })
-    .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-    });
-};
-
+    } catch (err) {
+      res.sendStatus(500);
+    }
+}
 
 const browseHistoryByUser = (req, res) => {
   models.request
@@ -87,8 +75,18 @@ const browseHistoryByUser = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
+      res.sendStatus(500);
+    });
+};
+
+const browseConversationsByUser = (req, res) => {
+  models.request
+    .findConversationsByUser(req.params.id)
+    .then(([rows]) => {
+      res.json(rows);
+    })
+    .catch(() => {
       res.sendStatus(500);
     });
 };
@@ -99,11 +97,12 @@ const browseByHelper = (req, res) => {
     .then(([rows]) => {
       res.send(rows);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 };
+
+
 
 exports = module.exports = {
     addRequest,
@@ -112,5 +111,5 @@ exports = module.exports = {
     browseByHelper,
     browseHistoryByUser,
     updateRequest,
-    destroyRequest
+    browseConversationsByUser,
 };

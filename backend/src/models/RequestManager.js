@@ -14,7 +14,7 @@ class RequestManager extends AbstractManager {
 
   findByHelper(id_helper) {
     return this.database.query(
-      `SELECT r.*, a.title, a.points, c.name as category_name,
+      `SELECT r.*, r.status AS state, a.title, a.points, c.name as category_name,
               u.firstname as needer_firstname, u.lastname as needer_lastname
        FROM ${this.table} r
        JOIN ads a ON a.id = r.id_ad
@@ -37,10 +37,56 @@ class RequestManager extends AbstractManager {
     );
   }
 
+  findConversationsByUser(id_user) {
+  return this.database.query(
+    `SELECT 
+        r.*, 
+        r.status AS status, 
+        a.title AS ad_title,
+        a.id_user AS ad_owner_id,
+        IF(r.id_user = ?, h.firstname, u.firstname) AS firstname,
+        IF(r.id_user = ?, h.lastname, u.lastname) AS lastname
+     FROM ${this.table} r
+     JOIN ads a ON a.id = r.id_ad
+     LEFT JOIN users u ON u.id = r.id_user
+     LEFT JOIN users h ON h.id = r.id_helper
+     WHERE r.id_helper = ? OR r.id_user = ?
+     ORDER BY r.id DESC`,
+    [id_user, id_user, id_user, id_user]
+  );
+}
+
+  findById(id_request) {
+    return this.database.query(
+      `SELECT r.*, a.id_user AS ad_owner_id
+       FROM ${this.table} r
+       JOIN ads a ON a.id = r.id_ad
+       WHERE r.id = ?`,
+      [id_request]
+    );
+  }
+
   update(request) {
     return this.database.query(
       `UPDATE ${this.table} SET status = ? WHERE id = ?`,
       [request.status, request.id]
+    );
+  }
+
+  refuseOtherRequestsByAd(id_ad, excludedRequestId) {
+    return this.database.query(
+      `UPDATE ${this.table}
+       SET status = 'refuser'
+       WHERE id_ad = ?
+         AND id != ?
+         AND status = 'en cours'`,
+      [id_ad, excludedRequestId]
+    );
+  }
+
+  count() {
+    return this.database.query(
+      `select count(*) as total_exchanges from ${this.table}`
     );
   }
 }

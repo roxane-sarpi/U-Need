@@ -1,30 +1,31 @@
 import React from 'react';
 
-export default function Onecontact({ request, isActive, onClick, mockAds, user }) {
+export default function Onecontact({ request, isActive, onClick, canDelete, onDeleteConversation }) {
 
     const statusTexts = {
     'en cours': 'Discussion en cours...',
-    'terminé': 'Aide terminée',
+    'accepter': 'Aide acceptée',
+    'refuser': 'Aide refusée',
     'signalé': '⚠️ Discussion signalée'
   };
 
-    // 1. On trouve l'annonce spécifique liée à cette ligne de contact
-    const currentAd = mockAds.find(ad => ad.id === request.id_ad);
-
-    // Sécurisation des valeurs au cas où l'annonce n'est pas trouvée
-    const adTitle = currentAd ? currentAd.title : "Annonce inconnue";
+    const adTitle = request.ad_title || request.title || "Annonce inconnue";
     const firstLetter = adTitle.charAt(0).toUpperCase();
 
-    function supprimerDiscussion(requestId) {
-        // Logique de suppression de la discussion (ex: appel API)
-        console.log(`Discussion avec ID ${requestId} supprimée.`);
+    const contactName = request.firstname ? `${request.firstname} ${request.lastname}` : "Interlocuteur";
+
+    function handleDeleteClick(e) {
+        e.stopPropagation();
+        if (typeof onDeleteConversation === 'function') {
+          onDeleteConversation(request.id);
+        }
     }
 
     return (
         <div
             onClick={onClick}
             className={`flex items-center justify-between p-4 cursor-pointer border-b border-gray-100 transition-colors
-                ${isActive ? 'bg-primary-light font-medium' : 'hover:bg-primary-light'}`}
+                ${isActive ? 'bg-indigo-50 border-r-4 border-r-[#5C4FE5] font-medium' : 'hover:bg-gray-50'}`}
         >
             <div className="flex items-center gap-3">
                 {/* Avatar avec la première lettre du titre */}
@@ -35,23 +36,25 @@ export default function Onecontact({ request, isActive, onClick, mockAds, user }
                 <div>
                     {/* Affichage du vrai titre de l'annonce */}
                     <h4 className="text-sm font-semibold text-gray-900">{adTitle}</h4>
-                    {/* Aperçu temporaire (titre ou texte personnalisé) */}
-                    <p className="text-xs text-gray-500 truncate w-36">
-                        {statusTexts[request.state] || 'État inconnu'}
+                    {/* Petit bonus : Afficher avec QUI on parle */}
+                    <p className="text-[11px] text-gray-400 font-medium truncate w-36">
+                        Avec : {contactName}
+                    </p>
+                    <p className="text-xs text-[#5C4FE5] truncate w-36 mt-0.5">
+                        {statusTexts[request.status] || 'État inconnu'}
                     </p>
                 </div>
             </div>
 
             {/* Bouton Poubelle */}
-            <button
-                onClick={(e) => {
-                    e.stopPropagation(); // Empêche d'activer la discussion lors du clic sur supprimer
-                    alert(`Supprimer la discussion : ${adTitle}`);
-                    supprimerDiscussion(request.id);
-                }}
+            {canDelete && (
+              <button
+                onClick={handleDeleteClick}
                 className="text-gray-400 hover:text-red-500 p-1"
-            >
-                <img width="30" height="50" src="https://img.icons8.com/material-outlined/50/waste.png" alt="waste" />            </button>
+              >
+                <img width="24" height="24" src="https://img.icons8.com/material-outlined/50/waste.png" alt="Supprimer" />
+              </button>
+            )}
         </div>
     );
 }
