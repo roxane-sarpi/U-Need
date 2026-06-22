@@ -4,7 +4,7 @@ import FormPhoto from './FormPhoto';
 import { useAuth } from '../context/AuthContext';
 import { authFetch } from '../services/api';
 
-function Adform({ selectedCoins, setSelectedCoins }) {
+function Adform({ selectedCoins, setSelectedCoins, maxCoins }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -66,6 +66,7 @@ function Adform({ selectedCoins, setSelectedCoins }) {
     if (!formData.zipCode.trim()) nextFormErrors.zipCode = "Le code postal est requis.";
     if (!formData.city.trim()) nextFormErrors.city = "La ville est requise.";
     if (!selectedCoins || selectedCoins <= 0) nextFormErrors.points = "Choisissez un nombre de U-Coins.";
+    else if (typeof maxCoins === 'number' && selectedCoins > maxCoins) nextFormErrors.points = "Vous n'avez pas assez de U-Coins pour ce montant.";
 
     if (Object.keys(nextFormErrors).length > 0) {
       setFormErrors(nextFormErrors);
@@ -221,13 +222,16 @@ function Adform({ selectedCoins, setSelectedCoins }) {
           {[1, 2, 3, 4, 5].map((num) => {
             const style = coinStyles[num];
             const isActive = selectedCoins === num;
+            const isDisabled = typeof maxCoins === 'number' && num > maxCoins;
             return (
               <button
                 key={num}
                 type="button"
+                disabled={isDisabled}
                 onClick={() => setSelectedCoins(num)}
-                className={`w-full h-30 m-auto md:w-26 md:h-30 text-3xl font-bold rounded-xl border flex items-center justify-center shadow-sm hover:scale-105 transition-transform 
-                  ${style.bg} ${style.text} ${style.border} 
+                className={`w-full h-30 m-auto md:w-26 md:h-30 text-3xl font-bold rounded-xl border flex items-center justify-center shadow-sm transition-transform
+                  ${style.bg} ${style.text} ${style.border}
+                  ${isDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:scale-105'}
                   ${isActive ? 'ring-4 ring-offset-2 ring-indigo-500 scale-105 font-extrabold border-solid' : 'border-dashed opacity-80'}`}
               >
                 {num}

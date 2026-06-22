@@ -42,9 +42,9 @@ class UserManager extends AbstractManager {
 
 // Côté backend/src/models/UserManager.js
 updatePointsTransaction(idNeeder, idHelper, points) {
-  // Déduire les points du demandeur (Needer)
+  // Déduire les points du demandeur (Needer), sans descendre sous 0
   const queryNeeder = this.database.query(
-    `UPDATE users SET points = points - ? WHERE id = ?`,
+    `UPDATE users SET points = GREATEST(points - ?, 0) WHERE id = ?`,
     [points, idNeeder]
   );
 
