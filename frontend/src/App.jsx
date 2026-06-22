@@ -5,6 +5,7 @@ import { AuthProvider } from './components/context/AuthContext';
 import Home from './pages/Home';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
+import PublicProfile from './pages/Profile/PublicProfile';
 import Login from './pages/Auth/Login';
 import CreateAds from './pages/CreateAds';
 import Register from './pages/Auth/Register';
@@ -45,6 +46,7 @@ function App() {
           <Route path="/create-ads" element={<CreateAds />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/profile/:id" element={<PublicProfile />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/messagerie" element={<MessagerieScreen />} />
        

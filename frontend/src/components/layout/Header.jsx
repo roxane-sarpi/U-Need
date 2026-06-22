@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { PlusCircle, Bell, MessageCircle, UserCircle, Menu, LogOut } from "lucide-react";
+import { PlusCircle, Bell, MessageCircle, UserCircle, Menu, LogOut, LayoutDashboard } from "lucide-react";
 import MobileDrawer from "./MobileDrawer";
 import { useAuth } from "../context/AuthContext";
 
@@ -72,19 +72,27 @@ function Header() {
             <div className="flex items-center gap-2 md:gap-4">
               {/* Ces icônes sont masquées sur mobile dans la maquette Leboncoin car elles vont dans le Drawer */}
               <div className="hidden md:flex items-center gap-6">
-                <Link to="/notifications" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                {/* <Link to="/notifications" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <Bell size={24} />
                   <span className="text-[10px] font-medium uppercase">Notification</span>
-                </Link>
+                </Link> */}
                 <Link to="/messagerie" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                   <MessageCircle size={24} />
                   <span className="text-[10px] font-medium uppercase">Messagerie</span>
                 </Link>
                 {user ? (
-                  <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
-                    <UserCircle size={24} />
-                    <span className="text-[10px] font-medium uppercase">Mon profil</span>
-                  </Link>
+                  <>
+                    <Link to="/profile" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                      <UserCircle size={24} />
+                      <span className="text-[10px] font-medium uppercase">Mon profil</span>
+                    </Link>
+                    {user.role === "admin" && (
+                      <Link to="/admin/dashboard" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
+                        <LayoutDashboard size={24} />
+                        <span className="text-[10px] font-medium uppercase">Dashboard</span>
+                      </Link>
+                    )}
+                  </>
                 ) : (
                   <Link to="/login" className="flex flex-col items-center gap-1 text-ink hover:text-primary">
                     <UserCircle size={24} />

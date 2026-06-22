@@ -53,7 +53,8 @@ const read = (req, res) => {
     .findById(req.params.id)
     .then(([rows]) => {
       if (rows[0]) {
-        res.send(rows[0]);
+        const { password, ...userWithoutPassword } = rows[0];
+        res.send(userWithoutPassword);
       } else {
         res.sendStatus(404);
       }

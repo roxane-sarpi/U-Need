@@ -12,6 +12,7 @@ export const getServicesByHelper = (id) =>
   authFetch(`/requests/helper/${id}`)
     .then(handleResponse)
     .catch((err) => {
+      console.error(err);
       return [];
     });
 
@@ -19,6 +20,7 @@ export const getHistoryByUser = (id) =>
   authFetch(`/requests/history/${id}`)
     .then(handleResponse)
     .catch((err) => {
+      console.error(err);
       return [];
     });
 
@@ -26,28 +28,29 @@ export const getConversationsByUser = (id) =>
   authFetch(`/requests/conversations/${id}`)
     .then(handleResponse)
     .catch((err) => {
+      console.error(err);
       return [];
     });
 
-export const createRequest = (id_ad, id_user, id_helper) =>
+export const createRequest = (id_ad, id_user, id_helper, status) =>
   authFetch('/requests', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ id_ad, id_user, id_helper }),
-  }).then((res) => {
+    body: JSON.stringify({ id_ad, id_user, id_helper, status }),
+  }).then(async (res) => {
     if (!res.ok) {
       throw new Error(`Impossible de créer la requête (${res.status})`);
     }
-    return res.status === 201 ? true : res.json().catch(() => true);
+    return res.json().catch(() => true);
   });
 
 export const updateRequestStatus = (requestId, status) =>
   authFetch(`/requests/${requestId}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json', // 👈 INDISPENSABLE pour le JSON
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ status }),
   }).then((res) => {

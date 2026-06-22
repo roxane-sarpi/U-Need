@@ -14,9 +14,10 @@ function CreateAds() {
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const coins = storedUser?.points;
+  const hasNoCoins = !coins || coins <= 0;
 
   // Le state vit ici, à la racine de la page
-  const [selectedCoins, setSelectedCoins] = useState(3); 
+  const [selectedCoins, setSelectedCoins] = useState(Math.min(3, coins || 0) || 1);
 
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-12 font-sans antialiased bg-canvas min-h-screen">
@@ -35,10 +36,25 @@ function CreateAds() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
         
         {/* On injecte les télécommandes dans Adform */}
-        <Adform 
-          selectedCoins={selectedCoins} 
-          setSelectedCoins={setSelectedCoins} 
-        />
+        <div className="relative">
+          {hasNoCoins && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-white/80 backdrop-blur-sm p-6 text-center">
+              <div className="max-w-sm">
+                <p className="text-lg font-extrabold text-ink mb-2">Solde de U-Coins insuffisant</p>
+                <p className="text-sm text-gray-600 font-medium">
+                  Vous n'avez plus de U-Coins. Aidez d'autres utilisateurs pour en récupérer avant de pouvoir créer une nouvelle annonce.
+                </p>
+              </div>
+            </div>
+          )}
+          <div className={hasNoCoins ? "opacity-40 pointer-events-none select-none" : ""}>
+            <Adform
+              selectedCoins={selectedCoins}
+              setSelectedCoins={setSelectedCoins}
+              maxCoins={coins}
+            />
+          </div>
+        </div>
 
         {/* Barre latérale */}
         <aside className="flex flex-col gap-6 w-full">

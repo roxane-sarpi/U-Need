@@ -40,6 +40,24 @@ class UserManager extends AbstractManager {
     );
   }
 
+// Côté backend/src/models/UserManager.js
+updatePointsTransaction(idNeeder, idHelper, points) {
+  // Déduire les points du demandeur (Needer), sans descendre sous 0
+  const queryNeeder = this.database.query(
+    `UPDATE users SET points = GREATEST(points - ?, 0) WHERE id = ?`,
+    [points, idNeeder]
+  );
+
+  // Ajouter les points à l'aidant (Helper)
+  const queryHelper = this.database.query(
+    `UPDATE users SET points = points + ? WHERE id = ?`,
+    [points, idHelper]
+  );
+
+  return Promise.all([queryNeeder, queryHelper]);
+}
+
+
   findById(id) {
     return this.database.query(`select * from ${this.table} where id = ?`, [id]);
   }

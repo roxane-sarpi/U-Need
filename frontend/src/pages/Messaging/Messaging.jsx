@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../components/context/AuthContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Onecontact from '../../components/messaging/Onecontact';
 import ChatArea from '../../components/messaging/ChatArea';
-import { getConversationsByUser, updateRequestStatus, createRequest } from '../../components/services/requestService';
+import { getConversationsByUser, updateRequestStatus } from '../../components/services/requestService';
 import { getConversationByRequestId, sendMessage, deleteConversation } from '../../components/services/messageService';
+
+const getConversationKey = (request) => {
+  const participantA = Number(request?.id_user);
+  const participantB = Number(request?.id_helper);
+  const orderedParticipants = [participantA, participantB].sort((left, right) => left - right);
+
+  return [request?.id_ad, orderedParticipants[0], orderedParticipants[1]].join(':');
+};
+
+const normalizeConversations = (conversationList = []) => {
+  const uniqueConversations = new Map();
+
+  conversationList.forEach((request) => {
+    const conversationKey = getConversationKey(request);
+    const existingConversation = uniqueConversations.get(conversationKey);
+
+    if (!existingConversation || Number(request.id) > Number(existingConversation.id)) {
+      uniqueConversations.set(conversationKey, request);
+    }
+  });
+
+  return Array.from(uniqueConversations.values()).sort((left, right) => Number(right.id) - Number(left.id));
+};
 
 function MessagerieScreen() {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [requests, setRequests] = useState([]);
   const [activeRequestId, setActiveRequestId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -23,40 +48,36 @@ function MessagerieScreen() {
       setError('');
       try {
         const conversationList = await getConversationsByUser(user.id);
-        setRequests(conversationList || []);
-        if (!activeRequestId && conversationList?.length) {
-          setActiveRequestId(conversationList[0].id);
+        const normalizedConversations = normalizeConversations(conversationList || []);
+        setRequests(normalizedConversations);
+        const requestIdParam = Number(searchParams.get('requestId'));
+        const requestedConversation = requestIdParam
+          ? normalizedConversations.find((request) => Number(request.id) === requestIdParam)
+          : null;
+
+        if (requestedConversation) {
+          setActiveRequestId(requestedConversation.id);
+        } else if (!activeRequestId && normalizedConversations?.length) {
+          setActiveRequestId(normalizedConversations[0].id);
         }
       } catch (err) {
+        console.error(err);
         setError('Impossible de charger les conversations.');
       }
     };
 
     loadConversations();
-  }, [user]);
+  }, [user, searchParams]);
 
   useEffect(() => {
     if (!user) return;
 
-    const { id_ad, id_user } = location.state || {};
-    
-    if (id_ad && id_user && id_user !== user.id) {
-      const createNewRequest = async () => {
-        try {
-          await createRequest(id_ad, id_user, user.id);
-          const conversationList = await getConversationsByUser(user.id);
-          setRequests(conversationList || []);
-          if (conversationList?.length) {
-            setActiveRequestId(conversationList[0].id);
-          }
-        } catch (err) {
-          setError('Impossible de créer la conversation. Vérifiez que vous n\'avez pas déjà postulé.');
-        }
-      };
+    const requestIdParam = Number(searchParams.get('requestId'));
 
-      createNewRequest();
+    if (requestIdParam) {
+      return;
     }
-  }, [user, location.state]);
+  }, [user, location.state, searchParams, navigate]);
 
   useEffect(() => {
     if (!activeRequestId || !user) return;
@@ -68,6 +89,7 @@ function MessagerieScreen() {
         const conversation = await getConversationByRequestId(activeRequestId);
         setMessages(conversation || []);
       } catch (err) {
+        console.error(err);
         setError('Impossible de charger les messages.');
       } finally {
         setIsLoading(false);
@@ -103,10 +125,13 @@ function MessagerieScreen() {
         {
           id: Date.now(),
           ...payload,
+          firstname: user.firstname,
+          lastname: user.lastname,
           created_at: new Date().toISOString(),
         },
       ]);
     } catch (err) {
+      console.error(err);
       setError("Impossible d'envoyer le message.");
     }
   };
@@ -123,6 +148,7 @@ function MessagerieScreen() {
         setMessages([]);
       }
     } catch (err) {
+      console.error(err);
       setError(err.message || "Impossible de supprimer la conversation.");
     }
   };
@@ -130,20 +156,23 @@ function MessagerieScreen() {
 const handleRequestDecision = async (status) => {
     if (!currentRequest || !user) return;
 
-    // Sécurité : on force la valeur à correspondre à l'ENUM MySQL ('accepter' ou 'refuser')
+    // Sécurité : on force la valeur à correspondre à l'ENUM MySQL ('accepté' ou 'refusé' ou terminé (à ajouter))
     const cleanStatus = status.toLowerCase().trim();
+    console.log("CLEAN STATUS : ", cleanStatus); //là quand on clique sur valider l'aide clean status devient "accepté" donc le statut de l'annonce change à en cours
 
     try {
       await updateRequestStatus(currentRequest.id, cleanStatus);
       const refreshedRequests = await getConversationsByUser(user.id);
-      setRequests(refreshedRequests || []);
+      const normalizedRefreshedRequests = normalizeConversations(refreshedRequests || []);
+      setRequests(normalizedRefreshedRequests);
       
-      if (!refreshedRequests.some((req) => req.id === currentRequest.id)) {
-        setActiveRequestId(refreshedRequests.length ? refreshedRequests[0].id : null);
+      if (!normalizedRefreshedRequests.some((req) => req.id === currentRequest.id)) {
+        setActiveRequestId(normalizedRefreshedRequests.length ? normalizedRefreshedRequests[0].id : null);
       } else {
         setActiveRequestId(currentRequest.id);
       }
     } catch (err) {
+      console.error(err);
       setError("Impossible de mettre à jour l'état de la demande.");
     }
   };
@@ -203,9 +232,11 @@ const handleRequestDecision = async (status) => {
             request={currentRequest}
             messages={messages}
             currentUserId={user.id}
+            currentUser={user}
             onSendMessage={handleSendMessage}
-            onAccept={() => handleRequestDecision('accepter')} 
-            onRefuse={() => handleRequestDecision('refuser')}
+            onAccept={() => handleRequestDecision('en cours')} 
+            onRefuse={() => handleRequestDecision('refusé')}
+            onHelpDone={() => handleRequestDecision('terminé')}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 font-medium p-4 text-center">

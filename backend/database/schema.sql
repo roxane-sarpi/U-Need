@@ -1,132 +1,249 @@
--- ============================================================
--- U-Need — Schéma de base de données (tables uniquement)
--- migrate.js fait déjà le `USE ${DB_NAME}` : pas de CREATE DATABASE / USE ici.
--- Les INSERT de seed sont déplacés dans seed.js (à lancer une seule fois).
--- ============================================================
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : 127.0.0.1:3306
+-- Généré le : lun. 22 juin 2026 à 10:38
+-- Version du serveur : 9.1.0
+-- Version de PHP : 8.3.14
 
--- 1. Tables "parentes"
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE IF NOT EXISTS categories (
-    id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-);
 
-INSERT IGNORE INTO categories (id, name) VALUES
-(1, 'Déménagement'), (2, 'Bricolage'), (3, 'Aide ménagère'), (4, 'Aide aux séniors'),
-(5, 'Informatique'), (6, 'Petit travaux'), (7, 'Course'), (8, 'Animaux'),
-(9, 'Jardinage'), (10, 'Transport'), (11, 'Aide scolaire'), (12, 'Autre');
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-CREATE TABLE IF NOT EXISTS users (
-    id        INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(100) NOT NULL,
-    lastname  VARCHAR(100) NOT NULL,
-    email     VARCHAR(100) NOT NULL UNIQUE,
-    password  VARCHAR(255) NOT NULL,
-    phone     VARCHAR(20)  NOT NULL,
-    zip_code  VARCHAR(10),
-    city      VARCHAR(100) NOT NULL,
-    role      ENUM('admin', 'user', 'moderateur') DEFAULT 'user',
-    points    INT DEFAULT 10,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+--
+-- Base de données : `uneed`
+--
 
-INSERT INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role, points) VALUES
-(1, 'Test', 'User', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000001', '75001', 'Paris', 'user', 10),
-(2, 'Admin', 'User', 'admin@test.com', '$argon2id$v=19$m=65536,t=5,p=1$OtIFIiNbo3U36rNMbhVOwA$Erg5IaUsnNqqx4iHqdlNyLblfbTQ8Rq6F4VjxARCtek', '0600000002', '75002', 'Paris', 'admin', 0)
-ON DUPLICATE KEY UPDATE password = VALUES(password);
+-- --------------------------------------------------------
 
--- 2. Table ads (dépend de categories et users)
-CREATE TABLE IF NOT EXISTS ads (
-    id             INT AUTO_INCREMENT PRIMARY KEY,
-    title          VARCHAR(100) NOT NULL,
-    description    TEXT NOT NULL,
-    image_1        VARCHAR(500) DEFAULT '/public/images/default_image.svg',
-    image_2        VARCHAR(500) DEFAULT '/public/images/default_image.svg',
-    image_3        VARCHAR(500) DEFAULT '/public/images/default_image.svg',
-    id_category    INT,
-    points         INT NOT NULL,
-    status         ENUM('signalé', 'en cours', 'terminé', 'disponible') DEFAULT 'disponible',
-    zip_code       INT NOT NULL,
-    city           VARCHAR(500) NOT NULL,
-    urgent         BOOLEAN NOT NULL DEFAULT FALSE,
-    id_user        INT,
-    date_execution DATE,
-    date_creation  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_category FOREIGN KEY (id_category) REFERENCES categories(id),
-    CONSTRAINT fk_user     FOREIGN KEY (id_user)     REFERENCES users(id) ON DELETE CASCADE
-);
+--
+-- Structure de la table `ads`
+--
 
--- 3. Autres tables
-CREATE TABLE IF NOT EXISTS notifications (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    content       VARCHAR(500) NOT NULL,
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    has_been_read BOOLEAN DEFAULT FALSE,
-    id_user       INT,
-    CONSTRAINT fk_userNotif FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
-);
+DROP TABLE IF EXISTS `ads`;
+CREATE TABLE IF NOT EXISTS `ads` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `image_1` varchar(500) DEFAULT '/public/images/default_image.svg',
+  `image_2` varchar(500) DEFAULT '/public/images/default_image.svg',
+  `image_3` varchar(500) DEFAULT '/public/images/default_image.svg',
+  `id_category` int DEFAULT NULL,
+  `points` int NOT NULL,
+  `status` enum('signalé','en cours','terminé','disponible') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'disponible',
+  `zip_code` int NOT NULL,
+  `city` varchar(500) NOT NULL,
+  `urgent` tinyint(1) NOT NULL DEFAULT '0',
+  `id_user` int DEFAULT NULL,
+  `date_execution` date DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_category` (`id_category`),
+  KEY `fk_user` (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS requests (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    id_ad         INT NOT NULL,
-    id_helper     INT,
-    id_user       INT,
-    status        ENUM('refuser', 'en cours', 'accepter') DEFAULT 'en cours',
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    -- Si l'annonce saute, la requête saute
-    CONSTRAINT fk_adRequest FOREIGN KEY (id_ad)     REFERENCES ads(id) ON DELETE CASCADE,
-    -- Si le helper ou le needer saute, la requête saute
-    CONSTRAINT fk_helper    FOREIGN KEY (id_helper) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_needer    FOREIGN KEY (id_user)   REFERENCES users(id) ON DELETE CASCADE
-);
+--
+-- Déchargement des données de la table `ads`
+--
 
--- messages doit être après requests car elle référence requests(id)
-CREATE TABLE IF NOT EXISTS messages (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    content     TEXT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_sender   INT NOT NULL,
-    id_receiver INT NOT NULL,
-    id_request  INT NOT NULL,
-    CONSTRAINT fk_msg_sender   FOREIGN KEY (id_sender)   REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_msg_receiver FOREIGN KEY (id_receiver) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_msg_request  FOREIGN KEY (id_request)  REFERENCES requests(id) ON DELETE CASCADE
-);
+INSERT INTO `ads` (`id`, `title`, `description`, `image_1`, `image_2`, `image_3`, `id_category`, `points`, `status`, `zip_code`, `city`, `urgent`, `id_user`, `date_execution`, `date_creation`) VALUES
+(1, 'Besoin pour arroser mes plantes', 'Ayant eu un accident me bloquant le dos, je ne peux plus arroser mes plantes. Je cherche une personne qui pourra venir arroser mes plantes.', '/public/images/default_image.svg', '/public/images/default_image.svg', '/public/images/default_image.svg', 9, 2, 'disponible', 13010, 'Marseille', 0, 1, '2026-04-29', '2026-05-05 14:16:25'),
+(2, 'Besoin d’aide pour faire mes courses', 'Suite à une entorse à la cheville, je ne peux pas me déplacer facilement. Je cherche une personne pour m’aider à faire quelques courses au supermarché du quartier.', '/public/images/default_image.svg', '/public/images/default_image.svg', '/public/images/default_image.svg', 9, 3, 'disponible', 13010, 'Marseille', 0, 1, '2026-05-02', '2026-05-05 14:16:25'),
+(3, 'Aide pour réparation ordi', 'aidez moi', '/uploads/1780654524819-young-couple-new-apartment-with-small-dog.jpg', NULL, NULL, 5, 1, 'disponible', 13002, 'Marseille', 1, 10, NULL, '2026-06-05 10:15:25'),
+(5, 'Recherche garde chats', 'J\'ai besoin d\'aide pour garder mes chiens pendant les vacances', '/uploads/1781688374639-pexels-horacio-lander-1239977167-35578134.jpg', NULL, NULL, 8, 1, 'en cours', 13002, 'Marseille', 0, 12, NULL, '2026-06-17 09:26:14'),
+(6, 'Recherche connaisseur plantes', 'J\'a besoin d\'aide pour entretenir mes plantes qui tirent la tête', NULL, NULL, NULL, 9, 2, 'terminé', 75006, 'Paris', 0, 12, NULL, '2026-06-17 09:56:05'),
+(7, 'Recherche un réparateur de téléphone', 'Téléphone vintage pour réparer', NULL, NULL, NULL, 12, 3, 'en cours', 75006, 'Paris', 0, 12, NULL, '2026-06-17 19:39:31'),
+(8, 'Recherche personne pour ménage', 'Acquisition nouvel appart', '/uploads/1781725305217-closeup-man-carrying-cardboard-boxes-while-relocating-into-new-apartment.jpg', '/uploads/1781725305364-carboard-boxes-potted-plant-new-apartment.jpg', NULL, 3, 4, 'terminé', 75006, 'Paris', 1, 12, NULL, '2026-06-17 19:41:45'),
+(9, 'Recherche ramasseur de pommes', 'Possède de nombreux pommiers', '/uploads/1781775067239-arc6.png', '/uploads/1781775067240-Brutalism style poster.jpg', NULL, 9, 2, 'terminé', 75016, 'Paris', 1, 12, NULL, '2026-06-18 09:31:07');
 
-CREATE TABLE IF NOT EXISTS evaluations (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    id_user    INT NOT NULL,
-    note       INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_eval_user FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
-);
+-- --------------------------------------------------------
 
-INSERT IGNORE INTO users (id, firstname, lastname, email, password, phone, zip_code, city, role) VALUES
-(3, 'Wendy',   'test',    'wendy@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'user'),
-(4, 'admin',   'admin',   'admin@gmail.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0612345678', '75000', 'Paris', 'admin'),
-(5, 'Alice',   'Dupont',  'alice@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000001', '75001', 'Paris', 'user'),
-(6, 'Bob',     'Martin',  'bob@example.com',     '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000002', '75002', 'Paris', 'user'),
-(7, 'Charlie', 'Legrand', 'charlie@example.com', '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000003', '75003', 'Paris', 'user'),
-(8, 'David',   'Bernard', 'david@example.com',   '$argon2id$v=19$m=65536,t=5,p=1$ymncECWbe+GNXT5yiPpjrQ$Y6DLc9D8T4/6xpp0R4YrCI0J5QRfrNtuaPxlAjs8r8w', '0600000004', '75004', 'Paris', 'admin');
+--
+-- Structure de la table `categories`
+--
 
-INSERT IGNORE INTO ads (title, description, id_category, points, zip_code, city, urgent, id_user) VALUES
-('Tondre la pelouse', 'Besoin d''aide pour tondre 100m2', 1, 5, 75010, 'Paris', FALSE, 1),
-('Aide pour déménagement', 'Déménagement de studio à 10km', 2, 10, 75011, 'Paris', TRUE, 5),
-('Monter meuble IKEA', 'Montage de meuble (2h)', 3, 3, 75012, 'Paris', FALSE, 3);
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT IGNORE INTO requests (id, id_ad, id_helper, id_user, status) VALUES
-(1, 3, 4, 3, 'en cours'),
-(2, 3, 5, 3, 'en cours'),
-(3, 3, 1, 3, 'en cours'),
-(4, 2, 4, 5, 'en cours'),
-(5, 1, 3, 1, 'en cours');
+--
+-- Déchargement des données de la table `categories`
+--
 
-INSERT IGNORE INTO messages (id, content, id_sender, id_receiver, id_request) VALUES
-(1, 'Bonjour, je peux t''aider samedi matin', 4, 1, 1),
-(2, 'Merci -- samedi ça marche', 1, 4, 1),
-(3, 'Le camion est réservé', 4, 5, 2),
-(4, 'Salut, as-tu les instructions pour le montage?', 3, 1, 3);
+INSERT INTO `categories` (`id`, `name`) VALUES
+(1, 'Déménagement'),
+(2, 'Bricolage'),
+(3, 'Aide ménagère'),
+(4, 'Aide aux séniors'),
+(5, 'Informatique'),
+(6, 'Petit travaux'),
+(7, 'Course'),
+(8, 'Animaux'),
+(9, 'Jardinerie'),
+(10, 'Transport'),
+(11, 'Aide scolaire'),
+(12, 'Autre');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_sender` int NOT NULL,
+  `id_receiver` int NOT NULL,
+  `id_request` int NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `messages`
+--
+
+INSERT INTO `messages` (`id`, `content`, `created_at`, `id_sender`, `id_receiver`, `id_request`, `is_read`) VALUES
+(1, 'Bonjour, je serais ravis de vous aider.', '2026-05-05 14:16:25', 2, 1, 1, 0),
+(2, 'Super, vous êtes disponible quand ?', '2026-05-05 14:16:25', 1, 2, 1, 0),
+(11, 'in', '2026-06-19 21:33:57', 13, 12, 9, 0),
+(12, 'ok', '2026-06-19 21:34:52', 12, 13, 9, 0),
+(13, 'in', '2026-06-19 22:06:36', 13, 12, 11, 0),
+(14, 'ok', '2026-06-19 22:07:14', 12, 13, 11, 0),
+(20, 'je suis opée', '2026-06-22 08:45:03', 13, 12, 16, 0),
+(21, 'trop bien', '2026-06-22 08:45:36', 12, 13, 16, 0),
+(22, 'op', '2026-06-22 10:35:05', 13, 12, 17, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` varchar(500) NOT NULL,
+  `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `has_been_read` tinyint(1) DEFAULT '0',
+  `id_user` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_userNotif` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `requests`
+--
+
+DROP TABLE IF EXISTS `requests`;
+CREATE TABLE IF NOT EXISTS `requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_ad` int NOT NULL,
+  `id_helper` int DEFAULT NULL,
+  `id_user` int DEFAULT NULL,
+  `status` enum('signalé','en cours','terminé','refusé','disponible') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'disponible',
+  `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_adRequest` (`id_ad`),
+  KEY `fk_helper` (`id_helper`),
+  KEY `fk_needer` (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `requests`
+--
+
+INSERT INTO `requests` (`id`, `id_ad`, `id_helper`, `id_user`, `status`, `date_creation`) VALUES
+(1, 1, 2, 1, 'en cours', '2026-05-05 14:16:25'),
+(16, 6, 13, 12, 'terminé', '2026-06-22 08:44:55'),
+(17, 7, 13, 12, 'disponible', '2026-06-22 09:55:19');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firstname` varchar(100) NOT NULL,
+  `lastname` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `zip_code` varchar(10) DEFAULT NULL,
+  `city` varchar(100) NOT NULL,
+  `role` enum('admin','user','moderateur') DEFAULT 'user',
+  `points` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `email`, `password`, `phone`, `zip_code`, `city`, `role`, `points`, `created_at`, `updated_at`) VALUES
+(1, 'Paul', 'LeDu', 'PaulleDu@gmail.com', '123456', '0654322343', '13010', 'Marseille', 'user', 0, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(2, 'Roxane', 'Sarpi', 'RoxaneSarpi@gmail.com', '123456', '0743453224', '13015', 'Marseille', 'admin', 0, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(3, 'Vero', 'Lastar', 'Verolastar@gmail.com', '123456', '0432345432', '13005', 'Marseille', 'user', 0, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(4, 'Akio', 'Kimura', 'Akio@gmail.com', '123456', '0654322343', '130011', 'Marseille', 'moderateur', 0, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(5, 'Karen', 'C', 'test@test.com', '$argon2id$v=19$m=65536,t=5,p=1$DA+Pwpx3XG6cXTLd6k6d6g$U75JGS5bkkx4YtPSrpErCOkhY8W/uSRPjUfNEyMVvQA', '0786456789', '13009', 'Marseille', 'user', 30, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(7, 'Karen', 'Karen Castillo', 'karen.castillo@laplateforme.io', '$argon2id$v=19$m=65536,t=5,p=1$SfDI1UDjcJX6zGqlSTwHeA$10l3mD/pePb7H/BrJYFWL8gevkefr3Zg4C9ssxiqloM', '+33621296253', '13004', 'Marseille', 'user', 10, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(8, 'Karen', 'test', 'test@example.com', '$argon2id$v=19$m=65536,t=5,p=1$5iKfVmGncqAZ+ZXfIzOnzg$7LQjNLThrLhDf9C8jxJRGhIdKUj/6jy9lulxSZPOlsA', '0786456789', '13002', 'Marseille', 'user', 10, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(9, 'test', 'test', 'test@test.fr', '$argon2id$v=19$m=65536,t=5,p=1$i73/AQ/T4oDznDmWsCD+Sg$xK97vZxrPD/UKP2swUbASGTYbrCoOUEDBnThJ0u6elY', '0786456789', '13004', 'Marseille', 'admin', 10, '2026-06-04 14:20:24', '2026-06-04 14:20:24'),
+(10, 'LeK', 'C', 'kc@kc.com', '$argon2id$v=19$m=65536,t=5,p=1$r+HtOV2cl4vFbJUdDmHN0A$q4jbThDpF2YA4QCRg8iYSl3yO0buTjbgcLlAXQZoYaw', '0956342178', '13006', 'Paris', 'user', 10, '2026-06-05 08:36:08', '2026-06-05 08:36:08'),
+(11, 'Marina', 'Serrano', 'marina@test.com', '$argon2id$v=19$m=65536,t=5,p=1$sPxcdb7uf3h4du69PGG2Ng$Z+IZjNiYKcli/w505K1phyXXkBl0L29BOPFcE1CwMgI', '0786456789', '13002', 'Marseille', 'admin', 10, '2026-06-15 12:06:30', '2026-06-15 12:24:48'),
+(12, 'Vincent', 'LeTigre', 'vince@test.com', '$argon2id$v=19$m=65536,t=5,p=1$IxxotevAc4uYVTYPVa5wpw$UKIpiW5UwC6hV7kHHJfLXxIuIXizLzBCCRQfGZS41M8', '0786456789', '13006', 'Paris', 'user', 0, '2026-06-17 09:25:07', '2026-06-22 08:46:11'),
+(13, 'Celine', 'Fury', 'celine@test.com', '$argon2id$v=19$m=65536,t=5,p=1$PsxNF+LDVQ+Na643P1RX6w$fNm6OVDqTk7FNWz7tpo7r+gInY4E2VA1AWJ5czVI94s', '0956342178', '75008', 'Paris', 'user', 20, '2026-06-19 12:13:40', '2026-06-22 08:46:11');
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `ads`
+--
+ALTER TABLE `ads`
+  ADD CONSTRAINT `fk_category` FOREIGN KEY (`id_category`) REFERENCES `categories` (`id`),
+  ADD CONSTRAINT `fk_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`);
+
+--
+-- Contraintes pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `fk_userNotif` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`);
+
+--
+-- Contraintes pour la table `requests`
+--
+ALTER TABLE `requests`
+  ADD CONSTRAINT `fk_adRequest` FOREIGN KEY (`id_ad`) REFERENCES `ads` (`id`),
+  ADD CONSTRAINT `fk_helper` FOREIGN KEY (`id_helper`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `fk_needer` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`);
+COMMIT;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
