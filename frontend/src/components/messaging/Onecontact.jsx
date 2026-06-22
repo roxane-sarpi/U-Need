@@ -3,7 +3,7 @@ import React from 'react';
 export default function Onecontact({ request, isActive, onClick, canDelete, onDeleteConversation }) {
 
     const statusTexts = {
-        '': "Commencer discussion",
+    'disponible': "Commencer discussion",
     'en cours': 'Ouvrir discussion',
     // 'accepté': 'Aide acceptée',
     'terminé':'service terminé',

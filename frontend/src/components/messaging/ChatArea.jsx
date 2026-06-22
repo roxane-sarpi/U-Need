@@ -7,6 +7,7 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
     const navigate = useNavigate();
 
    const statusStyles = {
+  'disponible': 'text-sky-600 font-medium bg-sky-100',
   'en cours': 'text-orange-600 font-medium bg-orange-100',
   'accepté': 'text-emerald-600 font-medium bg-emerald-100',
   'refusé': 'text-red-600 font-bold bg-red-100',
@@ -15,7 +16,7 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
 };
 
 const statusTexts = {
-    '': '',
+    'disponible': 'Disponible',
     'en cours': 'En cours',
     'accepté':  'Acceptée', // 🚀 Changé 'accepter' -> 'accepté'
     'refusé':   'Refusée',  // 🚀 Changé 'refuser'  -> 'refusé'
@@ -71,7 +72,7 @@ const statusTexts = {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                        {request.ad_owner_id === currentUserId && request.status === '' && (
+                        {request.ad_owner_id === currentUserId && request.status === 'disponible' && (
                         <>
                             <button
                                 type="button"
