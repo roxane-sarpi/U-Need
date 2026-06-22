@@ -3,14 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 22 juin 2026 à 10:38
+-- Généré le : lun. 22 juin 2026 à 13:46
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-SET FOREIGN_KEY_CHECKS = 0;
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -55,8 +54,6 @@ CREATE TABLE IF NOT EXISTS `ads` (
 --
 
 INSERT INTO `ads` (`id`, `title`, `description`, `image_1`, `image_2`, `image_3`, `id_category`, `points`, `status`, `zip_code`, `city`, `urgent`, `id_user`, `date_execution`, `date_creation`) VALUES
-(1, 'Besoin pour arroser mes plantes', 'Ayant eu un accident me bloquant le dos, je ne peux plus arroser mes plantes. Je cherche une personne qui pourra venir arroser mes plantes.', '/public/images/default_image.svg', '/public/images/default_image.svg', '/public/images/default_image.svg', 9, 2, 'disponible', 13010, 'Marseille', 0, 1, '2026-04-29', '2026-05-05 14:16:25'),
-(2, 'Besoin d’aide pour faire mes courses', 'Suite à une entorse à la cheville, je ne peux pas me déplacer facilement. Je cherche une personne pour m’aider à faire quelques courses au supermarché du quartier.', '/public/images/default_image.svg', '/public/images/default_image.svg', '/public/images/default_image.svg', 9, 3, 'disponible', 13010, 'Marseille', 0, 1, '2026-05-02', '2026-05-05 14:16:25'),
 (3, 'Aide pour réparation ordi', 'aidez moi', '/uploads/1780654524819-young-couple-new-apartment-with-small-dog.jpg', NULL, NULL, 5, 1, 'disponible', 13002, 'Marseille', 1, 10, NULL, '2026-06-05 10:15:25'),
 (5, 'Recherche garde chats', 'J\'ai besoin d\'aide pour garder mes chiens pendant les vacances', '/uploads/1781688374639-pexels-horacio-lander-1239977167-35578134.jpg', NULL, NULL, 8, 1, 'en cours', 13002, 'Marseille', 0, 12, NULL, '2026-06-17 09:26:14'),
 (6, 'Recherche connaisseur plantes', 'J\'a besoin d\'aide pour entretenir mes plantes qui tirent la tête', NULL, NULL, NULL, 9, 2, 'terminé', 75006, 'Paris', 0, 12, NULL, '2026-06-17 09:56:05'),
@@ -165,15 +162,6 @@ CREATE TABLE IF NOT EXISTS `requests` (
   KEY `fk_needer` (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Déchargement des données de la table `requests`
---
-
-INSERT INTO `requests` (`id`, `id_ad`, `id_helper`, `id_user`, `status`, `date_creation`) VALUES
-(1, 1, 2, 1, 'en cours', '2026-05-05 14:16:25'),
-(16, 6, 13, 12, 'terminé', '2026-06-22 08:44:55'),
-(17, 7, 13, 12, 'disponible', '2026-06-22 09:55:19');
-
 -- --------------------------------------------------------
 
 --
@@ -241,8 +229,6 @@ ALTER TABLE `requests`
   ADD CONSTRAINT `fk_helper` FOREIGN KEY (`id_helper`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `fk_needer` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`);
 COMMIT;
-
-SET FOREIGN_KEY_CHECKS = 1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
