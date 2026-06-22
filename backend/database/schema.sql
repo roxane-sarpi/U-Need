@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS requests (
     id_ad         INT NOT NULL,
     id_helper     INT,
     id_user       INT,
-    status        ENUM('refuser', 'en cours', 'accepter') DEFAULT 'en cours',
+    status ENUM('en cours', 'accepté', 'refusé', 'terminé', 'signalé') DEFAULT 'en cours',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY unique_request_conversation (id_ad, id_helper, id_user),
