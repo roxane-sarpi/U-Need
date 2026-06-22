@@ -2,30 +2,33 @@ import React, { useState } from 'react';
 import MessageBubble from './MessageBubble';
 import { useNavigate } from "react-router-dom";
 
-function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage, onAccept, onRefuse }) {
+function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage, onAccept, onRefuse, onHelpDone }) {
     const [text, setText] = useState('');
     const navigate = useNavigate();
 
-    const statusStyles = {
-        'en cours': 'text-accent-orange-dark font-medium bg-accent-orange-light',
-        'accepter': 'text-emerald-600 font-medium bg-emerald-100',
-        'refuser': 'text-red-600 font-bold bg-red-100',
-        'terminé': 'text-emerald-600 font-medium bg-emerald-100',
-        'signalé': 'text-red-600 font-bold bg-red-100'
-    };
+   const statusStyles = {
+  'en cours': 'text-orange-600 font-medium bg-orange-100',
+  'accepté': 'text-emerald-600 font-medium bg-emerald-100',
+  'refusé': 'text-red-600 font-bold bg-red-100',
+  'terminé': 'text-slate-600 font-medium bg-slate-100',
+  'signalé': 'text-red-600 font-bold bg-red-100'
+};
 
-    const statusTexts = {
-        'en cours': 'En cours',
-        'accepter': 'Acceptée',
-        'refuser': 'Refusée',
-        'signalé': 'Signalée'
-    };
+const statusTexts = {
+    '': '',
+    'en cours': 'En cours',
+    'accepté':  'Acceptée', // 🚀 Changé 'accepter' -> 'accepté'
+    'refusé':   'Refusée',  // 🚀 Changé 'refuser'  -> 'refusé'
+    'terminé':  'Terminé', 
+    'signalé':  'Signalée'
+};
 
     const adTitle = request.ad_title || request.title || 'Annonce';
     const currentUserFirstName = currentUser?.firstname || '';
     const currentUserLastName = currentUser?.lastname || '';
     const contactFirstName = request.firstname || '';
     const contactLastName = request.lastname || '';
+    const pointsAmount = request.ad_points || '-';
 
     const buildInitials = (firstName = '', lastName = '') => {
         const initials = `${firstName.trim().charAt(0)}${lastName.trim().charAt(0)}`.toUpperCase();
@@ -41,6 +44,8 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
     };
 
     const firstLetter = adTitle.charAt(0).toUpperCase();
+
+    console.log("REQUESTS STATUS :", request);
 
     return (
         <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
@@ -61,12 +66,12 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
                             </span>
                         </p>
                         <span className={`px-2 py-0.5 rounded ml-1 font-medium text-[10px] uppercase ${statusStyles[request.status] || 'bg-gray-100 text-gray-700'}`}>
-                            {statusTexts[request.status] || 'État inconnu'}
+                            {statusTexts[request.status] || ''}
                         </span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    {request.ad_owner_id === currentUserId && request.status === 'en cours' && (
+                        {request.ad_owner_id === currentUserId && request.status === '' && (
                         <>
                             <button
                                 type="button"
@@ -84,21 +89,47 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
                             </button>
                         </>
                     )}
+                    {request.ad_owner_id === currentUserId && request.status === 'en cours' && (
+                        <>
+                            <button
+                                type="button"
+                                onClick={onHelpDone}
+                                className="bg-green-500 text-white px-3 py-2.5 md:px-6 rounded-xl font-semibold text-xs md:text-sm hover:bg-green-600"
+                            >
+                                Service rendu
+                            </button>
+                        </>
+                    )}
                 </div>
             </header>
 
             {/* Zone de Scroll des Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-2">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((msg) => (
                     <MessageBubble
                         key={msg.id}
-                        text={msg.content} // Correction : msg.text -> msg.content
-                        isMe={msg.id_sender === currentUserId} // Correction : msg.senderId -> msg.id_sender
+                        text={msg.content}
+                        isMe={msg.id_sender === currentUserId}
                         initials={msg.id_sender === currentUserId
                           ? buildInitials(currentUserFirstName, currentUserLastName)
                           : buildInitials(msg.firstname || contactFirstName, msg.lastname || contactLastName)}
                     />
                 ))}
+
+                {/* 🆕 Correction de la structure conditionnelle JSX */}
+                {request.status === "terminé" && (
+                    <div className="mt-4 p-4 rounded-xl text-sm text-center font-medium border bg-emerald-50 text-emerald-800 border-emerald-200">
+                        {request.ad_owner_id === currentUserId ? (
+                            <p>
+                                Le service a été rendu. {contactFirstName || "L'aidant"} a reçu {pointsAmount} U-COINS. {pointsAmount} U-COINS vous ont été déduits.
+                            </p>
+                        ) : (
+                            <p>
+                                Le service a été rendu. Vous avez reçu {pointsAmount} PTS !
+                            </p>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Input d'envoi de message */}
@@ -107,11 +138,16 @@ function ChatArea({ request, messages, currentUserId, currentUser, onSendMessage
                     <input
                         type="text"
                         value={text}
+                        disabled={request.status === 'terminé'} // Optionnel : Bloque l'input si c'est fini
                         onChange={(e) => setText(e.target.value)}
-                        placeholder="Taper un message ici"
-                        className="flex-1 border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-purple-600"
+                        placeholder={request.status === 'terminé' ? "La discussion est clôturée" : "Taper un message ici"}
+                        className="flex-1 border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-purple-600 disabled:bg-gray-50 disabled:text-gray-400"
                     />
-                    <button type="submit" className="bg-primary text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-orange">
+                    <button 
+                        type="submit" 
+                        disabled={request.status === 'terminé'}
+                        className="bg-primary text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-orange disabled:opacity-50"
+                    >
                         Envoyer
                     </button>
                 </form>

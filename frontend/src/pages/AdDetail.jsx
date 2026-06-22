@@ -88,7 +88,7 @@ console.log("Ad data : ", ad);
         return;
       }
 
-      const conversation = await createRequest(ad.id, ad.id_user, user.id);
+      const conversation = await createRequest(ad.id, ad.id_user, user.id, "");
       const requestId = conversation?.id;
 
       if (requestId) {
@@ -245,9 +245,6 @@ console.log("Ad data : ", ad);
               >
                 {isCreatingConversation ? 'Ouverture...' : 'Proposer mon aide'}
               </button>
-              <p className="mt-3 cursor-pointer text-sm text-ink/60 hover:text-ink">
-                🚩 Signaler cette annonce
-              </p>
             </div>
 
             {/* Carte du prestataire */}

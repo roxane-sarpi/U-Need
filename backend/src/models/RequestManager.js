@@ -43,6 +43,8 @@ class RequestManager extends AbstractManager {
         r.*, 
         r.status AS status, 
         a.title AS ad_title,
+        a.points as ad_points,
+        a.status as ad_status,
         a.id_user AS ad_owner_id,
         IF(r.id_user = ?, h.firstname, u.firstname) AS firstname,
         IF(r.id_user = ?, h.lastname, u.lastname) AS lastname

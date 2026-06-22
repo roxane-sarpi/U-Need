@@ -156,8 +156,9 @@ function MessagerieScreen() {
 const handleRequestDecision = async (status) => {
     if (!currentRequest || !user) return;
 
-    // Sécurité : on force la valeur à correspondre à l'ENUM MySQL ('accepter' ou 'refuser')
+    // Sécurité : on force la valeur à correspondre à l'ENUM MySQL ('accepté' ou 'refusé' ou terminé (à ajouter))
     const cleanStatus = status.toLowerCase().trim();
+    console.log("CLEAN STATUS : ", cleanStatus); //là quand on clique sur valider l'aide clean status devient "accepté" donc le statut de l'annonce change à en cours
 
     try {
       await updateRequestStatus(currentRequest.id, cleanStatus);
@@ -233,8 +234,9 @@ const handleRequestDecision = async (status) => {
             currentUserId={user.id}
             currentUser={user}
             onSendMessage={handleSendMessage}
-            onAccept={() => handleRequestDecision('accepter')} 
-            onRefuse={() => handleRequestDecision('refuser')}
+            onAccept={() => handleRequestDecision('en cours')} 
+            onRefuse={() => handleRequestDecision('refusé')}
+            onHelpDone={() => handleRequestDecision('terminé')}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 font-medium p-4 text-center">
