@@ -88,7 +88,7 @@ console.log("Ad data : ", ad);
         return;
       }
 
-      const conversation = await createRequest(ad.id, ad.id_user, user.id, "");
+      const conversation = await createRequest(ad.id, ad.id_user, user.id, "disponible");
       const requestId = conversation?.id;
 
       if (requestId) {
