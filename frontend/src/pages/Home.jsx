@@ -28,6 +28,7 @@ const steps = [
 ];
 
 function mapAdToCard(ad) {
+
 	return {
 		id: ad.id,
 		title: ad.title,
@@ -45,6 +46,14 @@ function mapAdToCard(ad) {
 
 function Home() {
 	const [recentAds, setRecentAds] = useState([]);
+
+	 const [isUserConnected, setIsUserConnected] = useState(null);
+
+  useEffect(()=> {
+	const userConnected = localStorage.getItem("user");
+
+	if(userConnected){setIsUserConnected(true);}
+  },[])
 
 	useEffect(() => {
 		getRecentAds(4)
@@ -68,6 +77,7 @@ function Home() {
 							“Tu ne le sais pas encore mais tu en as déjà besoin.”
 						</p>
 
+                        {isUserConnected ? <div></div> :
 						<div className="mt-10 flex flex-wrap items-center gap-4">
 							<Link
 								to="/register"
@@ -78,6 +88,7 @@ function Home() {
 								<ArrowRight size={18} />
 							</Link>
 						</div>
+						}
 
 					</div>
 
@@ -122,6 +133,7 @@ function Home() {
 				</div>
 			</section>
 
+            {isUserConnected ? <div></div>:
             <section className="px-4 pb-10 md:px-8 lg:pb-16">
 				<div className="mx-auto max-w-7xl rounded-[2rem] bg-primary-light/70 px-6 py-8 shadow-[0_18px_60px_rgba(91,79,207,0.08)] md:px-10 md:py-10 lg:flex lg:items-center lg:justify-between">
 					<div className="max-w-2xl">
@@ -139,6 +151,7 @@ function Home() {
 					</Link>
 				</div>
 			</section>
+			}
 
 			<section className="px-4 pb-10 md:px-8 lg:pb-16">
 				<div className="mx-auto max-w-7xl">
